@@ -35,11 +35,21 @@ const NAME_PATTERN = /^[\p{L}\p{M}]+(?:[\p{L}\p{M}\u2019'-]*[\p{L}\p{M}])?(?: [\
 const RESERVED_NAME_WORDS = new Set(['judge', 'crown', 'defence', 'clerk', 'officer', 'narrator', 'channel', 'foreperson'])
 const sha256 = (value: string): string => `sha256:${createHash('sha256').update(value, 'utf8').digest('hex')}`
 const actorById = new Map(COURT_WEEK_ACTORS.map((actor) => [actor.id, actor]))
+const canonicalSpeechReviewRows = buildCourtWeekSpeechReviewLedger().rows
 
 export function courtWeekNameProposalDigest(entry: CourtWeekNameProposal): string {
   return sha256(JSON.stringify({
     actorId: entry.actorId, currentDisplayLabel: entry.currentDisplayLabel,
     proposedDisplayLabel: entry.proposedDisplayLabel, proposedPersonalName: entry.proposedPersonalName,
+  }))
+}
+
+function clearanceEvidenceDigest(evidence: ClearanceEvidence): string {
+  return sha256(JSON.stringify({
+    proposalSha256: evidence.proposalSha256, identitySearchReference: evidence.identitySearchReference,
+    culturalReviewReference: evidence.culturalReviewReference,
+    pronunciationListeningReference: evidence.pronunciationListeningReference,
+    legalCopyReviewReference: evidence.legalCopyReviewReference,
   }))
 }
 
@@ -99,6 +109,8 @@ function normalized(value: string): string {
     .replace(/[\u2019']/gu, '').replace(/[^\p{L}]+/gu, '')
 }
 
+const nameComponents = (value: string): string[] => value.split(/[\s\u2019'-]+/u).map(normalized).filter(Boolean)
+
 function editDistance(left: string, right: string): number {
   const rightLength = [...right].length
   const prior = Array.from({ length: rightLength + 1 }, (_, index) => index)
@@ -111,6 +123,10 @@ function editDistance(left: string, right: string): number {
     }
   }
   return prior[rightLength]!
+}
+
+function orthographicallyConfusable(left: string, right: string): boolean {
+  return left === right || Math.min([...left].length, [...right].length) > 1 && editDistance(left, right) <= 1
 }
 
 function projectDisplayLabel(label: string, proposal: CourtWeekNameProposal): string {
@@ -141,10 +157,8 @@ function assertDistinctPersonalNames(proposals: readonly CourtWeekNameProposal[]
   const displayLabels = proposals.map(({ proposedDisplayLabel }) => normalized(proposedDisplayLabel))
   if (new Set(displayLabels).size !== displayLabels.length) throw new Error('Proposed display labels must be unique')
   for (const [index, left] of people.entries()) for (const right of people.slice(index + 1)) {
-    const leftParts = left.proposedPersonalName!.split(' '); const rightParts = right.proposedPersonalName!.split(' ')
-    const leftGiven = normalized(leftParts[0]!); const rightGiven = normalized(rightParts[0]!)
-    const leftFamily = normalized(leftParts.at(-1)!); const rightFamily = normalized(rightParts.at(-1)!)
-    if (editDistance(leftGiven, rightGiven) <= 1 || editDistance(leftFamily, rightFamily) <= 1) {
+    const leftParts = nameComponents(left.proposedPersonalName!); const rightParts = nameComponents(right.proposedPersonalName!)
+    if (leftParts.some((leftPart) => rightParts.some((rightPart) => orthographicallyConfusable(leftPart, rightPart)))) {
       throw new Error(`${left.actorId}/${right.actorId}: proposed names are orthographically confusable`)
     }
   }
@@ -152,7 +166,7 @@ function assertDistinctPersonalNames(proposals: readonly CourtWeekNameProposal[]
 
 export function assessCourtWeekNameClearance(
   proposals: readonly CourtWeekNameProposal[] = COURT_WEEK_NAME_PROPOSALS,
-  rows: readonly SpeechReviewLedgerRow[] = buildCourtWeekSpeechReviewLedger().rows,
+  rows: readonly SpeechReviewLedgerRow[] = canonicalSpeechReviewRows,
 ) {
   const expectedIds = COURT_WEEK_ACTORS.map(({ id }) => id)
   if (JSON.stringify(proposals.map(({ actorId }) => actorId)) !== JSON.stringify(expectedIds)) {
@@ -161,17 +175,25 @@ export function assessCourtWeekNameClearance(
   if (JSON.stringify([...new Set(rows.map(({ actorId }) => actorId))].sort()) !== JSON.stringify([...expectedIds].sort())) {
     throw new Error('Name proposals do not cover every candidate actor')
   }
-  assertDistinctPersonalNames(proposals)
+  if (JSON.stringify(rows) !== JSON.stringify(canonicalSpeechReviewRows)) {
+    throw new Error('Name clearance requires the complete canonical speech-review ledger')
+  }
   const reviewRows = proposals.map((entry) => {
     const actor = actorById.get(entry.actorId)!
     if (entry.role !== actor.role || entry.currentDisplayLabel !== actor.label) throw new Error(`${entry.actorId}: actor registry has drifted`)
     const actorRows = rows.filter(({ actorId }) => actorId === entry.actorId)
     const personal = !FUNCTIONAL_ACTORS.has(entry.actorId)
-    if (personal !== Boolean(entry.currentPersonalName && entry.proposedPersonalName)) throw new Error(`${entry.actorId}: person/functional classification disagrees`)
+    const registryPersonalName = personal ? actor.label.replace(TITLE_PREFIX, '') : null
+    if (personal && (entry.currentPersonalName !== registryPersonalName || !entry.proposedPersonalName)) {
+      throw new Error(`${entry.actorId}: personal-name fields disagree with the actor registry`)
+    }
+    if (!personal && (entry.currentPersonalName !== null || entry.proposedPersonalName !== null)) {
+      throw new Error(`${entry.actorId}: functional actors must keep personal-name fields null`)
+    }
     if (personal && (!NAME_PATTERN.test(entry.proposedPersonalName!) || entry.proposedPersonalName === entry.currentPersonalName)) {
       throw new Error(`${entry.actorId}: proposed personal name is malformed or unchanged`)
     }
-    if (personal && (entry.status === 'not-applicable' || entry.proposedPersonalName!.split(' ').some((word) => RESERVED_NAME_WORDS.has(normalized(word))))) {
+    if (personal && (entry.status === 'not-applicable' || nameComponents(entry.proposedPersonalName!).some((word) => RESERVED_NAME_WORDS.has(word)))) {
       throw new Error(`${entry.actorId}: personal proposal uses a functional name or status`)
     }
     if (personal && projectDisplayLabel(actor.label, entry) !== entry.proposedDisplayLabel) {
@@ -189,12 +211,14 @@ export function assessCourtWeekNameClearance(
     return {
       actorId: entry.actorId, currentDisplayLabel: entry.currentDisplayLabel,
       proposedDisplayLabel: entry.proposedDisplayLabel, status: entry.status,
+      evidenceDigest: entry.evidence ? clearanceEvidenceDigest(entry.evidence) : null,
       candidateTurnCount: actorRows.length,
       candidateDisplayLabels: [...new Set(actorRows.map(({ displayLabel }) => displayLabel))],
       projectedDisplayLabels: [...new Set(actorRows.map(({ displayLabel }) => projectDisplayLabel(displayLabel, entry)))],
       dialogueReferenceCount: entry.currentPersonalName ? referenceCount(rows, entry.currentPersonalName) : 0,
     }
   })
+  assertDistinctPersonalNames(proposals)
   const pendingActorIds = proposals.filter(({ status }) => status !== 'approved' && status !== 'not-applicable').map(({ actorId }) => actorId)
   const coverage = {
     actors: expectedIds.length, turns: rows.length,
