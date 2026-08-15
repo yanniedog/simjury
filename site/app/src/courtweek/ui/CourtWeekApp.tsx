@@ -264,7 +264,7 @@ export function CourtWeekApp({
   const freshUnanimityBallotRequired = Boolean(freshBallotSession)
   const freshRouteComplete = majoritySceneIndex > freshSceneIndex && finalSceneIndex > majoritySceneIndex &&
     verdictSceneIndex > finalSceneIndex
-  const calculatedSecondVerdict = progress.secondVote
+  const calculatedSecondVerdict = freshUnanimityBallotRequired && progress.secondVote
     ? unanimousVerdict(calculateSecondBallot(
         courtWeek.deliberation, progress.secondVote, progress.reasoningContributions ?? [],
       ))
@@ -276,6 +276,11 @@ export function CourtWeekApp({
     (progress.secondBallotWasUnanimous !== undefined) && (
       !progress.secondVote || progress.secondBallotWasUnanimous === secondBallotWasUnanimous
     )
+  // Remove this compatibility branch when the explicit fresh-ballot content is
+  // atomically activated; legacy records were authored against the stored flag.
+  const effectiveSecondBallotWasUnanimous = freshUnanimityBallotRequired
+    ? secondBallotWasUnanimous
+    : progress.secondBallotWasUnanimous
   const calculatedFreshVerdict = progress.freshUnanimityVote
     ? unanimousVerdict(calculateFreshUnanimityBallot(
         courtWeek.deliberation, progress.freshUnanimityVote, progress.reasoningContributions ?? [],
@@ -705,7 +710,7 @@ export function CourtWeekApp({
       let nextScene: CourtSession['scenes'][number] | undefined = activeSession.scenes[position.sceneIndex + 1]
       const sundayNext = activeSession.day === 'Sunday'
           ? nextSundaySceneId(
-            position.scene.id, secondBallotWasUnanimous ?? false,
+            position.scene.id, effectiveSecondBallotWasUnanimous ?? false,
             freshUnanimityBallotRequired, freshBallotWasUnanimous ?? false,
           )
         : null
@@ -771,7 +776,7 @@ export function CourtWeekApp({
         secondVote,
         finalVote: vote,
         contributions,
-        secondBallotWasUnanimous: secondBallotWasUnanimous ?? false,
+        secondBallotWasUnanimous: effectiveSecondBallotWasUnanimous ?? false,
         freshUnanimityBallotRequired,
         freshBallotWasUnanimous,
         majorityDirectionReceived: progress.majorityDirectionReceived ?? false,
@@ -791,7 +796,7 @@ export function CourtWeekApp({
 
     let nextScene: CourtSession['scenes'][number] | undefined = activeSession.scenes[position.sceneIndex + 1]
     const sundayNext = activeSession.day === 'Sunday' ? nextSundaySceneId(
-      position.scene.id, patch.secondBallotWasUnanimous ?? secondBallotWasUnanimous ?? false,
+      position.scene.id, patch.secondBallotWasUnanimous ?? effectiveSecondBallotWasUnanimous ?? false,
       freshUnanimityBallotRequired,
       patch.freshBallotWasUnanimous ?? freshBallotWasUnanimous ?? false,
     ) : null
@@ -927,7 +932,7 @@ export function CourtWeekApp({
           replay: isReplay,
           replayEnds: !nextScene,
           ballotSealed,
-          secondBallotWasUnanimous: secondBallotWasUnanimous ?? false,
+          secondBallotWasUnanimous: effectiveSecondBallotWasUnanimous ?? false,
           freshBallotWasUnanimous: freshBallotWasUnanimous ?? false,
           prompt: interaction.prompt,
           recordsReasoning: recordsInfluence,
