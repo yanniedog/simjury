@@ -63,9 +63,11 @@ decision is [`../COURT-WEEK.md`](../COURT-WEEK.md). Legacy `/today`, `/play` and
   [Static Assets billing terms](https://developers.cloudflare.com/workers/static-assets/billing-and-limitations/)
   before changing this boundary.
 - Progress, private notes and ballots live in IndexedDB. The small local profile
-  (juror label, adult-fiction acknowledgement and temporarily default-on
-  Developer mode for pre-release unlock) lives in validated localStorage. It is
-  not an account and is never transmitted.
+  (juror label and adult-fiction acknowledgement) lives in validated
+  localStorage. It is not an account and is never transmitted. Developer
+  Preview exists only in a compile-time development/test build on the exact
+  `/__court-week-preview` route; production contains no preview capability or
+  profile flag.
   A versioned local export/import file is the only cross-device transfer mechanism.
 - Progress and opened sealed packs use separate object stores in the same
   versioned IndexedDB database. A confirmed import writes both stores in one

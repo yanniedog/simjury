@@ -64,15 +64,16 @@ the gross estimate deliberately applies no free tier.
 
 Execution is a separate, manual operator action. Create an output directory
 outside this repository, enable billing and Text-to-Speech for the intended
-quota project, then obtain a short-lived token from Application Default
-Credentials without printing or committing it:
+quota project, then obtain a short-lived bearer token from the active `gcloud`
+account without printing or committing it. Application Default Credentials are
+not required by this runner:
 
 ```powershell
-gcloud auth application-default login
-$env:GOOGLE_OAUTH_ACCESS_TOKEN = gcloud auth application-default print-access-token
+$env:GOOGLE_OAUTH_ACCESS_TOKEN = gcloud auth print-access-token --quiet
 $env:GOOGLE_CLOUD_QUOTA_PROJECT = '<reviewed-project-id>'
 npm run media:chirp:audition -- --execute --output '<existing-outside-repo-directory>' --acknowledge-cost-aud '<exact value printed by the plan>'
 Remove-Item Env:GOOGLE_OAUTH_ACCESS_TOKEN
+Remove-Item Env:GOOGLE_CLOUD_QUOTA_PROJECT
 ```
 
 The runner uses Google's synchronous REST endpoint once per unfinished job,
