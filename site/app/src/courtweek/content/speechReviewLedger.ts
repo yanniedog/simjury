@@ -16,6 +16,7 @@ import { WEDNESDAY_SOURCE_CUE_IDS, WEDNESDAY_SPEECH_CANDIDATE } from './wednesda
 export type LedgerCandidateCue = ReviewedSpeechCue & {
   sourceCueId?: string | null; sourceCueIds?: readonly string[]; event?: string
   procedureStage?: string; guard?: string; verdict?: string; agreement?: string
+  threshold?: string; lawfulRationale?: string; counterAnalysis?: string
 }
 
 export interface SpeechCandidateDay {
