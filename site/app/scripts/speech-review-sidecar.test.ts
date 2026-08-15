@@ -169,7 +169,9 @@ describe('speech review sidecar', () => {
     const path = join(directory, 'sidecar.json')
     try {
       const legacy = structuredClone(buildSpeechReviewSidecar())
-      const omitted = new Set(['mon-arrival-1__1', 'mon-oath-oath__1', 'mon-oath-affirmation__1'])
+      const omitted = new Set([
+        'mon-arrival-1__1', 'mon-oath-oath__1', 'mon-oath-affirmation__1', 'tue-mir-chief-2__9',
+      ])
       legacy.rows = legacy.rows.filter(({ rowId }) => !omitted.has(rowId))
       legacy.runtimeVariants = legacy.runtimeVariants.filter((variant) => !variant.startsWith('juror-promise:'))
       legacy.ledgerSha256 = 'f'.repeat(64)
@@ -188,12 +190,12 @@ describe('speech review sidecar', () => {
 
       await writeSpeechReviewSidecar(path)
       const migrated = JSON.parse(await readFile(path, 'utf8'))
-      expect(migrated.rows).toHaveLength(354)
+      expect(migrated.rows).toHaveLength(355)
       expect(migrated.rows.find(({ rowId }: { rowId: string }) => rowId === stable.rowId).decisions.attribution)
         .toEqual(stable.decisions.attribution)
       expect(migrated.rows.find(({ rowId }: { rowId: string }) => rowId === changed.rowId).decisions.attribution)
         .toEqual({ status: 'pending', reviewReference: null, note: null })
-      for (const rowId of ['mon-oath-oath__1', 'mon-oath-affirmation__1']) {
+      for (const rowId of ['mon-oath-oath__1', 'mon-oath-affirmation__1', 'tue-mir-chief-2__9']) {
         expect(migrated.rows.find((row: { rowId: string }) => row.rowId === rowId).decisions.attribution)
           .toEqual({ status: 'pending', reviewReference: null, note: null })
       }
