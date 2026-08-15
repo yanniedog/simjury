@@ -28,7 +28,7 @@ describe('inactive Tuesday reviewed speech candidate', () => {
     expect(new Set(TUESDAY_SPEECH_CANDIDATE.map(({ sourceCueId }) => sourceCueId)).size).toBe(20)
 
     const turnIds = TUESDAY_SPEECH_CANDIDATE.flatMap(({ turns }) => turns.map(({ id }) => id))
-    expect(turnIds).toHaveLength(58)
+    expect(turnIds).toHaveLength(87)
     expect(new Set(turnIds).size).toBe(turnIds.length)
   })
 
@@ -52,7 +52,7 @@ describe('inactive Tuesday reviewed speech candidate', () => {
     })).toThrow(/undeclared attributed speech/i)
   })
 
-  it('locks actor and legal-action ownership for all sixty turns', () => {
+  it('locks actor and legal-action ownership for every Tuesday turn', () => {
     const ownership = Object.fromEntries(TUESDAY_SPEECH_CANDIDATE.map(({ id, turns }) => [
       id, turns.map(({ actorId, legalAction }) => `${actorId}:${legalAction}`),
     ]))
@@ -60,24 +60,24 @@ describe('inactive Tuesday reviewed speech candidate', () => {
     expect(ownership).toEqual({
       'tue-resume-1': ['judge:direction'],
       'tue-resume-2': ['judge:direction'],
-      'tue-dorn-chief-1': ['peli-dorn:answer'],
+      'tue-dorn-chief-1': ['crown-counsel:question', 'peli-dorn:answer', 'crown-counsel:question', 'peli-dorn:answer', 'crown-counsel:question', 'peli-dorn:answer'],
       'tue-def-objection': ['crown-counsel:question', 'defence-counsel:objection', 'crown-counsel:submission', 'judge:ruling', 'judge:limitation-direction'],
       'tue-def-ruling': ['judge:limitation-direction'],
-      'tue-dorn-chief-2': ['peli-dorn:answer'],
+      'tue-dorn-chief-2': ['crown-counsel:question', 'peli-dorn:answer', 'crown-counsel:question', 'peli-dorn:answer', 'crown-counsel:question', 'peli-dorn:answer'],
       'tue-recording-foundation': ['crown-counsel:question', 'peli-dorn:foundation', 'crown-counsel:tender', 'judge:admission', 'judge:limitation-direction'],
       'tue-recording-play': ['ilan-saye:none', 'peli-dorn:none', 'accused:none', 'ilan-saye:none', 'recorded-channel:exhibit-playback', 'accused:none', 'ilan-saye:none', 'recorded-channel:exhibit-playback'],
       'tue-dorn-cross-1': ['defence-counsel:question', 'peli-dorn:answer', 'defence-counsel:question', 'peli-dorn:answer', 'defence-counsel:question', 'peli-dorn:answer', 'defence-counsel:question', 'peli-dorn:answer'],
-      'tue-dorn-cross-2': ['peli-dorn:answer'],
+      'tue-dorn-cross-2': ['defence-counsel:question', 'peli-dorn:answer'],
       'tue-dorn-re-1': ['crown-counsel:question', 'peli-dorn:answer', 'crown-counsel:question', 'peli-dorn:answer', 'judge:limitation-direction'],
       'tue-re-direction': ['judge:direction'],
-      'tue-mir-chief-1': ['tovan-mir:foundation', 'crown-counsel:tender', 'judge:admission'],
-      'tue-mir-chief-2': ['tovan-mir:foundation', 'crown-counsel:tender', 'judge:admission'],
-      'tue-mir-chief-3': ['tovan-mir:foundation'],
+      'tue-mir-chief-1': ['crown-counsel:question', 'tovan-mir:answer', 'crown-counsel:question', 'tovan-mir:foundation', 'crown-counsel:question', 'tovan-mir:answer', 'crown-counsel:question', 'tovan-mir:foundation', 'crown-counsel:tender', 'judge:admission'],
+      'tue-mir-chief-2': ['crown-counsel:question', 'tovan-mir:foundation', 'crown-counsel:question', 'tovan-mir:foundation', 'crown-counsel:question', 'tovan-mir:foundation', 'crown-counsel:tender', 'judge:admission'],
+      'tue-mir-chief-3': ['crown-counsel:question', 'tovan-mir:answer', 'crown-counsel:question', 'tovan-mir:foundation', 'crown-counsel:question', 'tovan-mir:foundation'],
       'tue-mir-cross-1': ['defence-counsel:question', 'tovan-mir:answer', 'defence-counsel:question', 'tovan-mir:answer', 'defence-counsel:question', 'tovan-mir:answer', 'defence-counsel:question', 'tovan-mir:answer'],
       'tue-log-direction': ['judge:direction'],
       'tue-recording-final-admission': ['judge:admission', 'judge:limitation-direction'],
       'tue-adjourn-1': ['judge:direction'],
-      'tue-adjourn-2': ['court-officer:none'],
+      'tue-adjourn-2': ['court-officer:none', 'narrator:narration'],
     })
   })
 
@@ -85,28 +85,29 @@ describe('inactive Tuesday reviewed speech candidate', () => {
     const turns = cueById('tue-def-objection').turns
     expect(turns.some(({ actorId }) => actorId === 'peli-dorn')).toBe(false)
     expect(turns.slice(-2).map(({ actorId, legalAction, text }) => ({ actorId, legalAction, text }))).toEqual([
-      { actorId: 'judge', legalAction: 'ruling', text: 'Sustained. The witness must not answer.' },
-      { actorId: 'judge', legalAction: 'limitation-direction', text: 'Ask only about words and sounds Dorn personally perceived.' },
+      { actorId: 'judge', legalAction: 'ruling', text: 'I uphold the objection. The witness must not answer.' },
+      { actorId: 'judge', legalAction: 'limitation-direction', text: 'Counsel may ask only about words and sounds Dorn personally perceived.' },
     ])
   })
 
   it('distinguishes courtroom reports, primary playback and written quotations', () => {
     const allTurns = TUESDAY_SPEECH_CANDIDATE.flatMap(({ turns }) => turns)
     expect(allTurns.filter(({ speechMode }) => speechMode === 'reported-testimony').map(({ id }) => id)).toEqual([
-      'tue-dorn-chief-1__1', 'tue-dorn-chief-2__1', 'tue-dorn-cross-1__8',
+      'tue-dorn-chief-1__2', 'tue-dorn-chief-1__6',
+      'tue-dorn-chief-2__4', 'tue-dorn-chief-2__6', 'tue-dorn-cross-1__8',
     ])
     expect(cueById('tue-recording-play').turns.every(({ speechMode }) => speechMode === 'recording-playback')).toBe(true)
 
     const provenance = allTurns.flatMap((turn) => (turn.quotedSpans ?? []).map((span) =>
       `${turn.id}|${turn.text.slice(span.start, span.end)}|${span.source}|${span.sourceActorId ?? '-'}`))
     expect(provenance).toEqual([
-      'tue-dorn-chief-1__1|“survey vessel Lumen, beacon AR-71, taking water.”|reported|ilan-saye',
-      'tue-dorn-chief-1__1|“AR-71, I have your position.”|reported|accused',
-      'tue-dorn-chief-2__1|“Hold Kestrel. Keep this at priority three.”|reported|accused',
-      'tue-dorn-chief-2__1|“No. Seventy-one waits.”|reported|accused',
+      'tue-dorn-chief-1__2|“Survey vessel Lumen, beacon A R seventy-one, taking water.”|reported|ilan-saye',
+      'tue-dorn-chief-1__6|“A R seventy-one, I have your position.”|reported|accused',
+      'tue-dorn-chief-2__4|“Hold Kestrel. Keep this at priority three.”|reported|accused',
+      'tue-dorn-chief-2__6|“No. Seventy-one waits.”|reported|accused',
       'tue-dorn-cross-1__8|“seventy-one waits.”|reported|accused',
       'tue-dorn-re-1__1|“seventy-one waits,”|reported|accused',
-      'tue-mir-chief-2__1|“hold—readiness,”|written|accused',
+      'tue-mir-chief-2__6|“hold, readiness,”|written|accused',
       'tue-mir-cross-1__1|“Apply selected priority?”|written|-',
       'tue-mir-cross-1__3|“Delay may kill”|written|-',
     ])
@@ -135,14 +136,14 @@ describe('inactive Tuesday reviewed speech candidate', () => {
         expect(turnIds.has(transition.warningTurnId), transition.warningTurnId).toBe(true)
       }
     }
-    expect(cueById('tue-resume-1').sourceText).toContain('Its evidentiary status and any limits will be stated before it is played.')
+    expect(cueById('tue-resume-1').sourceText).toContain('I will explain its evidentiary status and any limits before it is played.')
 
     const provisionalTurns = cueById('tue-recording-foundation').turns
     expect(provisionalTurns.map(({ legalAction }) => legalAction)).toEqual([
       'question', 'foundation', 'tender', 'admission', 'limitation-direction',
     ])
     expect(provisionalTurns[4]?.text).toMatch(/not finally admitted.*actually audible.*advocate’s description/is)
-    expect(cueById('tue-mir-chief-3').turns[0]).toMatchObject({
+    expect(cueById('tue-mir-chief-3').turns[3]).toMatchObject({
       actorId: 'tovan-mir', legalAction: 'foundation',
     })
     expect(transitions[0]!.index).toBeLessThan(TUESDAY_SOURCE_CUE_IDS.indexOf('tue-recording-play'))
