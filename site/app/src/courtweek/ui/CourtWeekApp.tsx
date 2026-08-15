@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { CourtWeek, CourtSession, LegalPhase, ReasoningMove, SceneCue, Verdict } from '../model/schema'
 import {
   assessReasoningContribution,
@@ -33,11 +33,11 @@ import {
 import { useWeeklyProgress, type PersistenceIssue } from '../state/useWeeklyProgress'
 import { COURT_WEEK_TEST_HARNESS_ENABLED } from '../testHarness'
 import { EvidenceViewer } from './EvidenceViewer'
+import { CourtSheet } from './CourtSheet'
 import { CourtWeekCompletion } from './CourtWeekCompletion'
 import { CourtWeekEntry, type CourtWeekEntryProps } from './CourtWeekEntry'
 import { ImmersiveCourtShell } from './ImmersiveCourtShell'
 import { JurorDesk, type PreparedProgressImport } from './JurorDesk'
-import { useModalFocusBoundary } from './useModalFocusBoundary'
 import { courtAdvanceAction, interactionPrimaryAction } from './proceduralActions'
 import '../courtweek.css'
 
@@ -173,33 +173,6 @@ function VerdictChoices({
     </div>
   )
 }
-function MandatoryInteractionDialog({
-  children,
-  returnFocusTo,
-}: {
-  children: ReactNode
-  returnFocusTo?: HTMLElement | null
-}) {
-  const dialog = useRef<HTMLElement>(null)
-  useModalFocusBoundary(
-    dialog,
-    returnFocusTo,
-    '.cw-controls__advance, .cw-controls button:not([disabled])',
-  )
-  return (
-    <section
-      ref={dialog}
-      className="cw-modal cw-interaction"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="cw-interaction-heading"
-      tabIndex={-1}
-    >
-      {children}
-    </section>
-  )
-}
-
 export function CourtWeekApp({
   courtWeek,
   now = Date.now,
@@ -406,8 +379,10 @@ export function CourtWeekApp({
   const pauseCuePlayback = playback.pause
   const resumeCuePlayback = playback.play
   useEffect(() => {
-    if (interactionOpen) pauseCuePlayback()
-  }, [interactionOpen, pauseCuePlayback])
+    if (interactionOpen && (
+      playback.status === 'playing' || playback.status === 'loading' || playback.status === 'speech-fallback'
+    )) pauseCuePlayback()
+  }, [interactionOpen, pauseCuePlayback, playback.status])
   useLayoutEffect(() => {
     if (interactionOpen || deskOpen || evidenceId) return
     advanceBlocked.current = false
@@ -798,10 +773,26 @@ export function CourtWeekApp({
 
   let overlay = null
   if (COURT_WEEK_TEST_HARNESS_ENABLED && developerPreviewOpen && testSession) {
+    const closeTestSession = () => {
+      setDeveloperPreviewOpen(false)
+      advanceBlocked.current = false
+    }
     overlay = (
-      <MandatoryInteractionDialog returnFocusTo={interactionReturnFocus.current}>
-        <p className="cw-kicker">TEST SESSION</p>
-        <h2 id="cw-interaction-heading">Test session controls</h2>
+      <CourtSheet
+        title="Test session controls"
+        kicker="TEST SESSION"
+        className="cw-interaction"
+        closeLabel="Close test session controls"
+        returnFocusTo={interactionReturnFocus.current}
+        fallbackReturnFocusSelector=".cw-controls__advance, .cw-controls button:not([disabled])"
+        onClose={closeTestSession}
+        footer={<div className="cw-button-row">
+          <button type="button" onClick={() => {
+            closeTestSession()
+            testSession.onLeave()
+          }}>Leave test session</button>
+        </div>}
+      >
         <p>Saved juror progress is untouched. Test changes are discarded.</p>
         <label className="cw-developer-day" htmlFor="cw-developer-day-modal">Session</label>
         <select
@@ -813,18 +804,7 @@ export function CourtWeekApp({
             <option key={ordinal} value={ordinal}>{day}</option>
           ))}
         </select>
-        <div className="cw-button-row">
-          <button type="button" onClick={() => {
-            setDeveloperPreviewOpen(false)
-            advanceBlocked.current = false
-          }}>Close</button>
-          <button type="button" onClick={() => {
-            setDeveloperPreviewOpen(false)
-            advanceBlocked.current = false
-            testSession.onLeave()
-          }}>Leave test session</button>
-        </div>
-      </MandatoryInteractionDialog>
+      </CourtSheet>
     )
   } else if (deskOpen) {
     overlay = (
@@ -879,10 +859,54 @@ export function CourtWeekApp({
     )
   } else if (interactionOpen && interaction) {
     const isVote = interaction.kind === 'seal-vote' || interaction.kind === 'second-vote' || interaction.kind === 'final-vote'
+    const closeInteraction = () => {
+      suppressAutoPlayAfterDeskClose.current = true
+      setInteractionOpen(false)
+    }
+    const interactionFooter = <>
+      <button
+        className="cw-primary"
+        type="button"
+        disabled={
+          !isReplay && (
+            (!effectiveInteractionChoice && (isVote || Boolean(interaction.options?.length))) ||
+            (interaction.kind === 'reasoning' && (
+              (recordsInfluence
+                ? !selectedProposition
+                : !reasoningQuestion || !reasoningEvidence || !interactionChoice) ||
+              (reviewsImproperArgument && !reasoningBasis)
+            ))
+          )
+        }
+        onClick={() => finishInteraction()}
+      >
+        {interactionPrimaryAction({
+          kind: interaction.kind,
+          replay: isReplay,
+          replayEnds: !nextScene,
+          ballotSealed,
+          secondBallotWasUnanimous: progress.secondBallotWasUnanimous ?? false,
+          prompt: interaction.prompt,
+          recordsReasoning: recordsInfluence,
+        })}
+      </button>
+      {!isReplay && interaction.kind === 'reasoning' && interaction.optional ? (
+        <button type="button" onClick={() => finishInteraction(true)}>
+          Skip this contribution
+        </button>
+      ) : null}
+    </>
     overlay = (
-      <MandatoryInteractionDialog returnFocusTo={interactionReturnFocus.current}>
-        <p className="cw-kicker">Your contribution</p>
-        <h2 id="cw-interaction-heading">{interaction.prompt}</h2>
+      <CourtSheet
+        title={interaction.prompt}
+        kicker="Your contribution"
+        className="cw-interaction"
+        closeLabel="Return to the court view"
+        returnFocusTo={interactionReturnFocus.current}
+        fallbackReturnFocusSelector=".cw-controls__advance, .cw-controls button:not([disabled])"
+        onClose={closeInteraction}
+        footer={interactionFooter}
+      >
         {isReplay ? (
           <p>Replay mode. Your sealed contributions, ballots and returned result remain unchanged.</p>
         ) : isVote ? (
@@ -992,41 +1016,7 @@ export function CourtWeekApp({
         ) : interaction.kind === 'reasoning' || (isVote && !ballotSealed && !isReplay) ? (
           <button id="cw-interaction-desk" type="button" onClick={toggleDesk}>Review juror desk and admitted evidence</button>
         ) : null}
-        <button
-          className="cw-primary"
-          type="button"
-          disabled={
-            !isReplay && (
-              (!effectiveInteractionChoice && (isVote || Boolean(interaction.options?.length))) ||
-              (interaction.kind === 'reasoning' && (
-                (recordsInfluence
-                  ? !selectedProposition
-                  : !reasoningQuestion || !reasoningEvidence || !interactionChoice) ||
-                (reviewsImproperArgument && !reasoningBasis)
-              ))
-            )
-          }
-          onClick={() => finishInteraction()}
-        >
-          {interactionPrimaryAction({
-            kind: interaction.kind,
-            replay: isReplay,
-            replayEnds: !nextScene,
-            ballotSealed,
-            secondBallotWasUnanimous: progress.secondBallotWasUnanimous ?? false,
-            prompt: interaction.prompt,
-            recordsReasoning: recordsInfluence,
-          })}
-        </button>
-        {!isReplay && interaction.kind === 'reasoning' && interaction.optional ? (
-          <button
-            type="button"
-            onClick={() => finishInteraction(true)}
-          >
-            Skip this contribution
-          </button>
-        ) : null}
-      </MandatoryInteractionDialog>
+      </CourtSheet>
     )
   }
 
