@@ -12,13 +12,17 @@ remains immutable as a rollback and A/B comparator; it must not be regenerated.
 - Production remains static: no TTS, Workers AI, Worker, database, queue, or storage.
 - Stop before 1,000,000 submitted characters; forbid blind retry; cache each
   utterance by source and synthesis digests; record the final bill.
-- Never commit references, consent, donor identities, credentials, or local paths.
-  Reference-based providers require donor consent; stock voices do not.
+- Only `google-chirp3-hd-en-au` provider-stock assignments have generation
+  authority. Reference audio, consent receipts and every other provider are
+  rejected by the versioned manifest contract.
 - Generate one explicit reviewed turn at a time and resume by utterance.
 
-Generate with `npm run media:performance:manifest -- --output <file>` and recheck
-with `--input <file>`. Release requires explicit authored turns, separate synthesis
-and governance digests, verified provider inventory, and approved pronunciations.
+Generate the version 2 Chirp-only contract with
+`npm run media:performance:manifest -- --output <file>` and recheck with
+`--input <file>`. Release requires explicit authored turns, separate synthesis
+and governance digests, verified stock-voice inventory, and approved pronunciations.
+`media:chirp:plan` additionally requires `--performance-manifest <v2-file>`;
+its 28 identity-to-voice assignments must exactly match the closed Chirp registry.
 
 Canonical turn text is also the spoken script: write names, times, ordinary
 numbers, abbreviations and homographs so an Australian reader can say them one

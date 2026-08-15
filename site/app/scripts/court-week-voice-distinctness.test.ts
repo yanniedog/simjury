@@ -5,7 +5,9 @@ import { join } from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
 import { buildChirpAuditionPlan, CHIRP_AUDITION_SCHEMA } from './court-week-chirp-audition'
 import { buildCourtWeekChirpPlan, type ChirpRegistry, writeCourtWeekChirpPlan } from './court-week-chirp-plan'
-import { CANONICAL_PERFORMANCE_IDENTITIES } from './court-week-performance-manifest'
+import {
+  buildCourtWeekPerformanceManifest, CANONICAL_PERFORMANCE_IDENTITIES, refreshPerformanceDigest,
+} from './court-week-performance-manifest'
 import {
   approveVoiceDistinctness, buildVoiceDistinctnessBundle, validateVoiceDistinctnessApproval,
   VOICE_DISTINCTNESS_DECISIONS_SCHEMA,
@@ -77,6 +79,17 @@ function registryFor(bundle: ReturnType<typeof buildVoiceDistinctnessBundle>, de
   }
 }
 
+function performanceManifestFor(registry: ChirpRegistry) {
+  const manifest = buildCourtWeekPerformanceManifest()
+  manifest.identities.forEach((identity, index) => {
+    identity.assignment = {
+      source: 'provider-stock', providerId: registry.providerId,
+      voiceProfileId: registry.assignments[index]!.voiceId,
+    }
+  })
+  return refreshPerformanceDigest(manifest)
+}
+
 describe('private Chirp voice distinctness review', () => {
   it('inventories all 30 hash-bound clips without unblinding the listener contract', () => {
     const directory = auditionDirectory()
@@ -117,16 +130,19 @@ describe('private Chirp voice distinctness review', () => {
     const bundle = buildVoiceDistinctnessBundle(audition)
     const decisions = completeDecisions(bundle)
     const registry = registryFor(bundle, decisions)
+    const performanceManifest = performanceManifestFor(registry)
     const approval = approveVoiceDistinctness(bundle, decisions)
     expect(validateVoiceDistinctnessApproval(approval, registry.assignments)).toEqual(approval)
     expect(approval.requiredPairCount).toBeGreaterThan(28)
-    expect(buildCourtWeekChirpPlan(registry).generationGate.blockers).toContain('perceptual-distinctness-review')
-    expect(buildCourtWeekChirpPlan(registry, undefined, { distinctnessApproval: approval }).generationGate.blockers)
+    expect(buildCourtWeekChirpPlan(registry, undefined, { performanceManifest }).generationGate.blockers)
+      .toContain('perceptual-distinctness-review')
+    expect(buildCourtWeekChirpPlan(registry, undefined, { performanceManifest, distinctnessApproval: approval }).generationGate.blockers)
       .not.toContain('perceptual-distinctness-review')
     const output = join(audition, 'plan.json'); const approvalPath = join(audition, 'approval.json')
-    const registryPath = join(audition, 'registry.json')
+    const registryPath = join(audition, 'registry.json'); const performanceManifestPath = join(audition, 'performance.json')
     writeFileSync(approvalPath, JSON.stringify(approval)); writeFileSync(registryPath, JSON.stringify(registry))
-    writeCourtWeekChirpPlan(registryPath, output, approvalPath)
+    writeFileSync(performanceManifestPath, JSON.stringify(performanceManifest))
+    writeCourtWeekChirpPlan(registryPath, performanceManifestPath, output, approvalPath)
     expect(JSON.parse(readFileSync(output, 'utf8')).generationGate.blockers).not.toContain('perceptual-distinctness-review')
 
     const duplicated = structuredClone(decisions)
