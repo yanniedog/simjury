@@ -118,5 +118,5 @@
 }
 
 @media (max-width: 240px) { .cw-preview-drawer summary span { display: none; } }
-.cw-preview-harness.cw-test-harness:has(.cw-modal, .cw-desk) { --cw-developer-toolbar-offset: 0px; }
-.cw-preview-harness:has(.cw-modal, .cw-desk) .cw-preview-drawer { visibility: hidden; pointer-events: none; }
+.cw-preview-harness.cw-test-harness:has(.cw-sheet) { --cw-developer-toolbar-offset: 0px; }
+.cw-preview-harness:has(.cw-sheet) .cw-preview-drawer { visibility: hidden; pointer-events: none; }

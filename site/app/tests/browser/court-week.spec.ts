@@ -147,7 +147,7 @@ test('locked return names the next sitting and exact Hobart opening without a co
   await expect(page.locator('.cw-entry')).not.toContainText(/countdown|\d+\s*(?:seconds?|minutes?)\s+(?:left|remaining)/i)
 })
 
-test('preview drawer loads one pack and yields to modal controls at 320px', async ({ page }) => {
+test('preview drawer loads one pack and yields to sheet controls at 320px', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 568 })
   await page.addInitScript(() => {
     localStorage.setItem('simjury:court-week:local-profile:v1', JSON.stringify({
@@ -180,7 +180,7 @@ test('preview drawer loads one pack and yields to modal controls at 320px', asyn
   await presentation.selectOption('captions')
   await expect(page.getByLabel('Access')).toHaveValue('captions')
   await page.getByRole('button', { name: 'Test session' }).click()
-  await expect(page.locator('.cw-modal')).toBeVisible()
+  await expect(page.locator('.cw-sheet')).toBeVisible()
   await expect(drawer).toBeHidden()
   await page.locator('#cw-developer-day-modal').selectOption('3')
   await expect.poll(() => packRequests.length).toBe(3)
@@ -188,7 +188,7 @@ test('preview drawer loads one pack and yields to modal controls at 320px', asyn
   await page.getByRole('button', { name: 'Take your seat' }).click()
   await expect(page.getByLabel('Presentation mode')).toHaveValue('captions')
   await page.getByRole('button', { name: 'Test session' }).click()
-  await page.getByRole('button', { name: 'Close' }).click()
+  await page.getByRole('button', { name: 'Close test session controls' }).click()
   await leave.scrollIntoViewIfNeeded()
   await leave.click()
   await expect(page.getByText('COURT WEEK PREVIEW')).toHaveCount(0)
@@ -1095,6 +1095,18 @@ test('accelerated conclusion returns its verdict before analysis and preserves s
   await analysisDialog.locator('select').nth(0).selectOption({ index: 1 })
   await analysisDialog.locator('select').nth(1).selectOption({ index: 1 })
   await analysisDialog.locator('button[aria-pressed="false"]').first().click()
+  const selectedQuestion = await analysisDialog.locator('select').nth(0).inputValue()
+  const selectedEvidence = await analysisDialog.locator('select').nth(1).inputValue()
+  const closeInteraction = analysisDialog.getByRole('button', { name: 'Return to the court view' })
+  await expect(closeInteraction).toBeInViewport()
+  await expect(analysisDialog.locator('.cw-sheet__footer button.cw-primary')).toBeInViewport()
+  await closeInteraction.click()
+  await expect(analysisDialog).toBeHidden()
+  await continueButton.click()
+  await expect(analysisDialog).toBeVisible()
+  await expect(analysisDialog.locator('select').nth(0)).toHaveValue(selectedQuestion)
+  await expect(analysisDialog.locator('select').nth(1)).toHaveValue(selectedEvidence)
+  await expect(analysisDialog.locator('button[aria-pressed="true"]')).toHaveCount(1)
   await satisfyInteractionTime()
   await analysisDialog.locator('button.cw-primary').click()
 

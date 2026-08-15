@@ -221,6 +221,18 @@ describe('CourtWeekApp improper-argument interaction', () => {
     expect(container.querySelector(`button[aria-pressed="true"]`)?.textContent).toContain(reasoningMoveLabels[move])
     expect(container.querySelector<HTMLInputElement>('input[value="improper:0"]')?.checked).toBe(true)
 
+    const sheetClose = container.querySelector<HTMLButtonElement>('button[aria-label="Return to the court view"]')
+    if (!sheetClose) throw new Error('Reasoning sheet Close control is missing.')
+    await act(async () => sheetClose.click())
+    expect(container.querySelector('.cw-interaction')).toBeNull()
+    await act(async () => clickAdvance(container))
+    const [reopenedQuestion, reopenedEvidence] = Array.from(
+      container.querySelectorAll<HTMLSelectElement>('.cw-interaction select'),
+    )
+    expect(reopenedQuestion.value).toBe(legalQuestion)
+    expect(reopenedEvidence.value).toBe(evidenceId)
+    expect(container.querySelector<HTMLInputElement>('input[value="improper:0"]')?.checked).toBe(true)
+
     await act(async () => clickButton(container, 'Record reasoning contribution'))
     window.removeEventListener(WEEKLY_PROGRESS_EVENT, onProgress)
 
@@ -354,7 +366,7 @@ describe('CourtWeekApp improper-argument interaction', () => {
       finishPlaying()
     })
     expect(container.querySelector('.cw-interaction')).not.toBeNull()
-    expect(pause).toHaveBeenCalled()
+    expect(pause).not.toHaveBeenCalled()
 
     const frozen = { sceneId: latestProgress.currentSceneId, cueId: latestProgress.currentCueId }
     await act(async () => {
@@ -364,7 +376,9 @@ describe('CourtWeekApp improper-argument interaction', () => {
       window.dispatchEvent(new Event('focus'))
     })
     expect({ sceneId: latestProgress.currentSceneId, cueId: latestProgress.currentCueId }).toEqual(frozen)
+    expect(container.querySelector('.cw-interaction')).toBeNull()
 
+    await act(async () => clickAdvance(container))
     await act(async () => clickButton(container, 'Juror desk'))
     await act(async () => clickButton(container, 'Close'))
     expect(container.querySelector('.cw-interaction')).not.toBeNull()
