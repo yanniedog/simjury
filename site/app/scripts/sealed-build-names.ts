@@ -35,6 +35,7 @@ export const REVIEW_ONLY_CONTRACT_MARKERS = [
   'simjury.court-week-voice-name-projection/v1',
   'simjury.court-week-voice-acceptance-decisions/v1',
   'simjury.court-week-voice-acceptance-listener-submission/v1',
+  'simjury.court-week-voice-acceptance-listener-package/v1',
   'simjury.court-week-voice-acceptance-approval/v1',
   'simjury.court-week-raw-asr/v1',
   'simjury.court-week-raw-alignment/v1',

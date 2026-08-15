@@ -14,6 +14,9 @@ export const VOICE_ACCEPTANCE_LISTENER_SUBMISSION_SCHEMA =
 const scriptDirectory = dirname(fileURLToPath(import.meta.url))
 const repositoryRoot = resolve(scriptDirectory, '../../..')
 const sha256 = (bytes: Uint8Array): string => `sha256:${createHash('sha256').update(bytes).digest('hex')}`
+const canonicalJson = (value: unknown): string => Array.isArray(value) ? `[${value.map(canonicalJson).join(',')}]`
+  : value !== null && typeof value === 'object' ? `{${Object.entries(value).sort(([a], [b]) => a.localeCompare(b, 'en'))
+    .map(([key, entry]) => `${JSON.stringify(key)}:${canonicalJson(entry)}`).join(',')}}` : JSON.stringify(value)
 const exact = (left: unknown, right: unknown): boolean => voiceReviewDigest(left) === voiceReviewDigest(right)
 const exactKeys = (value: object, keys: string[]): boolean => exact(Object.keys(value).sort(), keys.sort())
 
@@ -160,6 +163,16 @@ export function validateCompletedListenerSubmission(
     throw new Error('Listener submission is incomplete or does not match its opaque template')
   }
   return value
+}
+
+export function buildCompletedListenerDownload(
+  decision: unknown, template: ListenerSubmission, listener: VoiceAcceptanceBundle,
+) {
+  const submission = validateCompletedListenerSubmission({ schema: VOICE_ACCEPTANCE_LISTENER_SUBMISSION_SCHEMA,
+    bundleDigest: template.bundleDigest, listener: decision }, template, listener)
+  const json = `${canonicalJson(submission)}\n`; const digest = sha256(Buffer.from(json))
+  return { submission, json, digest,
+    filename: `voice-acceptance-${submission.listener.listenerId}-${digest.slice(7)}.json` }
 }
 
 export function exportPrivateVoiceAcceptance(requestInput: unknown, paths: ExportPaths) {
