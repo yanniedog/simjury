@@ -9,7 +9,7 @@ import {
   type SpeechCandidateDay,
 } from './speechReviewLedger'
 
-const EXPECTED_LEDGER_SHA256 = '7c6d75ee8343c5ad0f1555e91277d1b509b4afeb4dd3e5315e7d5b4e05ecf09a'
+const EXPECTED_LEDGER_SHA256 = '93b23b86123ca922f39613d3368e4f59fb2f53f2cb28fb3efc8ad6770632d527'
 
 function digest(
   days: readonly SpeechCandidateDay[] = COURT_WEEK_SPEECH_CANDIDATES, sessions = elevenMinutesSessions,
@@ -35,7 +35,7 @@ describe('Court Week exhaustive speech-review ledger', () => {
   it('pins every source, candidate, runtime variant, turn, word and quotation', () => {
     const ledger = buildCourtWeekSpeechReviewLedger()
     expect(ledger.schema).toBe('simjury.court-week-speech-review/v1')
-    expect(ledger.rows).toHaveLength(326)
+    expect(ledger.rows).toHaveLength(351)
     expect(new Set(ledger.rows.map(({ cueId }) => cueId)).size).toBe(136)
     expect(new Set(ledger.rows.flatMap(({ sourceCueIds }) => sourceCueIds)).size).toBe(127)
     expect(new Set(ledger.rows.flatMap(({ captionProjection }) =>
@@ -45,7 +45,7 @@ describe('Court Week exhaustive speech-review ledger', () => {
       const rows = ledger.rows.filter((row) => row.day === day.day)
       return [day.day, [new Set(rows.map(({ cueId }) => cueId)).size, rows.length]]
     }))).toEqual({
-      monday: [17, 38], tuesday: [20, 87], wednesday: [19, 61],
+      monday: [17, 38], tuesday: [20, 87], wednesday: [19, 86],
       thursday: [17, 44], friday: [19, 22], saturday: [19, 24], sunday: [25, 50],
     })
     expect(digest()).toBe(EXPECTED_LEDGER_SHA256)

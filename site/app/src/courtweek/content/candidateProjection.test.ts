@@ -14,7 +14,7 @@ describe('inactive next-revision candidate projection', () => {
     expect(projection.currentRevision).toBe(elevenMinutesCourtWeek.manifest.revision)
     expect(projection.candidateDigest).toMatch(/^sha256:[0-9a-f]{64}$/u)
     expect(projection.impact).toMatchObject({
-      days: 7, activeSourceCueIds: 127, candidateCues: 136, turns: 326,
+      days: 7, activeSourceCueIds: 127, candidateCues: 136, turns: 351,
       captionCueIds: 303, syntheticCueIds: ['sun-fresh-unanimity-ballot'],
     })
     expect(projection.impact.runtimeVariants).toEqual([
