@@ -95,4 +95,17 @@ describe('CourtSheet', () => {
     expect(dialog.querySelector('.cw-sheet__footer')).not.toBeNull()
     outside.remove()
   })
+
+  it('can focus the first available control in its body', async () => {
+    await act(async () => { root.render(<CourtSheet
+      title="Required choice"
+      initialFocusSelector=".cw-sheet__body button"
+      onClose={() => undefined}
+    >
+      <button type="button" disabled>Unavailable</button>
+      <button type="button">Oath</button>
+    </CourtSheet>) })
+
+    expect(document.activeElement?.textContent).toBe('Oath')
+  })
 })

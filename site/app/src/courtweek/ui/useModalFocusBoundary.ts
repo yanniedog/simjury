@@ -42,6 +42,7 @@ function firstMatch(selectorList?: string): HTMLElement | null {
 
 export interface ModalFocusBoundaryOptions {
   active?: boolean
+  initialFocusSelector?: string
   onEscape?: () => void
 }
 
@@ -50,7 +51,7 @@ export function useModalFocusBoundary(
   rootRef: RefObject<HTMLElement>,
   preferredReturnFocus?: HTMLElement | null,
   fallbackReturnFocusSelector?: string,
-  { active = true, onEscape }: ModalFocusBoundaryOptions = {},
+  { active = true, initialFocusSelector, onEscape }: ModalFocusBoundaryOptions = {},
 ): void {
   const onEscapeRef = useRef(onEscape)
   const returnFocusRef = useRef<HTMLElement | null>()
@@ -72,7 +73,11 @@ export function useModalFocusBoundary(
     }
 
     if (active && !root.contains(document.activeElement)) {
-      ;(availableControls(root)[0] ?? root).focus()
+      const available = availableControls(root)
+      const requested = initialFocusSelector
+        ? available.find((element) => element.matches(initialFocusSelector))
+        : undefined
+      ;(requested ?? available[0] ?? root).focus()
     }
 
     const keepFocusInside = (event: KeyboardEvent) => {
@@ -112,5 +117,5 @@ export function useModalFocusBoundary(
         target?.focus()
       })
     }
-  }, [active, fallbackReturnFocusSelector, preferredReturnFocus, rootRef])
+  }, [active, fallbackReturnFocusSelector, initialFocusSelector, preferredReturnFocus, rootRef])
 }

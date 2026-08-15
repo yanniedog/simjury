@@ -388,11 +388,22 @@ test('mandatory contribution dialogs take and contain focus before returning it 
   await expect(liveCue).toHaveText(frozenCue)
   const mandatoryPosition = await readProgressPosition(page)
   expect(mandatoryPosition).toMatchObject({ currentCueId: firstMandatoryCueId })
+  await oath.click()
+  await expect(dialog.getByRole('button', { name: 'Confirm oath or affirmation' })).toBeEnabled()
   await page.keyboard.press('Escape')
-  await expect(dialog).toBeVisible()
-  await expect(oath).toBeFocused()
+  await expect(dialog).toHaveCount(0)
+  await expect(page.locator('.cw-stage')).not.toHaveAttribute('inert', '')
+  const reopenInteraction = page.locator('.cw-controls__advance')
+  await expect(reopenInteraction).toBeFocused()
   await expect.poll(() => readProgressPosition(page)).toEqual(mandatoryPosition)
   await expect(liveCue).toHaveText(frozenCue)
+
+  await reopenInteraction.click()
+  await expect(dialog).toBeVisible()
+  await expect(page.locator('.cw-stage')).toHaveAttribute('inert', '')
+  await expect(oath).toBeFocused()
+  await expect(oath).toHaveAttribute('aria-pressed', 'true')
+  await expect(dialog.getByRole('button', { name: 'Confirm oath or affirmation' })).toBeEnabled()
 
   await page.keyboard.press('Tab')
   await expect(dialog.getByRole('button', { name: 'Affirmation', exact: true })).toBeFocused()
@@ -401,8 +412,6 @@ test('mandatory contribution dialogs take and contain focus before returning it 
   await expect(page.locator('.cw-controls button:focus')).toHaveCount(0)
 
   await expect(liveCue).toHaveText(frozenCue)
-  await oath.click()
-  await expect(dialog.getByRole('button', { name: 'Confirm oath or affirmation' })).toBeEnabled()
   await dialog.getByRole('button', { name: 'Confirm oath or affirmation' }).click()
 
   await expect(dialog).toHaveCount(0)
