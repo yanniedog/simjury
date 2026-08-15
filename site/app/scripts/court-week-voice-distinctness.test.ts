@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
 import { buildChirpAuditionPlan, CHIRP_AUDITION_SCHEMA } from './court-week-chirp-audition'
-import { buildCourtWeekChirpPlan, type ChirpRegistry } from './court-week-chirp-plan'
+import { buildCourtWeekChirpPlan, type ChirpRegistry, writeCourtWeekChirpPlan } from './court-week-chirp-plan'
 import { CANONICAL_PERFORMANCE_IDENTITIES } from './court-week-performance-manifest'
 import {
   approveVoiceDistinctness, buildVoiceDistinctnessBundle, validateVoiceDistinctnessApproval,
@@ -41,21 +41,21 @@ function completeDecisions(bundle: ReturnType<typeof buildVoiceDistinctnessBundl
     identityId: id, blindId: selectedBlindIds[index]!,
   }))
   const selectedClips = bundle.listener.clips.filter(({ blindId }) => selectedBlindIds.includes(blindId))
-  const nearestSameGender = selectedBlindIds.map((blindId) => {
+  const sameGenderRankings = selectedBlindIds.map((blindId) => {
     const cohort = selectedClips.filter((clip) => clip.presentedGender
       === selectedClips.find((candidate) => candidate.blindId === blindId)!.presentedGender)
     const index = cohort.findIndex((clip) => clip.blindId === blindId)
-    return { blindId, nearestBlindId: cohort[(index + 1) % cohort.length]!.blindId }
+    return { blindId, rankedBlindIds: [...cohort.slice(index + 1), ...cohort.slice(0, index)].map(({ blindId: id }) => id) }
   })
-  const required = new Set(nearestSameGender.map(({ blindId, nearestBlindId }) =>
-    comparisonId(blindId, nearestBlindId)))
+  const required = new Set(sameGenderRankings.map(({ blindId, rankedBlindIds }) =>
+    comparisonId(blindId, rankedBlindIds[0]!)))
   const blindByIdentity = new Map<string, string>(assignments.map(({ identityId, blindId }) => [identityId, blindId]))
   for (const pair of bundle.listener.adjacentRolePairs) required.add(comparisonId(
     blindByIdentity.get(pair.leftIdentityId)!, blindByIdentity.get(pair.rightIdentityId)!,
   ))
   return {
     schema: VOICE_DISTINCTNESS_DECISIONS_SCHEMA, listenerDigest: bundle.listener.listenerDigest,
-    selectedBlindIds, assignments, nearestSameGender,
+    selectedBlindIds, assignments, sameGenderRankings,
     pairDecisions: [...required].sort().map((id) => {
       const [leftBlindId, rightBlindId] = id.split('::')
       return { leftBlindId: leftBlindId!, rightBlindId: rightBlindId!, distinguishable: true, reviewReference: `blind-panel:${id}` }
@@ -113,7 +113,8 @@ describe('private Chirp voice distinctness review', () => {
   })
 
   it('requires 28 unique castings and every closest/adjacent pair to pass before unblocking the plan', () => {
-    const bundle = buildVoiceDistinctnessBundle(auditionDirectory())
+    const audition = auditionDirectory()
+    const bundle = buildVoiceDistinctnessBundle(audition)
     const decisions = completeDecisions(bundle)
     const registry = registryFor(bundle, decisions)
     const approval = approveVoiceDistinctness(bundle, decisions)
@@ -122,6 +123,11 @@ describe('private Chirp voice distinctness review', () => {
     expect(buildCourtWeekChirpPlan(registry).generationGate.blockers).toContain('perceptual-distinctness-review')
     expect(buildCourtWeekChirpPlan(registry, undefined, { distinctnessApproval: approval }).generationGate.blockers)
       .not.toContain('perceptual-distinctness-review')
+    const output = join(audition, 'plan.json'); const approvalPath = join(audition, 'approval.json')
+    const registryPath = join(audition, 'registry.json')
+    writeFileSync(approvalPath, JSON.stringify(approval)); writeFileSync(registryPath, JSON.stringify(registry))
+    writeCourtWeekChirpPlan(registryPath, output, approvalPath)
+    expect(JSON.parse(readFileSync(output, 'utf8')).generationGate.blockers).not.toContain('perceptual-distinctness-review')
 
     const duplicated = structuredClone(decisions)
     duplicated.assignments[1]!.blindId = duplicated.assignments[0]!.blindId
@@ -132,6 +138,10 @@ describe('private Chirp voice distinctness review', () => {
     const failed = structuredClone(decisions)
     failed.pairDecisions[0]!.distinguishable = false
     expect(() => approveVoiceDistinctness(bundle, failed)).toThrow(/has not passed/i)
+    const incomplete = structuredClone(decisions); incomplete.sameGenderRankings[0]!.rankedBlindIds.pop()
+    expect(() => approveVoiceDistinctness(bundle, incomplete)).toThrow(/ranking is incomplete/i)
+    const stale = { ...approval, castingContractDigest: `sha256:${'0'.repeat(64)}` }
+    expect(() => validateVoiceDistinctnessApproval(stale, registry.assignments)).toThrow(/stale/i)
     expect(() => validateVoiceDistinctnessApproval(approval, [...registry.assignments].reverse())).toThrow(/registry/i)
   })
 })

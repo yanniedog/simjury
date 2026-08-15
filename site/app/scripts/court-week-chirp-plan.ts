@@ -291,11 +291,12 @@ const isWithin = (root: string, target: string): boolean => {
   return targetKey === rootKey || targetKey.startsWith(rootKey + sep)
 }
 
-export function writeCourtWeekChirpPlan(registryPath: string, outputPath: string): void {
+export function writeCourtWeekChirpPlan(registryPath: string, outputPath: string, approvalPath?: string): void {
   const output = resolve(outputPath)
   if (blockedOutputRoots.some((root) => isWithin(root, output))) throw new Error('Chirp plans must not enter a runtime or Cloudflare asset path')
   const registry = JSON.parse(readFileSync(resolve(registryPath), 'utf8'))
-  const plan = buildCourtWeekChirpPlan(registry)
+  const approval = approvalPath ? JSON.parse(readFileSync(resolve(approvalPath), 'utf8')) : undefined
+  const plan = buildCourtWeekChirpPlan(registry, undefined, { distinctnessApproval: approval })
   mkdirSync(dirname(output), { recursive: true })
   writeFileSync(output, `${JSON.stringify(plan, null, 2)}\n`)
 }
@@ -308,5 +309,6 @@ function requiredArgument(name: string): string {
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
-  writeCourtWeekChirpPlan(requiredArgument('--registry'), requiredArgument('--output'))
+  writeCourtWeekChirpPlan(requiredArgument('--registry'), requiredArgument('--output'),
+    process.argv.includes('--distinctness-approval') ? requiredArgument('--distinctness-approval') : undefined)
 }

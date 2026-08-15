@@ -49,6 +49,13 @@ function roleAdjacencyPairs(): { leftIdentityId: string; rightIdentityId: string
     pairId(left.leftIdentityId, left.rightIdentityId).localeCompare(pairId(right.leftIdentityId, right.rightIdentityId), 'en'))
 }
 
+const castingContract = () => ({
+  identities: CANONICAL_PERFORMANCE_IDENTITIES.map(({ id, castingBrief }) => ({ id, castingBrief })),
+  adjacentRolePairs: roleAdjacencyPairs(),
+  requirements: { selectedVoiceCount: 28 as const, uniqueVoicePerIdentity: true as const,
+    completeSameGenderRankingForEverySelectedVoice: true as const, everyRequiredPairMustBeDistinguishable: true as const },
+})
+
 export type VoiceDistinctnessBundle = ReturnType<typeof buildVoiceDistinctnessBundle>
 
 /** Reads only the private audition directory; the listener contract contains no voice ids or absolute paths. */
@@ -82,13 +89,7 @@ export function buildVoiceDistinctnessBundle(auditionInput: string) {
     clips: blinded.map(({ blindId, audioSha256, presentedGender }) => ({
       blindId, presentedGender, audioFile: `${blindId}.mp3`, audioSha256,
     })),
-    identities: CANONICAL_PERFORMANCE_IDENTITIES.map(({ id, castingBrief }) => ({ id, castingBrief })),
-    adjacentRolePairs: roleAdjacencyPairs(),
-    requirements: {
-      selectedVoiceCount: 28 as const, uniqueVoicePerIdentity: true as const,
-      nearestSameGenderForEverySelectedVoice: true as const,
-      everyRequiredPairMustBeDistinguishable: true as const,
-    },
+    ...castingContract(),
   }
   const listener = { ...listenerPayload, listenerDigest: digest(listenerPayload) }
   return {
@@ -101,7 +102,7 @@ export function buildVoiceDistinctnessBundle(auditionInput: string) {
     decisionTemplate: {
       schema: VOICE_DISTINCTNESS_DECISIONS_SCHEMA,
       listenerDigest: listener.listenerDigest,
-      selectedBlindIds: [], assignments: [], nearestSameGender: [], pairDecisions: [],
+      selectedBlindIds: [], assignments: [], sameGenderRankings: [], pairDecisions: [],
     },
   }
 }
@@ -126,7 +127,7 @@ interface Decisions {
   listenerDigest: string
   selectedBlindIds: string[]
   assignments: { identityId: string; blindId: string }[]
-  nearestSameGender: { blindId: string; nearestBlindId: string }[]
+  sameGenderRankings: { blindId: string; rankedBlindIds: string[] }[]
   pairDecisions: { leftBlindId: string; rightBlindId: string; distinguishable: boolean; reviewReference: string }[]
 }
 
@@ -147,16 +148,18 @@ export function approveVoiceDistinctness(bundle: VoiceDistinctnessBundle, input:
     || canonicalJson([...decisions.assignments.map(({ blindId }) => blindId)].sort()) !== canonicalJson(selected)) {
     throw new Error('Every canonical identity requires one distinct selected voice')
   }
-  if (!Array.isArray(decisions.nearestSameGender)
-    || canonicalJson(decisions.nearestSameGender.map(({ blindId }) => blindId)) !== canonicalJson(selected)) {
-    throw new Error('Every selected voice requires its closest same-gender comparison')
+  if (!Array.isArray(decisions.sameGenderRankings)
+    || canonicalJson(decisions.sameGenderRankings.map(({ blindId }) => blindId)) !== canonicalJson(selected)) {
+    throw new Error('Every selected voice requires a complete same-gender ranking')
   }
   const requiredPairs = new Set<string>()
-  for (const { blindId, nearestBlindId } of decisions.nearestSameGender) {
-    const [clip, nearest] = [known.get(blindId), known.get(nearestBlindId)]
-    if (!clip || !nearest || blindId === nearestBlindId || !selected.includes(nearestBlindId)
-      || clip.presentedGender !== nearest.presentedGender) throw new Error(`${blindId}: invalid closest same-gender voice`)
-    requiredPairs.add(pairId(blindId, nearestBlindId))
+  for (const { blindId, rankedBlindIds } of decisions.sameGenderRankings) {
+    const clip = known.get(blindId)
+    const cohort = selected.filter((id) => id !== blindId && known.get(id)?.presentedGender === clip?.presentedGender).sort()
+    if (!clip || !Array.isArray(rankedBlindIds) || canonicalJson([...rankedBlindIds].sort()) !== canonicalJson(cohort)) {
+      throw new Error(`${blindId}: same-gender ranking is incomplete or invalid`)
+    }
+    requiredPairs.add(pairId(blindId, rankedBlindIds[0]!))
   }
   const blindByIdentity = new Map(decisions.assignments.map(({ identityId, blindId }) => [identityId, blindId]))
   for (const pair of bundle.listener.adjacentRolePairs) requiredPairs.add(pairId(
@@ -175,7 +178,7 @@ export function approveVoiceDistinctness(bundle: VoiceDistinctnessBundle, input:
   const assignments = decisions.assignments.map(({ identityId, blindId }) => ({ identityId, voiceId: voiceByBlind.get(blindId)! }))
   const payload = {
     schema: VOICE_DISTINCTNESS_APPROVAL_SCHEMA, auditionPlanDigest: buildChirpAuditionPlan().planDigest,
-    listenerDigest: bundle.listener.listenerDigest,
+    listenerDigest: bundle.listener.listenerDigest, castingContractDigest: digest(castingContract()),
     assignmentDigest: digest(assignments), decisionDigest: digest(decisions),
     requiredPairCount: requiredPairs.size, allowed: true as const,
   }
@@ -187,6 +190,7 @@ export function validateVoiceDistinctnessApproval(value: unknown, assignments: r
   const { approvalDigest, ...payload } = approval ?? {}
   if (!approval || approval.schema !== VOICE_DISTINCTNESS_APPROVAL_SCHEMA || approval.allowed !== true
     || approval.auditionPlanDigest !== buildChirpAuditionPlan().planDigest
+    || approval.castingContractDigest !== digest(castingContract())
     || !sha256Pattern.test(approval.listenerDigest) || !sha256Pattern.test(approval.decisionDigest)
     || approval.assignmentDigest !== digest(assignments)
     || approvalDigest !== digest(payload)) {
