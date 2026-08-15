@@ -658,6 +658,21 @@ describe('CourtWeekApp improper-argument interaction', () => {
       freshUnanimityVote: 'murder', freshBallotWasUnanimous: true,
       sealedVerdict: 'murder', sealedAgreement: 'unanimous',
     })
+
+    await act(async () => root.unmount())
+    root = createRoot(container)
+    await act(async () => {
+      root.render(<CourtWeekApp courtWeek={elevenMinutesCourtWeek}
+        now={() => Date.parse(preview.highestObservedTime)} initialProgressOverride={{
+          ...preview, revision: elevenMinutesCourtWeek.manifest.revision,
+          currentSceneId: verdict.id, currentCueId: verdict.cues[0].id,
+          secondBallotWasUnanimous: true,
+          sealedVerdict: 'murder', sealedAgreement: 'unanimous',
+        }} ephemeral />)
+      await Promise.resolve()
+    })
+    expect(container.querySelector('.cw-entry__settings')).not.toBeNull()
+    expect(container.textContent).not.toContain('Revised deliberation cannot continue')
   })
 
   it('advances passive scenes immediately without opening a countdown dialog', async () => {
