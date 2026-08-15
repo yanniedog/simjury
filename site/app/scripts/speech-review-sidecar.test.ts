@@ -175,7 +175,7 @@ describe('speech review sidecar', () => {
         ...Array.from({ length: 3 }, (_, index) => `thu-rusk-chief-2__${index + 2}`),
         ...Array.from({ length: 9 }, (_, index) => `thu-quill-chief-1__${index + 2}`),
         ...Array.from({ length: 5 }, (_, index) => `thu-warning-admitted__${index + 7}`),
-        'thu-adjourn-2__2',
+        'thu-adjourn-2__2', 'fri-adjourn__3',
       ])
       legacy.rows = legacy.rows.filter(({ rowId }) => !omitted.has(rowId))
       legacy.runtimeVariants = legacy.runtimeVariants.filter((variant) => !variant.startsWith('juror-promise:'))
@@ -195,7 +195,7 @@ describe('speech review sidecar', () => {
 
       await writeSpeechReviewSidecar(path)
       const migrated = JSON.parse(await readFile(path, 'utf8'))
-      expect(migrated.rows).toHaveLength(379)
+      expect(migrated.rows).toHaveLength(380)
       expect(migrated.rows.find(({ rowId }: { rowId: string }) => rowId === stable.rowId).decisions.attribution)
         .toEqual(stable.decisions.attribution)
       expect(migrated.rows.find(({ rowId }: { rowId: string }) => rowId === changed.rowId).decisions.attribution)
@@ -203,7 +203,7 @@ describe('speech review sidecar', () => {
       for (const rowId of [
         'mon-oath-oath__1', 'mon-oath-affirmation__1', 'tue-mir-chief-2__9',
         'thu-rusk-chief-1__8', 'thu-rusk-chief-2__4', 'thu-quill-chief-1__10',
-        'thu-warning-admitted__11', 'thu-adjourn-2__2',
+        'thu-warning-admitted__11', 'thu-adjourn-2__2', 'fri-adjourn__3',
       ]) {
         expect(migrated.rows.find((row: { rowId: string }) => row.rowId === rowId).decisions.attribution)
           .toEqual({ status: 'pending', reviewReference: null, note: null })
