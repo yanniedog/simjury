@@ -9,7 +9,7 @@ import {
   type SpeechCandidateDay,
 } from './speechReviewLedger'
 
-const EXPECTED_LEDGER_SHA256 = '93b23b86123ca922f39613d3368e4f59fb2f53f2cb28fb3efc8ad6770632d527'
+const EXPECTED_LEDGER_SHA256 = 'd7d7d78ee9d1669d5ed4744c5afcefe01cb3b133aa3fc27f869432573df7d3b7'
 
 function digest(
   days: readonly SpeechCandidateDay[] = COURT_WEEK_SPEECH_CANDIDATES, sessions = elevenMinutesSessions,
@@ -35,8 +35,8 @@ describe('Court Week exhaustive speech-review ledger', () => {
   it('pins every source, candidate, runtime variant, turn, word and quotation', () => {
     const ledger = buildCourtWeekSpeechReviewLedger()
     expect(ledger.schema).toBe('simjury.court-week-speech-review/v1')
-    expect(ledger.rows).toHaveLength(351)
-    expect(new Set(ledger.rows.map(({ cueId }) => cueId)).size).toBe(136)
+    expect(ledger.rows).toHaveLength(354)
+    expect(new Set(ledger.rows.map(({ cueId }) => cueId)).size).toBe(137)
     expect(new Set(ledger.rows.flatMap(({ sourceCueIds }) => sourceCueIds)).size).toBe(127)
     expect(new Set(ledger.rows.flatMap(({ captionProjection }) =>
       captionProjection.map(({ id }) => id))).size).toBe(303)
@@ -45,7 +45,7 @@ describe('Court Week exhaustive speech-review ledger', () => {
       const rows = ledger.rows.filter((row) => row.day === day.day)
       return [day.day, [new Set(rows.map(({ cueId }) => cueId)).size, rows.length]]
     }))).toEqual({
-      monday: [17, 38], tuesday: [20, 87], wednesday: [19, 86],
+      monday: [18, 41], tuesday: [20, 87], wednesday: [19, 86],
       thursday: [17, 44], friday: [19, 22], saturday: [19, 24], sunday: [25, 50],
     })
     expect(digest()).toBe(EXPECTED_LEDGER_SHA256)
@@ -72,6 +72,25 @@ describe('Court Week exhaustive speech-review ledger', () => {
     ])
   })
 
+  it('pins both Monday juror-promise branches and their private response actions', () => {
+    const monday = COURT_WEEK_SPEECH_CANDIDATES[0]!
+    expect(monday.variantKeys).toEqual(['juror-promise:oath', 'juror-promise:affirmation'])
+    const rows = buildCourtWeekSpeechReviewLedger().rows.filter(({ day, variant }) =>
+      day === 'monday' && variant !== null)
+    expect(rows.map(({ actorId, legalAction, variant, jurorAction }) => ({
+      actorId, legalAction, variant, jurorAction,
+    }))).toEqual([
+      {
+        actorId: 'clerk', legalAction: 'oath-administered',
+        variant: 'juror-promise:oath', jurorAction: 'I swear',
+      },
+      {
+        actorId: 'clerk', legalAction: 'oath-administered',
+        variant: 'juror-promise:affirmation', jurorAction: 'I affirm',
+      },
+    ])
+  })
+
   it('rejects missing, stale and incomplete runtime rows', () => {
     const missing = COURT_WEEK_SPEECH_CANDIDATES.map((day) => day.day === 'monday'
       ? { ...day, primary: day.primary.slice(1) } : day)
@@ -81,6 +100,9 @@ describe('Court Week exhaustive speech-review ledger', () => {
     const missingBranch = COURT_WEEK_SPEECH_CANDIDATES.map((day) => day.day === 'sunday'
       ? { ...day, variants: day.variants.slice(1) } : day)
     expect(() => assertCourtWeekSpeechCandidates(missingBranch)).toThrow(/runtime branches/i)
+    const missingMondayBranch = COURT_WEEK_SPEECH_CANDIDATES.map((day) => day.day === 'monday'
+      ? { ...day, variants: day.variants.slice(1) } : day)
+    expect(() => assertCourtWeekSpeechCandidates(missingMondayBranch)).toThrow(/runtime branches|review order/i)
   })
 
   it('rejects caption/source disagreement while preserving the intentional active Monday order mismatch', () => {
@@ -119,7 +141,8 @@ describe('Court Week exhaustive speech-review ledger', () => {
     const days = mutateCue('mon-arrival-1', (cue) => {
       const first = cue.turns[0]!
       const text = first.text + ' ' + hiddenSpeech
-      return { ...cue, sourceText: text, turns: [{ ...first, text }] }
+      const turns = [{ ...first, text }, ...cue.turns.slice(1)]
+      return { ...cue, sourceText: turns.map((turn) => turn.text).join(' '), turns }
     })
     expect(() => assertCourtWeekSpeechCandidates(days))
       .toThrow(/attributed speech|attributed speaker/i)
@@ -127,13 +150,13 @@ describe('Court Week exhaustive speech-review ledger', () => {
 
   it('rejects unknown display aliases, candidate prefixes and turn prefixes', () => {
     const alias = mutateCue('mon-arrival-1', (cue) => ({
-      ...cue, turns: [{ ...cue.turns[0]!, displayLabel: 'Unknown officer' }],
+      ...cue, turns: [{ ...cue.turns[0]!, displayLabel: 'Unknown officer' }, ...cue.turns.slice(1)],
     }))
     expect(() => assertCourtWeekSpeechCandidates(alias)).toThrow(/display label/i)
     const candidatePrefix = mutateCue('mon-arrival-1', (cue) => ({ ...cue, id: 'bad-arrival' }))
-    expect(() => assertCourtWeekSpeechCandidates(candidatePrefix)).toThrow(/unknown candidate prefix/i)
+    expect(() => assertCourtWeekSpeechCandidates(candidatePrefix)).toThrow(/review order|unknown candidate prefix/i)
     const turnPrefix = mutateCue('mon-arrival-1', (cue) => ({
-      ...cue, turns: [{ ...cue.turns[0]!, id: 'mon-wrong__1' }],
+      ...cue, turns: [{ ...cue.turns[0]!, id: 'mon-wrong__1' }, ...cue.turns.slice(1)],
     }))
     expect(() => assertCourtWeekSpeechCandidates(turnPrefix)).toThrow(/unknown turn prefix/i)
   })
@@ -145,6 +168,11 @@ describe('Court Week exhaustive speech-review ledger', () => {
         ? { ...turn, actorId: 'clerk', displayLabel: 'Clerk' } : turn),
     }))
     expect(() => assertCourtWeekSpeechCandidates(authority)).toThrow(/cannot perform plea-answer/i)
+    const oathAuthority = mutateCue('mon-oath-oath', (cue) => ({
+      ...cue,
+      turns: cue.turns.map((turn) => ({ ...turn, actorId: 'judge', displayLabel: 'Judge Sel Aven' })),
+    }))
+    expect(() => assertCourtWeekSpeechCandidates(oathAuthority)).toThrow(/cannot perform oath-administered/i)
     const quoted = COURT_WEEK_SPEECH_CANDIDATES.flatMap((day) => [...day.primary, ...day.variants])
       .find((cue) => cue.turns.some((turn) => turn.quotedSpans?.length))!
     const provenance = mutateCue(quoted.id, (cue) => ({
@@ -170,8 +198,9 @@ describe('Court Week exhaustive speech-review ledger', () => {
     expect(() => assertCourtWeekSpeechCandidates(reordered)).toThrow(/dropped, duplicated or reordered/i)
     const jointlyEdited = mutateCue('mon-arrival-1', (cue) => {
       const first = cue.turns[0]!
-      const text = first.text.replace('Members', 'Jurors')
-      return { ...cue, sourceText: text, turns: [{ ...first, text }] }
+      const text = first.text.replace('Eleven Minutes', 'This exercise')
+      const turns = [{ ...first, text }, ...cue.turns.slice(1)]
+      return { ...cue, sourceText: turns.map((turn) => turn.text).join(' '), turns }
     })
     expect(() => assertCourtWeekSpeechCandidates(jointlyEdited)).not.toThrow()
     expect(digest(jointlyEdited)).not.toBe(EXPECTED_LEDGER_SHA256)

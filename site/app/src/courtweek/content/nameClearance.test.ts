@@ -18,16 +18,16 @@ describe('inactive Court Week name-clearance ledger', () => {
   it('covers every candidate turn, actor, day and dynamic Sunday variant deterministically', () => {
     const first = assessCourtWeekNameClearance()
     expect(assessCourtWeekNameClearance()).toEqual(first)
-    expect(first.coverage).toEqual({ actors: 28, turns: 351, runtimeVariants: 11, days: 7 })
-    expect(first.candidateDigest).toBe('sha256:70a519dcb1010b0e193a9c0d3be3f5651c659f538793c150c2e6c049221dec85')
-    expect(first.proposalDigest).toBe('sha256:e5965722b257bcfd0ff061e811be76bab4a106373ba24f68d08dd0f1d171fe31')
+    expect(first.coverage).toEqual({ actors: 28, turns: 354, runtimeVariants: 13, days: 7 })
+    expect(first.candidateDigest).toBe('sha256:954f844f0db2c939bd5b8c22982e6d853355036b6317a680f1a5390bbbca87ab')
+    expect(first.proposalDigest).toBe('sha256:598892b9c47b0c1d106d2c172bdd3055fa2a769812bb29401898c89612b79ab1')
     expect(first.reviewRows).toHaveLength(28)
-    expect(first.reviewRows.reduce((sum, row) => sum + row.candidateTurnCount, 0)).toBe(351)
+    expect(first.reviewRows.reduce((sum, row) => sum + row.candidateTurnCount, 0)).toBe(354)
     expect(first.reviewRows.find(({ actorId }) => actorId === 'edda-rook')).toMatchObject({
       candidateDisplayLabels: ['Foreperson Edda Rook', 'Edda Rook'],
       projectedDisplayLabels: ['Foreperson Michelle Grant', 'Michelle Grant'],
     })
-    expect(first.reviewRows.find(({ actorId }) => actorId === 'accused')).toMatchObject({ dialogueReferenceCount: 64 })
+    expect(first.reviewRows.find(({ actorId }) => actorId === 'accused')).toMatchObject({ dialogueReferenceCount: 66 })
     expect(first.allowed).toBe(false)
     expect(first.pendingActorIds).toHaveLength(24)
   })

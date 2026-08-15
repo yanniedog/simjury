@@ -1,7 +1,9 @@
 import type { CourtSession, SceneCue } from '../model/schema'
 import { authoredCueSourceId, joinAuthoredCueText } from './captionPacing'
 import { FRIDAY_SOURCE_CUE_IDS, FRIDAY_SPEECH_CANDIDATE } from './fridaySpeechCandidate'
-import { MONDAY_SOURCE_CUE_IDS, MONDAY_SPEECH_CANDIDATE } from './mondaySpeechCandidate'
+import {
+  MONDAY_OATH_CANDIDATES, MONDAY_REVIEW_ORDER, MONDAY_SOURCE_CUE_IDS, MONDAY_SPEECH_CANDIDATE,
+} from './mondaySpeechCandidate'
 import { elevenMinutesSessions } from './sessions'
 import { SATURDAY_SOURCE_CUE_IDS, SATURDAY_SPEECH_CANDIDATE } from './saturdaySpeechCandidate'
 import { assertReviewedSpeechCue, type ReviewedSpeechCue } from './speechReview'
@@ -15,6 +17,7 @@ import { WEDNESDAY_SOURCE_CUE_IDS, WEDNESDAY_SPEECH_CANDIDATE } from './wednesda
 
 export type LedgerCandidateCue = ReviewedSpeechCue & {
   sourceCueId?: string | null; sourceCueIds?: readonly string[]; event?: string
+  runtimeVariant?: string; jurorAction?: string
   procedureStage?: string; guard?: string; verdict?: string; agreement?: string
   threshold?: string; lawfulRationale?: string; counterAnalysis?: string
 }
@@ -23,18 +26,26 @@ export interface SpeechCandidateDay {
   day: string; sessionId: string; prefix: string; sourceCueIds: readonly string[]
   primary: readonly LedgerCandidateCue[]; variants: readonly LedgerCandidateCue[]
   dynamicSourceIds: readonly string[]; syntheticCueIds: readonly string[]
-  variantKeys: readonly string[]
+  variantKeys: readonly string[]; reviewOrder: readonly string[]
 }
 
 function standardDay(
   day: string, sessionId: string, prefix: string, sourceCueIds: readonly string[],
   primary: readonly LedgerCandidateCue[],
 ): SpeechCandidateDay {
-  return { day, sessionId, prefix, sourceCueIds, primary, variants: [], dynamicSourceIds: [], syntheticCueIds: [], variantKeys: [] }
+  return {
+    day, sessionId, prefix, sourceCueIds, primary, variants: [], dynamicSourceIds: [],
+    syntheticCueIds: [], variantKeys: [], reviewOrder: primary.map(({ id }) => id),
+  }
 }
 
 export const COURT_WEEK_SPEECH_CANDIDATES: readonly SpeechCandidateDay[] = [
-  standardDay('monday', 'cw-0001-monday', 'mon-', MONDAY_SOURCE_CUE_IDS, MONDAY_SPEECH_CANDIDATE),
+  {
+    day: 'monday', sessionId: 'cw-0001-monday', prefix: 'mon-', sourceCueIds: MONDAY_SOURCE_CUE_IDS,
+    primary: MONDAY_SPEECH_CANDIDATE, variants: MONDAY_OATH_CANDIDATES,
+    dynamicSourceIds: ['mon-oath'], syntheticCueIds: [],
+    variantKeys: ['juror-promise:oath', 'juror-promise:affirmation'], reviewOrder: MONDAY_REVIEW_ORDER,
+  },
   standardDay('tuesday', 'cw-0001-tuesday', 'tue-', TUESDAY_SOURCE_CUE_IDS, TUESDAY_SPEECH_CANDIDATE),
   standardDay('wednesday', 'cw-0001-wednesday', 'wed-', WEDNESDAY_SOURCE_CUE_IDS, WEDNESDAY_SPEECH_CANDIDATE),
   standardDay('thursday', 'cw-0001-thursday', 'thu-', THURSDAY_SOURCE_CUE_IDS, THURSDAY_SPEECH_CANDIDATE),
@@ -49,6 +60,8 @@ export const COURT_WEEK_SPEECH_CANDIDATES: readonly SpeechCandidateDay[] = [
       'not-guilty:unanimous', 'not-guilty:majority', 'unable-to-agree:hung',
       'analysis:murder', 'analysis:manslaughter', 'analysis:not-guilty', 'analysis:unable-to-agree',
     ],
+    reviewOrder: [...SUNDAY_PROCEDURE_CANDIDATE, ...SUNDAY_RETURN_CANDIDATES, ...SUNDAY_ANALYSIS_CANDIDATES]
+      .map(({ id }) => id),
   },
 ]
 
@@ -67,6 +80,7 @@ export interface SpeechReviewLedgerRow {
   quotes: readonly { start: number; end: number; source: string; sourceActorId: string | null; text: string }[]
   attributions: ReviewedSpeechCue['attributions']; event: string | null
   procedureStage: string | null; guard: string | null; variant: string | null
+  jurorAction?: string
 }
 
 function activeSources(session: CourtSession): ActiveSource[] {
@@ -85,9 +99,19 @@ function sourceIds(cue: LedgerCandidateCue): readonly string[] {
 }
 
 function variantKey(cue: LedgerCandidateCue): string {
+  if (cue.runtimeVariant) return cue.runtimeVariant
   if (cue.verdict && cue.agreement) return cue.verdict + ':' + cue.agreement
   if (cue.verdict) return 'analysis:' + cue.verdict
   throw new Error(cue.id + ': runtime variant lacks verdict/agreement identity')
+}
+
+function orderedCandidates(day: SpeechCandidateDay): LedgerCandidateCue[] {
+  const candidates = [...day.primary, ...day.variants]
+  requireSame(day.day + ' review order', [...day.reviewOrder].sort(), candidates.map(({ id }) => id).sort())
+  if (new Set(day.reviewOrder).size !== day.reviewOrder.length) throw new Error(day.day + ': duplicated review-order row')
+  const byId = new Map(candidates.map((cue) => [cue.id, cue]))
+  if (byId.size !== candidates.length) throw new Error(day.day + ': duplicated candidate cue')
+  return day.reviewOrder.map((id) => byId.get(id)!)
 }
 
 function same(left: unknown, right: unknown): boolean {
@@ -130,7 +154,7 @@ export function assertCourtWeekSpeechCandidates(
     requireSame(day.day + ' synthetic rows', day.primary.filter((cue) => !sourceIds(cue).length).map(({ id }) => id), day.syntheticCueIds)
     requireSame(day.day + ' runtime source coverage', [...new Set(day.variants.flatMap(sourceIds))].sort(), [...day.dynamicSourceIds].sort())
     requireSame(day.day + ' runtime branches', day.variants.map(variantKey), day.variantKeys)
-    for (const cue of [...day.primary, ...day.variants]) {
+    for (const cue of orderedCandidates(day)) {
       if (!cue.id.startsWith(day.prefix)) throw new Error(cue.id + ': unknown candidate prefix')
       if (cueIds.has(cue.id)) throw new Error(cue.id + ': duplicated candidate cue')
       cueIds.add(cue.id)
@@ -158,7 +182,7 @@ export function buildCourtWeekSpeechReviewLedger(
   for (const day of days) {
     const session = sessions.find(({ id }) => id === day.sessionId)!
     const activeById = new Map(activeSources(session).map((source) => [source.id, source]))
-    for (const [cueIndex, cue] of [...day.primary, ...day.variants].entries()) {
+    for (const [cueIndex, cue] of orderedCandidates(day).entries()) {
       const sources = sourceIds(cue); const variant = day.variants.includes(cue) ? variantKey(cue) : null
       for (const [turnIndex, turn] of cue.turns.entries()) rows.push({
         day: day.day, cueIndex, turnIndex, cueId: cue.id, sourceCueIds: sources,
@@ -171,6 +195,7 @@ export function buildCourtWeekSpeechReviewLedger(
         quotes: (turn.quotedSpans ?? []).map((span) => ({ ...span, sourceActorId: span.sourceActorId ?? null, text: turn.text.slice(span.start, span.end) })),
         attributions: cue.attributions ?? [], event: cue.event ?? null, procedureStage: cue.procedureStage ?? null,
         guard: cue.guard ?? null, variant,
+        ...(cue.jurorAction ? { jurorAction: cue.jurorAction } : {}),
       })
     }
   }

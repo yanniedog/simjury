@@ -14,10 +14,11 @@ describe('inactive next-revision candidate projection', () => {
     expect(projection.currentRevision).toBe(elevenMinutesCourtWeek.manifest.revision)
     expect(projection.candidateDigest).toMatch(/^sha256:[0-9a-f]{64}$/u)
     expect(projection.impact).toMatchObject({
-      days: 7, activeSourceCueIds: 127, candidateCues: 136, turns: 351,
+      days: 7, activeSourceCueIds: 127, candidateCues: 137, turns: 354,
       captionCueIds: 303, syntheticCueIds: ['sun-fresh-unanimity-ballot'],
     })
     expect(projection.impact.runtimeVariants).toEqual([
+      'juror-promise:oath', 'juror-promise:affirmation',
       'murder:unanimous', 'murder:majority', 'manslaughter:unanimous', 'manslaughter:majority',
       'not-guilty:unanimous', 'not-guilty:majority', 'unable-to-agree:hung',
       'analysis:murder', 'analysis:manslaughter', 'analysis:not-guilty', 'analysis:unable-to-agree',
@@ -35,9 +36,19 @@ describe('inactive next-revision candidate projection', () => {
   it('locks Day 1 legal order and the fresh-ballot insertion boundary', () => {
     const projection = buildCourtWeekCandidateProjection()
     const monday = projection.days[0]!
-    expect(monday.primary.map(({ sourceMetadata }) => sourceMetadata[0]?.event).slice(1, 6)).toEqual([
-      'empanelment', 'oath', 'plea', 'preliminary-direction', 'preliminary-direction',
-    ])
+    const mondayById = new Map([...monday.primary, ...monday.variants].map((cue) => [cue.id, cue]))
+    for (const selected of ['mon-oath-oath', 'mon-oath-affirmation']) {
+      const other = selected === 'mon-oath-oath' ? 'mon-oath-affirmation' : 'mon-oath-oath'
+      const branch = monday.reviewOrder.filter((id) => id !== other).map((id) => mondayById.get(id)!)
+      expect(branch.map(({ event }) => event).slice(1, 6)).toEqual([
+        'empanelment', 'oath', 'plea', 'preliminary-direction', 'preliminary-direction',
+      ])
+      expect(mondayById.get(selected)).toMatchObject({
+        sourceCueIds: ['mon-oath'], variant: selected === 'mon-oath-oath'
+          ? 'juror-promise:oath' : 'juror-promise:affirmation',
+        jurorAction: selected === 'mon-oath-oath' ? 'I swear' : 'I affirm',
+      })
+    }
     const plea = monday.primary.find(({ id }) => id === 'mon-plea')!
     expect(plea.turns.map(({ actorId, legalAction, text }) => ({ actorId, legalAction, text }))).toEqual([
       { actorId: 'clerk', legalAction: 'charge-read', text: expect.any(String) },
@@ -92,5 +103,9 @@ describe('inactive next-revision candidate projection', () => {
       reorderedSunday.scenes[before]!, reorderedSunday.scenes[after]!,
     ]
     expect(() => buildCourtWeekCandidateProjection(undefined, reordered)).toThrow(/placement anchors are out of order/i)
+
+    const staleOrder = COURT_WEEK_SPEECH_CANDIDATES.map((day) => day.day === 'monday'
+      ? { ...day, reviewOrder: day.reviewOrder.slice(1) } : day)
+    expect(() => buildCourtWeekCandidateProjection(staleOrder)).toThrow(/review order/i)
   })
 })
