@@ -25,9 +25,18 @@ const canonicalJson = (value: unknown): string => {
 const sha256 = (value: string | Buffer): string => createHash('sha256').update(value).digest('hex')
 const digest = (value: unknown): string => `sha256:${sha256(canonicalJson(value))}`
 
-export function buildChirpAuditionPlan(text: string = CHIRP_AUDITION_TEXT) {
+export type AuditionBinding = Readonly<{ schema: string; digest: string }>
+
+export function buildChirpAuditionPlan(
+  text: string = CHIRP_AUDITION_TEXT,
+  binding?: AuditionBinding,
+) {
   if (!text.trim() || text !== text.trim() || [...text].length > 2_000) {
     throw new Error('Audition text must be non-empty, trimmed and at most 2,000 characters')
+  }
+  if (binding && (!/^simjury\.[a-z0-9.-]+\/v[1-9][0-9]*$/u.test(binding.schema)
+    || !/^sha256:[0-9a-f]{64}$/u.test(binding.digest))) {
+    throw new Error('Audition binding requires a versioned SimJury schema and SHA-256 digest')
   }
   const source = GOOGLE_CHIRP3_SOURCE
   const characterCount = [...text].length
@@ -48,6 +57,7 @@ export function buildChirpAuditionPlan(text: string = CHIRP_AUDITION_TEXT) {
   })
   const payload = {
     schema: CHIRP_AUDITION_SCHEMA,
+    ...(binding ? { binding } : {}),
     provider: { endpoint, locale: 'en-AU', model: source.inventory.model, audioEncoding: 'MP3' as const },
     audition: { text, characterCount, identicalAcrossVoices: true as const },
     characterTotals: { jobCount: jobs.length, providerCharacters },

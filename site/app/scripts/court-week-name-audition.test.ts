@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { COURT_WEEK_NAME_PROPOSALS } from '../src/courtweek/content/nameClearance'
+import {
+  COURT_WEEK_NAME_CLEARANCE_SCHEMA,
+  COURT_WEEK_NAME_PROPOSALS,
+} from '../src/courtweek/content/nameClearance'
 import { buildChirpAuditionPlan, CHIRP_AUDITION_TEXT } from './court-week-chirp-audition'
 import {
   buildCourtWeekNameAudition,
@@ -17,6 +20,11 @@ describe('pending Australian courtroom name audition', () => {
     expect(audition.names).toHaveLength(24)
     expect(audition.plan.jobs).toHaveLength(30)
     expect(audition.plan.audition.text).not.toBe(CHIRP_AUDITION_TEXT)
+    expect(audition.plan.binding).toEqual({
+      schema: COURT_WEEK_NAME_CLEARANCE_SCHEMA,
+      digest: audition.proposalDigest,
+    })
+    expect(audition.plan.planDigest).toBe('sha256:e093980c52325b13fd0ec02075e8fa81087bbf4ccfcd3457eaba84d18577eea8')
     for (const proposal of COURT_WEEK_NAME_PROPOSALS.filter(({ proposedPersonalName }) => proposedPersonalName)) {
       expect(audition.plan.audition.text.split(proposal.proposedPersonalName!).length).toBe(2)
     }
@@ -30,6 +38,20 @@ describe('pending Australian courtroom name audition', () => {
     const names = buildCourtWeekNameAudition().plan
     expect(names.planDigest).not.toBe(baseline.planDigest)
     expect(names.jobs.map(({ jobId }) => jobId)).not.toEqual(baseline.jobs.map(({ jobId }) => jobId))
+  })
+
+  it('binds proposal governance into the plan without changing audio request identity', () => {
+    const audition = buildCourtWeekNameAudition()
+    const changedBinding = buildChirpAuditionPlan(audition.plan.audition.text, {
+      schema: COURT_WEEK_NAME_CLEARANCE_SCHEMA,
+      digest: `sha256:${'0'.repeat(64)}`,
+    })
+    expect(changedBinding.planDigest).not.toBe(audition.plan.planDigest)
+    expect(changedBinding.jobs).toEqual(audition.plan.jobs)
+    expect(() => buildChirpAuditionPlan(audition.plan.audition.text, {
+      schema: COURT_WEEK_NAME_CLEARANCE_SCHEMA,
+      digest: 'sha256:invalid',
+    })).toThrow(/binding requires/i)
   })
 
   it('is plan-only without an explicit cost-acknowledged execution request', async () => {

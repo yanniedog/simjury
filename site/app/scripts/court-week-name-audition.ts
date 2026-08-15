@@ -1,6 +1,10 @@
 import { fileURLToPath } from 'node:url'
 import { resolve } from 'node:path'
-import { COURT_WEEK_NAME_PROPOSALS, assessCourtWeekNameClearance } from '../src/courtweek/content/nameClearance'
+import {
+  COURT_WEEK_NAME_CLEARANCE_SCHEMA,
+  COURT_WEEK_NAME_PROPOSALS,
+  assessCourtWeekNameClearance,
+} from '../src/courtweek/content/nameClearance'
 import type { ActorId } from '../src/courtweek/content/speechReview'
 import {
   buildChirpAuditionPlan,
@@ -37,7 +41,10 @@ export function buildCourtWeekNameAudition() {
   for (const { actorId, proposedPersonalName } of people) {
     if (text.split(proposedPersonalName!).length !== 2) throw new Error(`${actorId}: name must occur exactly once`)
   }
-  const plan = buildChirpAuditionPlan(text)
+  const plan = buildChirpAuditionPlan(text, {
+    schema: COURT_WEEK_NAME_CLEARANCE_SCHEMA,
+    digest: clearance.proposalDigest,
+  })
   return {
     schema: COURT_WEEK_NAME_AUDITION_SCHEMA,
     proposalDigest: clearance.proposalDigest,
