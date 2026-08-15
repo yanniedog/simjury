@@ -38,6 +38,7 @@ import {
   developerProgressForDay,
   type PreviewAdmissionState,
   type PreviewOutcome,
+  withDeveloperFreshUnanimityBallot,
 } from './developerPreview'
 
 const DEVELOPER_PREVIEW_ENABLED = import.meta.env.VITE_COURT_WEEK_PREVIEW === 'enabled'
@@ -431,7 +432,7 @@ function DeveloperPreview({
       const runtime = runtimeCourtWeek(bootstrap, [opened[0]])
       setLoad({
         ordinal: selectedOrdinal,
-        courtWeek: {
+        courtWeek: withDeveloperFreshUnanimityBallot({
           ...authored,
           manifest: {
             ...runtime.manifest,
@@ -439,7 +440,7 @@ function DeveloperPreview({
               index === selectedOrdinal - 1 ? runtime.manifest.sessions[index] : session
             )),
           },
-        },
+        }),
       })
     }).catch(() => {
       if (active) setLoad({ ordinal: selectedOrdinal, error: `Session ${selectedOrdinal} could not be opened.` })

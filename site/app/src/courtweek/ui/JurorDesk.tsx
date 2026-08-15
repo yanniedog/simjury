@@ -181,6 +181,7 @@ export function JurorDesk({
   const ballots: Array<[string, Verdict]> = []
   if (candidateProgress?.provisionalVote) ballots.push(['Provisional', candidateProgress.provisionalVote])
   if (candidateProgress?.secondVote) ballots.push(['Second', candidateProgress.secondVote])
+  if (candidateProgress?.freshUnanimityVote) ballots.push(['Fresh unanimity', candidateProgress.freshUnanimityVote])
   if (candidateProgress?.finalVote) ballots.push(['Final', candidateProgress.finalVote])
   const transferActions = progressTransferEnabled ? candidateProgress ? (
     <div className="cw-desk__transfer-actions">

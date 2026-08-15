@@ -15,6 +15,7 @@ function primary(kind: PrimaryInput['kind'], overrides: Partial<Omit<PrimaryInpu
     replayEnds: false,
     ballotSealed: false,
     secondBallotWasUnanimous: false,
+    freshBallotWasUnanimous: false,
     prompt: 'Review this step.',
     recordsReasoning: false,
     ...overrides,

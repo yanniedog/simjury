@@ -195,6 +195,44 @@ test('preview drawer loads one pack and yields to sheet controls at 320px', asyn
   await expect(page.getByRole('heading', { name: 'Eleven Minutes' })).toBeVisible()
 })
 
+test('fresh unanimity ballot stays private and gates the majority direction', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 })
+  await page.addInitScript(() => {
+    localStorage.setItem('simjury:court-week:local-profile:v1', JSON.stringify({
+      schemaVersion: 'simjury-local-profile-v1', jurorLabel: 'Juror 01', adultFictionAcknowledged: true,
+    }))
+  })
+  await page.goto('/__court-week-preview')
+  await page.locator('.cw-preview-drawer > summary').click()
+  await page.locator('#cw-preview-day').selectOption('7')
+  await expect(page.getByText('One pack loaded.')).toBeVisible()
+  await page.getByLabel('Scene').selectOption('sun-fresh-unanimity-ballot')
+  await page.getByRole('button', { name: 'Take your seat' }).click()
+  await page.locator('.cw-controls__advance').click()
+
+  const sheet = page.locator('.cw-sheet')
+  const firstVote = page.getByRole('button', { name: 'Guilty of murder' })
+  await expect(sheet).toBeVisible()
+  await expect(firstVote).toBeFocused()
+  const target = await firstVote.boundingBox()
+  expect(target?.width).toBeGreaterThanOrEqual(44)
+  expect(target?.height).toBeGreaterThanOrEqual(44)
+  await page.addStyleTag({ content: 'html { font-size: 200% !important; }' })
+  expect(await sheet.evaluate((element) => element.scrollWidth - element.clientWidth)).toBeLessThanOrEqual(1)
+
+  const notGuilty = page.getByRole('button', { name: 'Not Guilty' })
+  await notGuilty.focus()
+  await expect(notGuilty).toBeFocused()
+  await page.keyboard.press('Enter')
+  await page.getByRole('button', { name: 'Seal fresh unanimity ballot' }).click()
+  await expect(page.getByRole('status')).toContainText('no unanimous verdict was reached')
+  await expect(page.getByRole('status')).toContainText('No vote or split is shown')
+  await expect(page.locator('.cw-ballot')).toHaveCount(0)
+  await page.getByRole('button', { name: 'Report no unanimous verdict' }).click()
+  await expect(page.getByRole('region', { name: 'Judge Sel Aven' }))
+    .toContainText('majority verdict of eleven jurors agreeing')
+})
+
 test('local developer route remains reachable at a 200% compact-phone reflow', async ({ page }) => {
   await page.setViewportSize({ width: 160, height: 284 })
   await page.addInitScript(() => {

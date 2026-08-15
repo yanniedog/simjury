@@ -23,6 +23,8 @@ export interface FinalBallotInput {
   finalVote: Verdict
   contributions: ReasoningContribution[]
   secondBallotWasUnanimous: boolean
+  freshUnanimityBallotRequired: boolean
+  freshBallotWasUnanimous?: boolean
   majorityDirectionReceived: boolean
   elapsedCourtHours: number
 }
@@ -151,22 +153,43 @@ export function calculateSecondBallot(
   return addPlayer(authored, playerVote)
 }
 
+export function calculateFreshUnanimityBallot(
+  pack: DeliberationPack,
+  playerVote: Verdict,
+  contributions: ReasoningContribution[],
+): BallotAggregate {
+  const afterSecondBallot = evolveAuthoredBallot(
+    pack.firstBallot,
+    validPropositions(pack, contributions, 'pre-second-ballot'),
+  )
+  return addPlayer(evolveAuthoredBallot(
+    afterSecondBallot,
+    validPropositions(pack, contributions, 'further-discussion'),
+  ), playerVote)
+}
+
 export function unanimousVerdict(ballot: BallotAggregate): Verdict | null {
   return verdicts.find((verdict) => verdict !== 'unable-to-agree' && ballot[verdict] === 12) ?? null
 }
 
 export function canAuthorizeMajority(
   pack: DeliberationPack,
-  input: Pick<FinalBallotInput, 'secondBallotWasUnanimous' | 'majorityDirectionReceived' | 'elapsedCourtHours'>,
+  input: Pick<FinalBallotInput,
+    | 'secondBallotWasUnanimous' | 'freshUnanimityBallotRequired'
+    | 'freshBallotWasUnanimous' | 'majorityDirectionReceived' | 'elapsedCourtHours'>,
   furtherDiscussionCount: number,
 ): boolean {
   return !input.secondBallotWasUnanimous &&
+    (!input.freshUnanimityBallotRequired || input.freshBallotWasUnanimous === false) &&
     input.majorityDirectionReceived &&
     input.elapsedCourtHours > pack.majorityGate.minimumElapsedCourtHours &&
     furtherDiscussionCount > 0
 }
 
 export function calculateFinalBallot(input: FinalBallotInput): DeliberationResult {
+  if (input.freshUnanimityBallotRequired && input.freshBallotWasUnanimous !== false) {
+    throw new Error('A failed fresh unanimity ballot is required before the final ballot.')
+  }
   const secondAuthored = evolveAuthoredBallot(
     input.pack.firstBallot,
     validPropositions(input.pack, input.contributions, 'pre-second-ballot'),
@@ -213,12 +236,18 @@ export function analysisForReturnedVerdict(
 export function nextSundaySceneId(
   currentSceneId: string,
   secondBallotWasUnanimous: boolean,
+  freshUnanimityBallotRequired = false,
+  freshBallotWasUnanimous = false,
 ): string | null {
   const dividedOrder = [
     'sun-resume', 'sun-negligence', 'sun-second-ballot', 'sun-persevere',
+    ...(freshUnanimityBallotRequired ? ['sun-fresh-unanimity-ballot'] : []),
     'sun-majority', 'sun-final-ballot', 'sun-verdict', 'sun-analysis',
   ]
   if (currentSceneId === 'sun-second-ballot' && secondBallotWasUnanimous) {
+    return 'sun-verdict'
+  }
+  if (currentSceneId === 'sun-fresh-unanimity-ballot' && freshBallotWasUnanimous) {
     return 'sun-verdict'
   }
   const index = dividedOrder.indexOf(currentSceneId)

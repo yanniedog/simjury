@@ -33,6 +33,7 @@ const eventActions: Record<CourtEvent, string> = {
   'judge-response': 'Read the judge\'s answer',
   'second-ballot': 'Read the second-ballot direction',
   'perseverance-direction': 'Read the further-deliberation direction',
+  'fresh-unanimity-ballot': 'Read the fresh-unanimity-ballot direction',
   'majority-direction': 'Read the majority-verdict direction',
   'final-ballot': 'Read the final-ballot direction',
   'verdict-return': 'Read the open-court return',
@@ -48,6 +49,7 @@ const interactionOpenActions: Record<InteractionKind, string> = {
   reasoning: 'Add a reasoning contribution',
   'jury-note': 'Review the jury note and answer',
   'second-vote': 'Open the second private ballot',
+  'fresh-unanimity-vote': 'Open the fresh private unanimity ballot',
   'final-vote': 'Open the final private ballot',
 }
 
@@ -100,6 +102,7 @@ export function interactionPrimaryAction({
   replayEnds,
   ballotSealed,
   secondBallotWasUnanimous,
+  freshBallotWasUnanimous,
   prompt,
   recordsReasoning,
 }: {
@@ -108,6 +111,7 @@ export function interactionPrimaryAction({
   replayEnds: boolean
   ballotSealed: boolean
   secondBallotWasUnanimous: boolean
+  freshBallotWasUnanimous: boolean
   prompt: string
   recordsReasoning: boolean
 }): string {
@@ -118,6 +122,9 @@ export function interactionPrimaryAction({
     case 'second-vote':
       if (!ballotSealed) return 'Seal second ballot'
       return secondBallotWasUnanimous ? 'Return to court' : 'Return to court for direction'
+    case 'fresh-unanimity-vote':
+      if (!ballotSealed) return 'Seal fresh unanimity ballot'
+      return freshBallotWasUnanimous ? 'Return to court' : 'Report no unanimous verdict'
     case 'final-vote': return 'Seal final ballot'
     case 'reasoning': return recordsReasoning
       ? 'Record reasoning contribution'

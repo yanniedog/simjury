@@ -4,6 +4,7 @@ import { createRoot, type Root } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { elevenMinutesCourtWeek } from '../content'
 import { reasoningMoveLabels } from '../model/deliberationContract'
+import { withDeveloperFreshUnanimityBallot } from '../sealed/developerPreview'
 import {
   clearMemoryProgressForTests,
   loadWeeklyProgress,
@@ -568,6 +569,53 @@ describe('CourtWeekApp improper-argument interaction', () => {
     window.removeEventListener(WEEKLY_PROGRESS_EVENT, onProgress)
     expect(latestProgress.secondVote).toBe('murder')
     expect(latestProgress.currentSceneId).toBe('sun-persevere')
+  })
+
+  it('routes fresh ballots without exposing a count or opening an unproven majority stage', async () => {
+    const revised = withDeveloperFreshUnanimityBallot(elevenMinutesCourtWeek)
+    const courtWeek = {
+      ...revised,
+      deliberation: {
+        ...revised.deliberation,
+        firstBallot: { murder: 11, manslaughter: 0, 'not-guilty': 0, 'unable-to-agree': 0 },
+      },
+    }
+    const sunday = courtWeek.manifest.sessions[6]
+    const fresh = sunday.scenes.find(({ id }) => id === 'sun-fresh-unanimity-ballot')!
+    const preview: StoredWeeklyProgress = {
+      schemaVersion: 'court-week-progress-v1', courtWeekId: 'cw-0001',
+      revision: courtWeek.manifest.revision, highestObservedTime: '2026-08-16T12:00:00+10:00',
+      completedSessionIds: courtWeek.manifest.sessions.slice(0, 6).map(({ id }) => id),
+      currentSessionId: sunday.id, currentSceneId: fresh.id, currentCueId: fresh.cues[0].id,
+      notes: '', accessibilityMode: 'reading', provisionalVote: 'murder', secondVote: 'murder',
+      secondBallotWasUnanimous: false, majorityDirectionReceived: false, reasoningContributions: [],
+    }
+    await act(async () => {
+      root.render(<CourtWeekApp courtWeek={courtWeek} now={() => Date.parse(preview.highestObservedTime)}
+        initialProgressOverride={preview} ephemeral />)
+      await Promise.resolve()
+    })
+    await act(async () => clickButton(container, 'Take your seat'))
+    await act(async () => clickAdvance(container))
+    await act(async () => clickButton(container, 'Guilty of murder'))
+    await act(async () => clickButton(container, 'Seal fresh unanimity ballot'))
+
+    expect(container.textContent).toContain('Fresh private ballot: unanimity was reached.')
+    expect(container.querySelector('.cw-ballot')).toBeNull()
+    await act(async () => clickButton(container, 'Return to court'))
+    expect(container.textContent).toContain('Read the open-court return')
+    expect(container.textContent).not.toContain('Majority becomes legally available')
+
+    const majority = sunday.scenes.find(({ id }) => id === 'sun-majority')!
+    await act(async () => root.unmount())
+    root = createRoot(container)
+    await act(async () => {
+      root.render(<CourtWeekApp courtWeek={courtWeek} now={() => Date.parse(preview.highestObservedTime)}
+        initialProgressOverride={{ ...preview, currentSceneId: majority.id, currentCueId: majority.cues[0].id }} ephemeral />)
+      await Promise.resolve()
+    })
+    expect(container.textContent).toContain('The majority stage remains closed')
+    expect(container.textContent).not.toContain('majority verdict of eleven jurors agreeing')
   })
 
   it('advances passive scenes immediately without opening a countdown dialog', async () => {

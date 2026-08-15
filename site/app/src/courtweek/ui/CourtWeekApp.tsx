@@ -2,6 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import type { CourtWeek, CourtSession, LegalPhase, ReasoningMove, SceneCue, Verdict } from '../model/schema'
 import {
   assessReasoningContribution,
+  calculateFreshUnanimityBallot,
   calculateFinalBallot,
   calculateSecondBallot,
   firstBallotForScene,
@@ -143,6 +144,7 @@ function hasResumableProgress(courtWeek: CourtWeek, progress: StoredWeeklyProgre
     progress.notes ||
     progress.provisionalVote ||
     progress.secondVote ||
+    progress.freshUnanimityVote ||
     progress.finalVote ||
     progress.sealedVerdict ||
     progress.returnedVerdict ||
@@ -253,6 +255,26 @@ export function CourtWeekApp({
   }, [availability, courtWeek.manifest.sessions, progress.completedSessionIds, progress.currentSessionId, replaySessionId])
   const isReplay = replaySessionId === activeSession.id
   const position = cuePosition(activeSession, progress.currentSceneId, progress.currentCueId)
+  const freshSceneIndex = activeSession.scenes.findIndex(({ id }) => id === 'sun-fresh-unanimity-ballot')
+  const majoritySceneIndex = activeSession.scenes.findIndex(({ id }) => id === 'sun-majority')
+  const finalSceneIndex = activeSession.scenes.findIndex(({ id }) => id === 'sun-final-ballot')
+  const verdictSceneIndex = activeSession.scenes.findIndex(({ id }) => id === 'sun-verdict')
+  const freshUnanimityBallotRequired = freshSceneIndex >= 0
+  const freshRouteComplete = majoritySceneIndex > freshSceneIndex && finalSceneIndex > majoritySceneIndex &&
+    verdictSceneIndex > finalSceneIndex
+  const invalidFreshBallotJourney = freshUnanimityBallotRequired && !allSessionsCompleted && !isReplay &&
+    !progress.secondBallotWasUnanimous && (!freshRouteComplete || (
+      position.sceneIndex >= majoritySceneIndex && position.sceneIndex < verdictSceneIndex
+        ? progress.freshBallotWasUnanimous !== false ||
+          (position.sceneIndex >= finalSceneIndex && !progress.majorityDirectionReceived)
+        : position.sceneIndex >= verdictSceneIndex && (
+            progress.freshBallotWasUnanimous === undefined ||
+            (progress.freshBallotWasUnanimous === false &&
+              (!progress.finalVote || !progress.majorityDirectionReceived)) ||
+            (progress.freshBallotWasUnanimous === true &&
+              Boolean(progress.finalVote || progress.majorityDirectionReceived))
+          )
+    ))
   const activeAvailability = availability.find((item) => item.id === activeSession.id)
   const returnVisit = !ephemeral && hasResumableProgress(courtWeek, progress)
   const entryPhase = position.scene.id.startsWith('sealed-')
@@ -455,12 +477,17 @@ export function CourtWeekApp({
     ? progress.provisionalVote
     : interaction?.kind === 'second-vote'
       ? progress.secondVote
+      : interaction?.kind === 'fresh-unanimity-vote'
+        ? progress.freshUnanimityVote
       : interaction?.kind === 'final-vote'
         ? progress.finalVote
         : undefined
   const effectiveInteractionChoice = interactionChoice ?? persistedInteractionVote
   const persistedBallotSealed = Boolean(
-    persistedInteractionVote && (interaction?.kind === 'seal-vote' || interaction?.kind === 'second-vote'),
+    persistedInteractionVote && (
+      interaction?.kind === 'seal-vote' || interaction?.kind === 'second-vote' ||
+      interaction?.kind === 'fresh-unanimity-vote'
+    ),
   )
   const ballotSealed = interactionSealed || persistedBallotSealed
 
@@ -470,6 +497,14 @@ export function CourtWeekApp({
         ? 'Another SimJury tab may be keeping your saved court record open. Close any other SimJury tabs or windows. This page will continue automatically without replacing your progress.'
         : 'Preparing your place in court…'}</p>
     </main>
+  )
+
+  if (invalidFreshBallotJourney) return (
+    <main className="cw-entry"><div className="cw-entry__panel">
+      <p className="cw-kicker">Private ballot protected</p>
+      <h1>Revised deliberation cannot continue</h1>
+      <p role="status">The fresh unanimity ballot record is missing or inconsistent. The majority stage remains closed; no vote or split has been inferred or shown.</p>
+    </div></main>
   )
 
   if (!entered) {
@@ -626,7 +661,10 @@ export function CourtWeekApp({
     if (isReplay) {
       let nextScene: CourtSession['scenes'][number] | undefined = activeSession.scenes[position.sceneIndex + 1]
       const sundayNext = activeSession.day === 'Sunday'
-        ? nextSundaySceneId(position.scene.id, progress.secondBallotWasUnanimous ?? false)
+        ? nextSundaySceneId(
+            position.scene.id, progress.secondBallotWasUnanimous ?? false,
+            freshUnanimityBallotRequired, progress.freshBallotWasUnanimous ?? false,
+          )
         : null
       if (sundayNext) nextScene = activeSession.scenes.find((scene) => scene.id === sundayNext)
       resetInteraction()
@@ -670,6 +708,18 @@ export function CourtWeekApp({
         patch.sealedAgreement = 'unanimous'
       }
     }
+    if (interaction.kind === 'fresh-unanimity-vote' && choice) {
+      const vote = choice as Verdict
+      patch.freshUnanimityVote = vote
+      const unanimous = unanimousVerdict(calculateFreshUnanimityBallot(
+        courtWeek.deliberation, vote, contributions,
+      ))
+      patch.freshBallotWasUnanimous = Boolean(unanimous)
+      if (unanimous) {
+        patch.sealedVerdict = unanimous
+        patch.sealedAgreement = 'unanimous'
+      }
+    }
     if (interaction.kind === 'final-vote' && choice) {
       const vote = choice as Verdict
       const secondVote = progress.secondVote ?? progress.provisionalVote ?? vote
@@ -679,6 +729,8 @@ export function CourtWeekApp({
         finalVote: vote,
         contributions,
         secondBallotWasUnanimous: progress.secondBallotWasUnanimous ?? false,
+        freshUnanimityBallotRequired,
+        freshBallotWasUnanimous: progress.freshBallotWasUnanimous,
         majorityDirectionReceived: progress.majorityDirectionReceived ?? false,
         elapsedCourtHours: 8.5,
       })
@@ -687,7 +739,8 @@ export function CourtWeekApp({
       patch.sealedAgreement = result.agreement
     }
 
-    if ((interaction.kind === 'seal-vote' || interaction.kind === 'second-vote') && !ballotSealed) {
+    if ((interaction.kind === 'seal-vote' || interaction.kind === 'second-vote' ||
+      interaction.kind === 'fresh-unanimity-vote') && !ballotSealed) {
       updateProgress((current) => ({ ...current, ...patch }))
       setInteractionSealed(true)
       return
@@ -695,7 +748,9 @@ export function CourtWeekApp({
 
     let nextScene: CourtSession['scenes'][number] | undefined = activeSession.scenes[position.sceneIndex + 1]
     const sundayNext = activeSession.day === 'Sunday' ? nextSundaySceneId(
-      position.scene.id, patch.secondBallotWasUnanimous ?? false,
+      position.scene.id, patch.secondBallotWasUnanimous ?? progress.secondBallotWasUnanimous ?? false,
+      freshUnanimityBallotRequired,
+      patch.freshBallotWasUnanimous ?? progress.freshBallotWasUnanimous ?? false,
     ) : null
     if (sundayNext) nextScene = activeSession.scenes.find((scene) => scene.id === sundayNext)
     const completed = !nextScene
@@ -801,7 +856,8 @@ export function CourtWeekApp({
       </>
     )
   } else if (interactionOpen && interaction) {
-    const isVote = interaction.kind === 'seal-vote' || interaction.kind === 'second-vote' || interaction.kind === 'final-vote'
+    const isVote = interaction.kind === 'seal-vote' || interaction.kind === 'second-vote' ||
+      interaction.kind === 'fresh-unanimity-vote' || interaction.kind === 'final-vote'
     const closeInteraction = () => {
       suppressAutoPlayAfterDeskClose.current = true
       setInteractionOpen(false)
@@ -829,6 +885,7 @@ export function CourtWeekApp({
           replayEnds: !nextScene,
           ballotSealed,
           secondBallotWasUnanimous: progress.secondBallotWasUnanimous ?? false,
+          freshBallotWasUnanimous: progress.freshBallotWasUnanimous ?? false,
           prompt: interaction.prompt,
           recordsReasoning: recordsInfluence,
         })}
@@ -954,6 +1011,11 @@ export function CourtWeekApp({
               <div key={verdict}><dt>{verdictLabels[verdict]}</dt><dd>{count}</dd></div>
             ))}
           </dl>
+        ) : null}
+        {interaction.kind === 'fresh-unanimity-vote' && ballotSealed ? (
+          <p role="status">Fresh private ballot: {progress.freshBallotWasUnanimous
+            ? 'unanimity was reached.'
+            : 'no unanimous verdict was reached.'} No vote or split is shown.</p>
         ) : null}
         {interaction.kind === 'inspect-exhibit' ? (
           <button id="cw-interaction-desk" type="button" onClick={toggleDesk}>Open juror desk to inspect admitted exhibits</button>
