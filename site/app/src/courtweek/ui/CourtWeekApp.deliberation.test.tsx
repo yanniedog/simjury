@@ -573,11 +573,13 @@ describe('CourtWeekApp improper-argument interaction', () => {
 
   it('routes fresh ballots without exposing a count or opening an unproven majority stage', async () => {
     const revised = withDeveloperFreshUnanimityBallot(elevenMinutesCourtWeek)
+    const freshInfluence = revised.deliberation.propositions
+      .find(({ id }) => id === 'prop-intent-sequence-support')!
     const courtWeek = {
       ...revised,
       deliberation: {
         ...revised.deliberation,
-        firstBallot: { murder: 11, manslaughter: 0, 'not-guilty': 0, 'unable-to-agree': 0 },
+        firstBallot: { murder: 10, manslaughter: 0, 'not-guilty': 0, 'unable-to-agree': 1 },
       },
     }
     const sunday = courtWeek.manifest.sessions[6]
@@ -588,7 +590,12 @@ describe('CourtWeekApp improper-argument interaction', () => {
       completedSessionIds: courtWeek.manifest.sessions.slice(0, 6).map(({ id }) => id),
       currentSessionId: sunday.id, currentSceneId: fresh.id, currentCueId: fresh.cues[0].id,
       notes: '', accessibilityMode: 'reading', provisionalVote: 'murder', secondVote: 'murder',
-      secondBallotWasUnanimous: false, majorityDirectionReceived: false, reasoningContributions: [],
+      secondBallotWasUnanimous: false, majorityDirectionReceived: false,
+      reasoningContributions: [{
+        propositionId: freshInfluence.id, sceneId: 'sun-persevere',
+        legalQuestion: freshInfluence.legalQuestion, evidenceId: freshInfluence.evidenceIds[0],
+        move: freshInfluence.moves[0], recordedAt: '2026-08-16T11:00:00+10:00', influencePenalty: 0,
+      }],
     }
     await act(async () => {
       root.render(<CourtWeekApp courtWeek={courtWeek} now={() => Date.parse(preview.highestObservedTime)}
@@ -616,6 +623,41 @@ describe('CourtWeekApp improper-argument interaction', () => {
     })
     expect(container.textContent).toContain('The majority stage remains closed')
     expect(container.textContent).not.toContain('majority verdict of eleven jurors agreeing')
+
+    const expectProtectedStop = async (candidate: StoredWeeklyProgress) => {
+      await act(async () => root.unmount())
+      root = createRoot(container)
+      await act(async () => {
+        root.render(<CourtWeekApp courtWeek={courtWeek} now={() => Date.parse(preview.highestObservedTime)}
+          initialProgressOverride={candidate} ephemeral />)
+        await Promise.resolve()
+      })
+      expect(container.textContent).toContain('Revised deliberation cannot continue')
+      expect(container.textContent).not.toContain('majority verdict of eleven jurors agreeing')
+    }
+    await expectProtectedStop({
+      ...preview, currentSceneId: majority.id, currentCueId: majority.cues[0].id,
+      freshBallotWasUnanimous: false,
+    })
+    await expectProtectedStop({
+      ...preview,
+      completedSessionIds: courtWeek.manifest.sessions.map(({ id }) => id),
+      currentSessionId: undefined, currentSceneId: undefined, currentCueId: undefined,
+      majorityDirectionReceived: true, finalVote: 'murder',
+      sealedVerdict: 'murder', sealedAgreement: 'majority',
+    })
+    const verdict = sunday.scenes.find(({ id }) => id === 'sun-verdict')!
+    await expectProtectedStop({
+      ...preview, currentSceneId: verdict.id, currentCueId: verdict.cues[0].id,
+      secondBallotWasUnanimous: true,
+      sealedVerdict: 'murder', sealedAgreement: 'unanimous',
+    })
+    await expectProtectedStop({
+      ...preview, currentSceneId: verdict.id, currentCueId: verdict.cues[0].id,
+      secondBallotWasUnanimous: true,
+      freshUnanimityVote: 'murder', freshBallotWasUnanimous: true,
+      sealedVerdict: 'murder', sealedAgreement: 'unanimous',
+    })
   })
 
   it('advances passive scenes immediately without opening a countdown dialog', async () => {

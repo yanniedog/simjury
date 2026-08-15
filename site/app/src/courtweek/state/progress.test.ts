@@ -303,6 +303,24 @@ describe('weekly progress', () => {
       exportWeeklyProgress(directUnanimous), 'cw-0001', revised.manifest.revision,
       unanimousDeliberation, sessions,
     )).toEqual({ ...directUnanimous, notes: '' })
+
+    const secondBallotUnanimous = {
+      ...directUnanimous,
+      secondVote: 'murder' as const,
+      secondBallotWasUnanimous: true,
+      freshUnanimityVote: undefined,
+      freshBallotWasUnanimous: undefined,
+    }
+    for (const impossible of [
+      { ...secondBallotUnanimous, freshUnanimityVote: 'murder' as const, freshBallotWasUnanimous: true },
+      { ...secondBallotUnanimous, majorityDirectionReceived: true },
+      { ...secondBallotUnanimous, finalVote: 'murder' as const },
+    ]) {
+      expect(() => importWeeklyProgress(
+        exportWeeklyProgress(impossible), 'cw-0001', revised.manifest.revision,
+        unanimousDeliberation, sessions,
+      )).toThrow(/impossible Court Week chronology/i)
+    }
   })
 
   it('rejects forged Tuesday verdict state and Sunday analysis before open-court return', () => {

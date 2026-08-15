@@ -119,6 +119,7 @@ export function transitionLegalState(state: LegalState, event: CourtEvent): Lega
     case 'jury-note':
     case 'second-ballot':
     case 'perseverance-direction':
+    case 'fresh-unanimity-ballot':
     case 'majority-direction':
     case 'final-ballot':
       demand(state.firstBallotTaken, `${event} requires a completed first ballot`)
@@ -344,6 +345,27 @@ export function validateCourtWeek(input: unknown): CourtWeekValidation {
   const allScenes = sessions.flatMap((session) => session.scenes)
   const secondBallotSceneIndex = allScenes.findIndex((scene) => scene.id === 'sun-second-ballot')
   const majoritySceneIndex = allScenes.findIndex((scene) => scene.id === 'sun-majority')
+  const freshBallotCues = allCues.filter(({ event }) => event === 'fresh-unanimity-ballot')
+  const freshBallotScenes = allScenes.filter(({ interaction }) => interaction?.kind === 'fresh-unanimity-vote')
+  if (freshBallotCues.length || freshBallotScenes.length) {
+    demand(freshBallotCues.length === 1 && freshBallotScenes.length === 1,
+      'the fresh unanimity ballot requires one event and one interaction')
+    demand(freshBallotScenes[0].id === 'sun-fresh-unanimity-ballot' &&
+      freshBallotCues[0].id === 'sun-fresh-unanimity-ballot',
+    'the fresh unanimity ballot must use its exact routed scene and cue id')
+    const freshSceneIndex = allScenes.indexOf(freshBallotScenes[0])
+    demand(freshBallotScenes[0].cues.includes(freshBallotCues[0]),
+      'the fresh unanimity event must belong to its ballot interaction')
+    const perseveranceCueIndex = allCues.findIndex(({ event }) => event === 'perseverance-direction')
+    const freshCueIndex = allCues.indexOf(freshBallotCues[0])
+    const majorityCueIndex = allCues.findIndex(({ event }) => event === 'majority-direction')
+    demand(perseveranceCueIndex >= 0 && freshCueIndex > perseveranceCueIndex && freshCueIndex < majorityCueIndex,
+      'the fresh unanimity ballot must follow perseverance and precede majority direction')
+    demand(furtherDiscussionContributionSceneIds.every((id) => {
+      const index = allScenes.findIndex((scene) => scene.id === id)
+      return index >= 0 && index < freshSceneIndex
+    }), 'the fresh unanimity ballot must follow authored further discussion')
+  }
   const contributionScenes = [...preSecondBallotContributionSceneIds, ...furtherDiscussionContributionSceneIds]
     .map((id) => allScenes.find((scene) => scene.id === id))
   demand(contributionScenes.every((scene) => scene?.phase === 'deliberation' && scene.interaction?.kind === 'reasoning'), 'every influential contribution must be an authored deliberation interaction')

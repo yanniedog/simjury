@@ -103,6 +103,9 @@ function assertImportChronology(
   if (hasFreshBallotState && (!freshBallotRequired || !progress.secondVote ||
     !atOrAfterScene('sun-fresh-unanimity-ballot'))) fail()
   if (Boolean(progress.freshUnanimityVote) !== (progress.freshBallotWasUnanimous !== undefined)) fail()
+  if (progress.secondBallotWasUnanimous && (
+    hasFreshBallotState || progress.majorityDirectionReceived || progress.finalVote
+  )) fail()
   if (progress.finalVote && (!progress.secondVote || !atOrAfterScene('sun-final-ballot'))) fail()
   if (atOrAfterScene('sat-first-ballot') && !progress.provisionalVote) fail()
   if (atOrAfterScene('sun-persevere') && !progress.secondVote) fail()

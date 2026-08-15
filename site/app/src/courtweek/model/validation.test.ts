@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { elevenMinutesCourtWeek } from '../content'
+import { withDeveloperFreshUnanimityBallot } from '../sealed/developerPreview'
 import { initialLegalState, transitionLegalState, validateCourtWeek } from './validation'
 
 describe('Eleven Minutes Court Week', () => {
@@ -201,6 +202,30 @@ describe('Eleven Minutes Court Week', () => {
       requiresFurtherDiscussion: true,
       threshold: 11,
     })
+  })
+
+  it('binds an optional fresh ballot event to its interaction after further discussion', () => {
+    const revised = withDeveloperFreshUnanimityBallot(elevenMinutesCourtWeek)
+    expect(() => validateCourtWeek(revised)).not.toThrow()
+
+    const wrongInteraction = structuredClone(revised)
+    const wrongScene = wrongInteraction.manifest.sessions[6].scenes
+      .find(({ id }) => id === 'sun-fresh-unanimity-ballot')!
+    wrongScene.interaction!.kind = 'second-vote'
+    expect(() => validateCourtWeek(wrongInteraction)).toThrow(/one event and one interaction/i)
+
+    const mistypedRoute = structuredClone(revised)
+    mistypedRoute.manifest.sessions[6].scenes
+      .find(({ id }) => id === 'sun-fresh-unanimity-ballot')!.id = 'sun-fresh-unanimity-balot'
+    expect(() => validateCourtWeek(mistypedRoute)).toThrow(/exact routed scene and cue id/i)
+
+    const misplaced = structuredClone(revised)
+    const sundayScenes = misplaced.manifest.sessions[6].scenes
+    const freshIndex = sundayScenes.findIndex(({ id }) => id === 'sun-fresh-unanimity-ballot')
+    const [fresh] = sundayScenes.splice(freshIndex, 1)
+    const majorityIndex = sundayScenes.findIndex(({ id }) => id === 'sun-majority')
+    sundayScenes.splice(majorityIndex + 1, 0, fresh)
+    expect(() => validateCourtWeek(misplaced)).toThrow(/precede majority direction/i)
   })
 
   it('fails closed when evidence is attempted before the oath', () => {
