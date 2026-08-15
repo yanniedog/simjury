@@ -112,7 +112,7 @@ describe('speech review sidecar', () => {
     expect(() => assertSpeechReviewSidecar(checked)).not.toThrow()
   })
 
-  it('preserves reviewed decisions and refuses to overwrite stale review work', async () => {
+  it('preserves reviewed decisions by immutable row identity and rejects malformed work', async () => {
     const directory = await mkdtemp(join(tmpdir(), 'simjury-speech-review-'))
     const path = join(directory, 'sidecar.json')
     try {
@@ -130,6 +130,11 @@ describe('speech review sidecar', () => {
       const malformed = await readFile(path, 'utf8')
       await expect(writeSpeechReviewSidecar(path)).rejects.toThrow(/decision fields are missing or extra/u)
       await expect(readFile(path, 'utf8')).resolves.toBe(malformed)
+
+      const duplicate = structuredClone(reviewed)
+      duplicate.rows[1].rowId = duplicate.rows[0].rowId
+      await writeFile(path, JSON.stringify(duplicate) + '\n', 'utf8')
+      await expect(writeSpeechReviewSidecar(path)).rejects.toThrow(/duplicate speech review migration row/u)
 
       await writeFile(path, JSON.stringify(reviewed) + '\n', 'utf8')
       reviewed.rows[0].decisions.attribution = {
@@ -150,9 +155,48 @@ describe('speech review sidecar', () => {
 
       preserved.rows[0].candidateSha256 = '0'.repeat(64)
       await writeFile(path, JSON.stringify(preserved) + '\n', 'utf8')
-      const stale = await readFile(path, 'utf8')
-      await expect(writeSpeechReviewSidecar(path)).rejects.toThrow(/stale or reordered/u)
-      await expect(readFile(path, 'utf8')).resolves.toBe(stale)
+      await writeSpeechReviewSidecar(path)
+      const repaired = JSON.parse(await readFile(path, 'utf8'))
+      expect(repaired.rows[0].candidateSha256).not.toBe('0'.repeat(64))
+      expect(repaired.rows[0].decisions.attribution).toEqual(preserved.rows[0].decisions.attribution)
+    } finally {
+      await rm(directory, { recursive: true })
+    }
+  })
+
+  it('migrates a reviewed 351-row sidecar without shifting decisions onto other turns', async () => {
+    const directory = await mkdtemp(join(tmpdir(), 'simjury-speech-review-legacy-'))
+    const path = join(directory, 'sidecar.json')
+    try {
+      const legacy = structuredClone(buildSpeechReviewSidecar())
+      const omitted = new Set(['mon-arrival-1__1', 'mon-oath-oath__1', 'mon-oath-affirmation__1'])
+      legacy.rows = legacy.rows.filter(({ rowId }) => !omitted.has(rowId))
+      legacy.runtimeVariants = legacy.runtimeVariants.filter((variant) => !variant.startsWith('juror-promise:'))
+      legacy.ledgerSha256 = 'f'.repeat(64)
+      expect(legacy.rows).toHaveLength(351)
+
+      const stable = legacy.rows.find(({ day }) => day === 'tuesday')!
+      const changed = legacy.rows.find(({ day, rowId }) => day === 'tuesday' && rowId !== stable.rowId)!
+      stable.decisions.attribution = {
+        status: 'approved', reviewReference: 'review:legacy-stable', note: 'Keep this exact row.',
+      }
+      changed.decisions.attribution = {
+        status: 'approved', reviewReference: 'review:legacy-changed', note: 'Must be reset.',
+      }
+      changed.ledgerRowSha256 = '0'.repeat(64)
+      await writeFile(path, JSON.stringify(legacy) + '\n', 'utf8')
+
+      await writeSpeechReviewSidecar(path)
+      const migrated = JSON.parse(await readFile(path, 'utf8'))
+      expect(migrated.rows).toHaveLength(354)
+      expect(migrated.rows.find(({ rowId }: { rowId: string }) => rowId === stable.rowId).decisions.attribution)
+        .toEqual(stable.decisions.attribution)
+      expect(migrated.rows.find(({ rowId }: { rowId: string }) => rowId === changed.rowId).decisions.attribution)
+        .toEqual({ status: 'pending', reviewReference: null, note: null })
+      for (const rowId of ['mon-oath-oath__1', 'mon-oath-affirmation__1']) {
+        expect(migrated.rows.find((row: { rowId: string }) => row.rowId === rowId).decisions.attribution)
+          .toEqual({ status: 'pending', reviewReference: null, note: null })
+      }
     } finally {
       await rm(directory, { recursive: true })
     }
