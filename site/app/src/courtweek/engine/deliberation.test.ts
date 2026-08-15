@@ -10,6 +10,7 @@ import {
   aggregateFirstBallot,
   assessReasoningContribution,
   calculateFinalBallot,
+  calculateFreshUnanimityBallot,
   calculateSecondBallot,
   analysisForReturnedVerdict,
   evolveAuthoredBallot,
@@ -20,6 +21,7 @@ import {
   nextSundaySceneId,
   runtimeOpenCourtReturnCue,
   runtimeOutcomeAnalysisCue,
+  unanimousVerdict,
 } from './deliberation'
 
 const orderedScenes = elevenMinutesSessions.flatMap((session) => session.scenes)
@@ -88,6 +90,7 @@ function finalResult(verdict: Verdict, direction = true) {
     finalVote: verdict,
     contributions: outcomeContributions(verdict),
     secondBallotWasUnanimous: false,
+    freshUnanimityBallotRequired: false,
     majorityDirectionReceived: direction,
     elapsedCourtHours: 8.5,
   })
@@ -207,6 +210,29 @@ describe('Court Week deliberation engine', () => {
     expect(finalResult('unable-to-agree').verdict).toBe('unable-to-agree')
   })
 
+  it('requires a failed post-discussion unanimity ballot before majority authorization', () => {
+    const contributions = outcomeContributions('murder')
+    const base = {
+      pack: elevenMinutesDeliberation,
+      secondVote: 'murder' as const,
+      finalVote: 'murder' as const,
+      contributions,
+      secondBallotWasUnanimous: false,
+      freshUnanimityBallotRequired: true,
+      majorityDirectionReceived: true,
+      elapsedCourtHours: 8.5,
+    }
+    expect(() => calculateFinalBallot(base)).toThrow(/failed fresh unanimity ballot/i)
+    expect(calculateFinalBallot({ ...base, freshBallotWasUnanimous: false }))
+      .toMatchObject({ verdict: 'murder', agreement: 'majority', majorityAuthorized: true })
+
+    const unanimousPack = {
+      ...elevenMinutesDeliberation,
+      firstBallot: { murder: 11, manslaughter: 0, 'not-guilty': 0, 'unable-to-agree': 0 },
+    }
+    expect(unanimousVerdict(calculateFreshUnanimityBallot(unanimousPack, 'murder', []))).toBe('murder')
+  })
+
   it('ignores addresses, unknown scenes and duplicate scene contributions', () => {
     const baseline = contributions(['sat-room'])
     const polluted = [
@@ -241,6 +267,9 @@ describe('Court Week deliberation engine', () => {
     expect(nextSundaySceneId('sun-second-ballot', false)).toBe('sun-persevere')
     expect(nextSundaySceneId('sun-persevere', false)).toBe('sun-majority')
     expect(nextSundaySceneId('sun-majority', false)).toBe('sun-final-ballot')
+    expect(nextSundaySceneId('sun-persevere', false, true)).toBe('sun-fresh-unanimity-ballot')
+    expect(nextSundaySceneId('sun-fresh-unanimity-ballot', false, true, true)).toBe('sun-verdict')
+    expect(nextSundaySceneId('sun-fresh-unanimity-ballot', false, true, false)).toBe('sun-majority')
   })
 
   it('does not announce a divided result before the second ballot is sealed', () => {

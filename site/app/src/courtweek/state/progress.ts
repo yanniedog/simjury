@@ -5,7 +5,12 @@ import {
   type WeeklyProgress,
 } from '../model/schema'
 import { hasValidContributionJourney } from '../model/deliberationContract'
-import { calculateFinalBallot, calculateSecondBallot, unanimousVerdict } from '../engine/deliberation'
+import {
+  calculateFinalBallot,
+  calculateFreshUnanimityBallot,
+  calculateSecondBallot,
+  unanimousVerdict,
+} from '../engine/deliberation'
 
 export const PROGRESS_DATABASE = {
   name: 'simjury-court-week-v1',
@@ -89,13 +94,27 @@ function assertImportChronology(
   const cueIndex = (cueId: string) => orderedCues.findIndex((cue) => cue.cueId === cueId)
   const atOrAfterScene = (sceneId: string) => sceneIndex(sceneId) >= 0 && currentIndex >= sceneIndex(sceneId)
   const afterCue = (cueId: string) => cueIndex(cueId) >= 0 && currentIndex > cueIndex(cueId)
+  const freshBallotRequired = sceneIndex('sun-fresh-unanimity-ballot') >= 0
+  const hasFreshBallotState = progress.freshUnanimityVote !== undefined ||
+    progress.freshBallotWasUnanimous !== undefined
 
   if (progress.provisionalVote && !atOrAfterScene('sat-provisional')) fail()
   if (progress.secondVote && (!progress.provisionalVote || !atOrAfterScene('sun-second-ballot'))) fail()
+  if (hasFreshBallotState && (!freshBallotRequired || !progress.secondVote ||
+    !atOrAfterScene('sun-fresh-unanimity-ballot'))) fail()
+  if (Boolean(progress.freshUnanimityVote) !== (progress.freshBallotWasUnanimous !== undefined)) fail()
   if (progress.finalVote && (!progress.secondVote || !atOrAfterScene('sun-final-ballot'))) fail()
   if (atOrAfterScene('sat-first-ballot') && !progress.provisionalVote) fail()
   if (atOrAfterScene('sun-persevere') && !progress.secondVote) fail()
-  if (atOrAfterScene('sun-final-ballot') && !progress.secondBallotWasUnanimous && !progress.majorityDirectionReceived) fail()
+  if (freshBallotRequired && !progress.secondBallotWasUnanimous) {
+    const onMajorityPath = atOrAfterScene('sun-majority') && !atOrAfterScene('sun-verdict')
+    if (onMajorityPath && progress.freshBallotWasUnanimous !== false) fail()
+    if (atOrAfterScene('sun-verdict') && progress.freshBallotWasUnanimous === undefined) fail()
+    if (progress.freshBallotWasUnanimous && (progress.majorityDirectionReceived || progress.finalVote)) fail()
+    if (atOrAfterScene('sun-verdict') && progress.freshBallotWasUnanimous === false && !progress.finalVote) fail()
+  }
+  if (atOrAfterScene('sun-final-ballot') && !progress.secondBallotWasUnanimous &&
+    !progress.freshBallotWasUnanimous && !progress.majorityDirectionReceived) fail()
   if (progress.majorityDirectionReceived && !afterCue('sun-majority-direction')) fail()
 
   const sealedPair = Boolean(progress.sealedVerdict) === Boolean(progress.sealedAgreement)
@@ -110,6 +129,14 @@ function assertImportChronology(
     if (Boolean(secondResult) !== progress.secondBallotWasUnanimous) fail()
     if (secondResult && (progress.sealedVerdict !== secondResult || progress.sealedAgreement !== 'unanimous')) fail()
   }
+  if (progress.freshUnanimityVote) {
+    if (!deliberation) throw new Error('This progress contains an impossible Court Week chronology.')
+    const freshResult = unanimousVerdict(calculateFreshUnanimityBallot(
+      deliberation, progress.freshUnanimityVote, progress.reasoningContributions ?? [],
+    ))
+    if (Boolean(freshResult) !== progress.freshBallotWasUnanimous) fail()
+    if (freshResult && (progress.sealedVerdict !== freshResult || progress.sealedAgreement !== 'unanimous')) fail()
+  }
   if (progress.finalVote) {
     if (!deliberation) throw new Error('This progress contains an impossible Court Week chronology.')
     const finalResult = calculateFinalBallot({
@@ -118,6 +145,8 @@ function assertImportChronology(
       finalVote: progress.finalVote,
       contributions: progress.reasoningContributions ?? [],
       secondBallotWasUnanimous: progress.secondBallotWasUnanimous ?? false,
+      freshUnanimityBallotRequired: freshBallotRequired,
+      freshBallotWasUnanimous: progress.freshBallotWasUnanimous,
       majorityDirectionReceived: progress.majorityDirectionReceived ?? false,
       elapsedCourtHours: 8.5,
     })

@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { elevenMinutesCourtWeek } from '../content'
 import { elevenMinutesDeliberation } from '../content/deliberation'
+import { withDeveloperFreshUnanimityBallot } from '../sealed/developerPreview'
 import type { StoredWeeklyProgress } from './progress'
 import {
   clearMemoryProgressForTests,
@@ -247,6 +248,61 @@ describe('weekly progress', () => {
       elevenMinutesDeliberation,
       elevenMinutesCourtWeek.manifest.sessions,
     )).toEqual(deliberated)
+  })
+
+  it('fails closed on fresh-ballot state unless the revised journey records its failed result', () => {
+    const revised = withDeveloperFreshUnanimityBallot(elevenMinutesCourtWeek)
+    const sessions = revised.manifest.sessions
+    const sunday = sessions[6]
+    const majority = sunday.scenes.find(({ id }) => id === 'sun-majority')!
+    const atMajority: StoredWeeklyProgress = {
+      ...progress,
+      revision: revised.manifest.revision,
+      completedSessionIds: sessions.slice(0, 6).map(({ id }) => id),
+      currentSessionId: sunday.id,
+      currentSceneId: majority.id,
+      currentCueId: majority.cues[0].id,
+      provisionalVote: 'unable-to-agree',
+      secondVote: 'unable-to-agree',
+      secondBallotWasUnanimous: false,
+      majorityDirectionReceived: false,
+      reasoningContributions: [],
+    }
+    const transfer = (candidate: StoredWeeklyProgress, candidateSessions = sessions) => importWeeklyProgress(
+      exportWeeklyProgress(candidate), 'cw-0001', revised.manifest.revision,
+      elevenMinutesDeliberation, candidateSessions,
+    )
+
+    expect(() => transfer(atMajority)).toThrow(/impossible Court Week chronology/i)
+    const valid = {
+      ...atMajority,
+      freshUnanimityVote: 'unable-to-agree' as const,
+      freshBallotWasUnanimous: false,
+    }
+    expect(transfer(valid)).toEqual({ ...valid, notes: '' })
+    expect(() => transfer(valid, elevenMinutesCourtWeek.manifest.sessions))
+      .toThrow(/impossible Court Week chronology/i)
+    expect(() => transfer({ ...valid, freshBallotWasUnanimous: true }))
+      .toThrow(/impossible Court Week chronology/i)
+
+    const verdict = sunday.scenes.find(({ id }) => id === 'sun-verdict')!
+    const directUnanimous = {
+      ...atMajority,
+      currentSceneId: verdict.id,
+      currentCueId: verdict.cues[0].id,
+      freshUnanimityVote: 'murder' as const,
+      freshBallotWasUnanimous: true,
+      sealedVerdict: 'murder' as const,
+      sealedAgreement: 'unanimous' as const,
+    }
+    const unanimousDeliberation = {
+      ...elevenMinutesDeliberation,
+      firstBallot: { murder: 11, manslaughter: 0, 'not-guilty': 0, 'unable-to-agree': 0 },
+    }
+    expect(importWeeklyProgress(
+      exportWeeklyProgress(directUnanimous), 'cw-0001', revised.manifest.revision,
+      unanimousDeliberation, sessions,
+    )).toEqual({ ...directUnanimous, notes: '' })
   })
 
   it('rejects forged Tuesday verdict state and Sunday analysis before open-court return', () => {

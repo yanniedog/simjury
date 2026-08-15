@@ -10,7 +10,7 @@ export const courtEventSchema = z.enum([
   'objection', 'ruling', 'crown-close', 'silence-direction', 'defence-close',
   'crown-closing', 'defence-closing', 'summing-up', 'retire',
   'provisional-vote', 'first-ballot', 'jury-discussion', 'jury-note',
-  'judge-response', 'second-ballot', 'perseverance-direction',
+  'judge-response', 'second-ballot', 'perseverance-direction', 'fresh-unanimity-ballot',
   'majority-direction', 'final-ballot', 'verdict-return', 'analysis', 'adjournment',
 ])
 export type CourtEvent = z.infer<typeof courtEventSchema>
@@ -140,7 +140,7 @@ export const sceneCueSchema = z.object({
 export type SceneCue = z.infer<typeof sceneCueSchema>
 
 export const interactionSchema = z.object({
-  kind: z.enum(['observe', 'inspect-exhibit', 'choose-focus', 'seal-vote', 'reasoning', 'jury-note', 'second-vote', 'final-vote']),
+  kind: z.enum(['observe', 'inspect-exhibit', 'choose-focus', 'seal-vote', 'reasoning', 'jury-note', 'second-vote', 'fresh-unanimity-vote', 'final-vote']),
   prompt: z.string().min(1),
   options: z.array(z.string().min(1)).max(8).optional(),
   optional: z.boolean().optional(),
@@ -357,9 +357,11 @@ export const weeklyProgressSchema = z.object({
   notes: z.string(),
   provisionalVote: verdictSchema.optional(),
   secondVote: verdictSchema.optional(),
+  freshUnanimityVote: verdictSchema.optional(),
   finalVote: verdictSchema.optional(),
   reasoningContributions: z.array(reasoningContributionSchema).optional(),
   secondBallotWasUnanimous: z.boolean().optional(),
+  freshBallotWasUnanimous: z.boolean().optional(),
   majorityDirectionReceived: z.boolean().optional(),
   sealedVerdict: verdictSchema.optional(),
   sealedAgreement: z.enum(['unanimous', 'majority', 'hung']).optional(),

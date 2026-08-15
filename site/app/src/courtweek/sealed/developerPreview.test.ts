@@ -3,6 +3,7 @@ import { elevenMinutesCourtWeek } from '../content'
 import {
   DEVELOPER_PREVIEW_NOW,
   developerProgressForDay,
+  withDeveloperFreshUnanimityBallot,
 } from './developerPreview'
 
 describe('developer preview boundary', () => {
@@ -26,5 +27,26 @@ describe('developer preview boundary', () => {
     })
     expect(progress).toMatchObject({ currentSceneId: 'sun-analysis', currentCueId: 'sun-analysis', accessibilityMode: 'captions', provisionalVote: 'not-guilty',
       sealedVerdict: 'not-guilty', sealedAgreement: 'unanimous', openCourtVerdictReturned: true, returnedVerdict: 'not-guilty' })
+    expect(progress.freshUnanimityVote).toBeUndefined()
+  })
+
+  it('prepares only the dev/test future journey for a distinct fresh ballot', () => {
+    const revised = withDeveloperFreshUnanimityBallot(elevenMinutesCourtWeek)
+    const sunday = revised.manifest.sessions[6]
+    const freshIndex = sunday.scenes.findIndex(({ id }) => id === 'sun-fresh-unanimity-ballot')
+    expect(freshIndex).toBe(sunday.scenes.findIndex(({ id }) => id === 'sun-majority') - 1)
+    expect(sunday.scenes[freshIndex]).toMatchObject({
+      interaction: { kind: 'fresh-unanimity-vote' },
+      cues: [{ event: 'fresh-unanimity-ballot' }],
+    })
+
+    const atFresh = developerProgressForDay(revised, 7, {
+      sceneId: 'sun-fresh-unanimity-ballot', ballot: 'not-guilty',
+    })
+    expect(atFresh).toMatchObject({ secondVote: 'not-guilty', secondBallotWasUnanimous: false })
+    expect(atFresh.freshUnanimityVote).toBeUndefined()
+    expect(developerProgressForDay(revised, 7, {
+      sceneId: 'sun-majority', ballot: 'not-guilty',
+    })).toMatchObject({ freshUnanimityVote: 'not-guilty', freshBallotWasUnanimous: false })
   })
 })
