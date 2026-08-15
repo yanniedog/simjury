@@ -71,7 +71,7 @@ export const COURT_WEEK_NAME_PROPOSALS: readonly CourtWeekNameProposal[] = [
   person('defence-counsel', 'Daniel Brooks'),
   person('accused', 'Claire Donnelly'),
   person('ilan-saye', 'Noah Okafor'),
-  person('nella-orr', 'Wendy Carlisle'),
+  person('nella-orr', 'Leonie Havers'),
   person('peli-dorn', 'Jordan Nguyen'),
   person('tovan-mir', 'Michael Farrow'),
   person('jaro-pell', 'Samuel Ortega'),
@@ -96,11 +96,12 @@ export const COURT_WEEK_NAME_PROPOSALS: readonly CourtWeekNameProposal[] = [
 
 function normalized(value: string): string {
   return value.normalize('NFKD').replace(/\p{M}/gu, '').toLocaleLowerCase('en-AU')
-    .replace(/[\u2019']/gu, '').replace(/[^a-z]+/gu, '')
+    .replace(/[\u2019']/gu, '').replace(/[^\p{L}]+/gu, '')
 }
 
 function editDistance(left: string, right: string): number {
-  const prior = Array.from({ length: [...right].length + 1 }, (_, index) => index)
+  const rightLength = [...right].length
+  const prior = Array.from({ length: rightLength + 1 }, (_, index) => index)
   for (const [leftIndex, leftCharacter] of [...left].entries()) {
     let diagonal = leftIndex; prior[0] = leftIndex + 1
     for (const [rightIndex, rightCharacter] of [...right].entries()) {
@@ -109,7 +110,7 @@ function editDistance(left: string, right: string): number {
       diagonal = above
     }
   }
-  return prior[right.length]!
+  return prior[rightLength]!
 }
 
 function projectDisplayLabel(label: string, proposal: CourtWeekNameProposal): string {

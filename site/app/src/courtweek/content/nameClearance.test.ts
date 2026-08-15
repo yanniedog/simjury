@@ -20,7 +20,7 @@ describe('inactive Court Week name-clearance ledger', () => {
     expect(assessCourtWeekNameClearance()).toEqual(first)
     expect(first.coverage).toEqual({ actors: 28, turns: 288, runtimeVariants: 11, days: 7 })
     expect(first.candidateDigest).toBe('sha256:2ee734a3bfa9f8e9470fc766c510401b8c1ac8dbec2758ff648adb90542013f5')
-    expect(first.proposalDigest).toBe('sha256:5adca2f355c6eba6dca15c9c199f56dbafe97de0aef60329ca1b4c9f36c1f94b')
+    expect(first.proposalDigest).toBe('sha256:ad37dc8585d038f7573eefdbad0db3b16098145d5561a4c3b1d29566522c44ba')
     expect(first.reviewRows).toHaveLength(28)
     expect(first.reviewRows.reduce((sum, row) => sum + row.candidateTurnCount, 0)).toBe(288)
     expect(first.reviewRows.find(({ actorId }) => actorId === 'edda-rook')).toMatchObject({
@@ -65,6 +65,12 @@ describe('inactive Court Week name-clearance ledger', () => {
     expect(() => assessCourtWeekNameClearance(replace(proposals(), 'accused', {
       proposedPersonalName: 'Court Officer', proposedDisplayLabel: 'Court Officer',
     }))).toThrow(/display labels must be unique/i)
+    const unicode = replace(replace(proposals(), 'judge', {
+      proposedPersonalName: 'A𐐀𐐁 Smith', proposedDisplayLabel: 'Judge A𐐀𐐁 Smith',
+    }), 'accused', {
+      proposedPersonalName: 'A𐐀𐐂 Jones', proposedDisplayLabel: 'A𐐀𐐂 Jones',
+    })
+    expect(() => assessCourtWeekNameClearance(unicode)).toThrow(/orthographically confusable/i)
   })
 
   it('requires proposal-bound search, cultural, listening and legal-copy evidence before approval', () => {
