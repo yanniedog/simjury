@@ -20,7 +20,7 @@ describe('inactive Court Week name-clearance ledger', () => {
     expect(assessCourtWeekNameClearance()).toEqual(first)
     expect(first.coverage).toEqual({ actors: 28, turns: 288, runtimeVariants: 11, days: 7 })
     expect(first.candidateDigest).toBe('sha256:2ee734a3bfa9f8e9470fc766c510401b8c1ac8dbec2758ff648adb90542013f5')
-    expect(first.proposalDigest).toBe('sha256:ad37dc8585d038f7573eefdbad0db3b16098145d5561a4c3b1d29566522c44ba')
+    expect(first.proposalDigest).toBe('sha256:9ec3ac4968724db929a214a59c5cac4391dbdb884a938953940f8bdce136ef8c')
     expect(first.reviewRows).toHaveLength(28)
     expect(first.reviewRows.reduce((sum, row) => sum + row.candidateTurnCount, 0)).toBe(288)
     expect(first.reviewRows.find(({ actorId }) => actorId === 'edda-rook')).toMatchObject({
@@ -41,6 +41,15 @@ describe('inactive Court Week name-clearance ledger', () => {
     }))).toThrow(/registry has drifted/i)
     const rows = buildCourtWeekSpeechReviewLedger().rows.filter(({ actorId }) => actorId !== 'recorded-channel')
     expect(() => assessCourtWeekNameClearance(proposals(), rows)).toThrow(/every candidate actor/i)
+    const completeActorsOnly = buildCourtWeekSpeechReviewLedger().rows.filter((row, index, all) =>
+      all.findIndex(({ actorId }) => actorId === row.actorId) === index)
+    expect(() => assessCourtWeekNameClearance(proposals(), completeActorsOnly)).toThrow(/complete canonical speech-review ledger/i)
+    expect(() => assessCourtWeekNameClearance(replace(proposals(), 'judge', {
+      currentPersonalName: 'Aven', proposedDisplayLabel: 'Judge Sel Helen Mercer',
+    }))).toThrow(/personal-name fields disagree with the actor registry/i)
+    expect(() => assessCourtWeekNameClearance(replace(proposals(), 'clerk', {
+      proposedPersonalName: 'Alex White',
+    }))).toThrow(/functional actors must keep personal-name fields null/i)
   })
 
   it('rejects malformed, duplicate and orthographically confusable proposals', () => {
@@ -64,7 +73,22 @@ describe('inactive Court Week name-clearance ledger', () => {
     }))).toThrow(/functional name or status/i)
     expect(() => assessCourtWeekNameClearance(replace(proposals(), 'accused', {
       proposedPersonalName: 'Court Officer', proposedDisplayLabel: 'Court Officer',
-    }))).toThrow(/display labels must be unique/i)
+    }))).toThrow(/functional name or status/i)
+    expect(() => assessCourtWeekNameClearance(replace(proposals(), 'accused', {
+      proposedPersonalName: 'Defence-Counsel Smith', proposedDisplayLabel: 'Defence-Counsel Smith',
+    }))).toThrow(/functional name or status/i)
+    const crossPositionAlias = replace(replace(proposals(), 'judge', {
+      proposedPersonalName: 'Alice Smith', proposedDisplayLabel: 'Judge Alice Smith',
+    }), 'accused', {
+      proposedPersonalName: 'Bob Alice', proposedDisplayLabel: 'Bob Alice',
+    })
+    expect(() => assessCourtWeekNameClearance(crossPositionAlias)).toThrow(/orthographically confusable/i)
+    const distinctNonLatin = replace(replace(proposals(), 'judge', {
+      proposedPersonalName: '王 伟', proposedDisplayLabel: 'Judge 王 伟',
+    }), 'accused', {
+      proposedPersonalName: '李 娜', proposedDisplayLabel: '李 娜',
+    })
+    expect(() => assessCourtWeekNameClearance(distinctNonLatin)).not.toThrow()
     const unicode = replace(replace(proposals(), 'judge', {
       proposedPersonalName: 'A𐐀𐐁 Smith', proposedDisplayLabel: 'Judge A𐐀𐐁 Smith',
     }), 'accused', {
@@ -86,7 +110,12 @@ describe('inactive Court Week name-clearance ledger', () => {
         legalCopyReviewReference: `legal-copy:${entry.actorId}`,
       },
     }))
-    expect(assessCourtWeekNameClearance(approved)).toMatchObject({ allowed: true, pendingActorIds: [] })
+    const approvedAssessment = assessCourtWeekNameClearance(approved)
+    expect(approvedAssessment).toMatchObject({ allowed: true, pendingActorIds: [] })
+    const changedEvidence = replace(approved, 'judge', {
+      evidence: { ...approved[0]!.evidence!, identitySearchReference: 'identity:replacement-record' },
+    })
+    expect(assessCourtWeekNameClearance(changedEvidence).proposalDigest).not.toBe(approvedAssessment.proposalDigest)
     const stale = replace(approved, 'judge', {
       evidence: { ...approved[0]!.evidence!, proposalSha256: `sha256:${'0'.repeat(64)}` },
     })
