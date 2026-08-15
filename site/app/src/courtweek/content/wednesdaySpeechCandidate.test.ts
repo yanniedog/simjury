@@ -83,7 +83,11 @@ describe('inactive Wednesday reviewed speech candidate', () => {
   it('admits each exhibit only after witness foundation and counsel tender', () => {
     const tuesdayReadyFoundation = TUESDAY_SPEECH_CANDIDATE.find(({ id }) => id === 'tue-mir-chief-3')
     expect(tuesdayReadyFoundation?.turns.map(({ actorId, legalAction }) => `${actorId}:${legalAction}`))
-      .toEqual(['tovan-mir:foundation'])
+      .toEqual([
+        'crown-counsel:question', 'tovan-mir:answer',
+        'crown-counsel:question', 'tovan-mir:foundation',
+        'crown-counsel:question', 'tovan-mir:foundation',
+      ])
 
     const admissions = WEDNESDAY_SPEECH_CANDIDATE.flatMap((candidate, index) => (
       candidate.evidenceAdmission ? [{ cueId: candidate.id, index, ...candidate.evidenceAdmission }] : []
