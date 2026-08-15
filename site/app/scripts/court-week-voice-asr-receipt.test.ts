@@ -1,56 +1,75 @@
 import { createHash } from 'node:crypto'
-import { resolve } from 'node:path'
-import { describe, expect, it } from 'vitest'
+import { mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { basename, dirname, join, relative, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { afterAll, describe, expect, it } from 'vitest'
 import {
   assertVoiceAsrReceiptPath, canonicalWords, courtWeekVoiceActivationProjectionDigest, courtWeekVoiceMediaDigest, runVoiceAsrReceiptCli,
   validateVoiceAsrReceipt, VOICE_ASR_RECEIPT_SCHEMA, VOICE_ASR_THRESHOLDS, WHISPER_ASR_TOOLCHAIN, type VoiceAsrContext, type VoiceAsrReceipt,
 } from './court-week-voice-asr-receipt'
 const digest = (character: string) => `sha256:${character.repeat(64)}`
 const sha256 = (value: string | Uint8Array) => `sha256:${createHash('sha256').update(value).digest('hex')}`
-const evidenceBytes = new Map<string, Uint8Array>()
-const resolveEvidence = (path: string) => {
-  const bytes = evidenceBytes.get(path); if (!bytes) throw new Error(`Missing fixture evidence: ${path}`); return bytes
-}
+const appRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
+const fixtureRoot = mkdtempSync(join(appRoot, 'content-reviews', '.voice-asr-test-'))
+const externalRoot = mkdtempSync(join(tmpdir(), 'simjury-voice-asr-'))
+afterAll(() => { rmSync(fixtureRoot, { recursive: true, force: true }); rmSync(externalRoot, { recursive: true, force: true }) })
+const repositoryPath = (target: string) => relative(appRoot, target).replace(/\\/gu, '/')
+const resolveEvidence = (path: string) => readFileSync(path)
 const artifact = (kind: string, value: unknown) => {
   const bytes = new TextEncoder().encode(JSON.stringify(value)); const sha = sha256(bytes)
-  const path = `content-reviews/${kind}-${sha.slice(7)}.json`; evidenceBytes.set(resolve(path), bytes)
-  return { path, sha256: sha }
+  const target = join(fixtureRoot, `${kind}-${sha.slice(7)}.json`); writeFileSync(target, bytes)
+  return { path: repositoryPath(target), sha256: sha }
 }
-function rebindEvidence(candidate: VoiceAsrReceipt) {
+function rebindEvidence(candidate: VoiceAsrReceipt, expected: VoiceAsrContext, trustRun = true) {
+  const provenance = { run: candidate.evidence.run, toolchain: candidate.toolchain, bindings: candidate.bindings }
   candidate.evidence = {
-    rawAsr: artifact('raw-asr', { schema: 'simjury.court-week-raw-asr/v1', utterances: candidate.utterances.map(
-      ({ turnId, mediaSha256, asrTokens }) => ({ turnId, mediaSha256, tokens: asrTokens })) }),
-    rawAlignment: artifact('raw-alignment', { schema: 'simjury.court-week-raw-alignment/v1',
-      utterances: candidate.utterances.map(({ turnId, mediaSha256, alignment }) => ({ turnId, mediaSha256,
+    run: candidate.evidence.run,
+    rawAsr: artifact('raw-asr', { schema: 'simjury.court-week-raw-asr/v1', provenance,
+      utterances: candidate.utterances.map(
+      ({ turnId, mediaSha256, durationMs, asrTokens }) => ({ turnId, mediaSha256, durationMs, tokens: asrTokens })) }),
+    rawAlignment: artifact('raw-alignment', { schema: 'simjury.court-week-raw-alignment/v1', provenance,
+      utterances: candidate.utterances.map(({ turnId, mediaSha256, durationMs, alignment }) => ({ turnId, mediaSha256, durationMs,
         words: alignment.map(({ canonicalIndex, canonical, observedStartMs, observedEndMs }) =>
           ({ canonicalIndex, canonical, observedStartMs, observedEndMs })) })) }),
   }
+  if (trustRun) expected.validatedRun = { ...candidate.evidence.run,
+    rawAsrSha256: candidate.evidence.rawAsr.sha256, rawAlignmentSha256: candidate.evidence.rawAlignment.sha256 }
 }
 const validate = (value: unknown, expected: VoiceAsrContext) => validateVoiceAsrReceipt(value, expected, resolveEvidence)
-function context(text = Array(100).fill('word').join(' ')): VoiceAsrContext {
-  const words = canonicalWords(text); const value = { caseId: 'cw-0001', revision: 'candidate-r1', candidateDigest: digest('a'),
+const hundredWords = Array(100).fill('word').join(' ')
+function context(text: string | readonly string[] = hundredWords): VoiceAsrContext {
+  const texts = typeof text === 'string' ? [text] : text
+  const turns = texts.map((turnText, index) => { const turnId = `turn-${index + 1}`; const words = canonicalWords(turnText); return {
+    turnId, actorId: 'witness-helen-mercer', displayLabel: 'Helen Mercer', text: turnText,
+    mediaSha256: sha256(turnId), durationMs: words.length * 20 + 400,
+    referenceBoundaries: words.map((_, wordIndex) => ({ startMs: wordIndex * 20, endMs: wordIndex * 20 + 10 })),
+  } })
+  const value = { caseId: 'cw-0001', revision: 'candidate-r1', candidateDigest: digest('a'),
     sourceContract: 'explicit-candidate', sourceDigest: digest('b'), performanceDigest: digest('c'),
-    activationProjectionDigest: digest('e'), mediaDigest: digest('d'), turns: [{ turnId: 'turn-1',
-      actorId: 'witness-helen-mercer', displayLabel: 'Helen Mercer', text, referenceBoundaries: words.map(
-        (_, index) => ({ startMs: index * 20, endMs: index * 20 + 10 })) }] } satisfies VoiceAsrContext
+    activationProjectionDigest: digest('e'), mediaContract: 'validated-candidate-media', mediaDigest: courtWeekVoiceMediaDigest(turns),
+    validatedRun: { id: 'asr-run:fixture-001', runnerRevision: 'f'.repeat(40), invocationSha256: digest('9'),
+      rawAsrSha256: digest('0'), rawAlignmentSha256: digest('0') }, turns } satisfies VoiceAsrContext
   value.activationProjectionDigest = courtWeekVoiceActivationProjectionDigest(value); return value
 }
 function receipt(expected = context()): VoiceAsrReceipt {
-  const utterances: VoiceAsrReceipt['utterances'] = expected.turns.map(({ turnId, text }) => {
-    const words = canonicalWords(text); return { turnId, canonicalTextSha256: sha256(text), mediaSha256: sha256(turnId),
-    durationMs: words.length * 20 + 60, asrTokens: words.map(({ raw }) => raw), discrepancies: [],
+  const utterances: VoiceAsrReceipt['utterances'] = expected.turns.map(({ turnId, text, mediaSha256, durationMs }) => {
+    const words = canonicalWords(text); return { turnId, canonicalTextSha256: sha256(text), mediaSha256,
+    durationMs, asrTokens: words.map(({ raw }) => raw), discrepancies: [],
     alignment: words.map(({ raw }, index) => ({ canonicalIndex: index, canonical: raw,
       observedStartMs: index * 20 + 40, observedEndMs: index * 20 + 50,
       referenceStartMs: index * 20, referenceEndMs: index * 20 + 10 })),
     } })
-  const mediaDigest = courtWeekVoiceMediaDigest(utterances); expected.mediaDigest = mediaDigest
+  const mediaDigest = courtWeekVoiceMediaDigest(utterances)
+  const run = { id: expected.validatedRun.id, runnerRevision: expected.validatedRun.runnerRevision,
+    invocationSha256: expected.validatedRun.invocationSha256 }
   const candidate = { schema: VOICE_ASR_RECEIPT_SCHEMA, caseId: 'cw-0001', revision: expected.revision,
     bindings: { candidateDigest: expected.candidateDigest, sourceDigest: expected.sourceDigest,
       performanceDigest: expected.performanceDigest, activationProjectionDigest: expected.activationProjectionDigest,
       mediaDigest },
-    evidence: { rawAsr: { path: 'pending', sha256: digest('0') }, rawAlignment: { path: 'pending', sha256: digest('0') } },
+    evidence: { run, rawAsr: { path: 'pending', sha256: digest('0') }, rawAlignment: { path: 'pending', sha256: digest('0') } },
     toolchain: { ...WHISPER_ASR_TOOLCHAIN }, thresholds: { ...VOICE_ASR_THRESHOLDS }, utterances } satisfies VoiceAsrReceipt
-  rebindEvidence(candidate); return candidate
+  rebindEvidence(candidate, expected); return candidate
 }
 const resolved = (canonicalIndex: number, asrIndex: number, canonical: string, asr: string) => ({
   kind: 'substitution' as const, canonicalIndex, asrIndex, canonical, asr,
@@ -65,32 +84,67 @@ describe('offline Whisper ASR and forced-alignment receipt', () => {
       unresolvedCriticalDiscrepancies: 0, medianBoundaryErrorMs: 40,
       p95BoundaryErrorMs: 40, wordErrorRate: 0 })
     expect(candidate.toolchain).toEqual(WHISPER_ASR_TOOLCHAIN)
-    const aliases = context(); aliases.turns[0]!.actorId = 'edda-rook'; aliases.turns[0]!.displayLabel = 'Edda Rook'
-    aliases.turns = [...aliases.turns, { ...aliases.turns[0]!, turnId: 'turn-2', displayLabel: 'Foreperson Edda Rook' }]; aliases.activationProjectionDigest = courtWeekVoiceActivationProjectionDigest(aliases)
+    const aliases = context([hundredWords, hundredWords]); aliases.turns[0]!.actorId = 'edda-rook'; aliases.turns[0]!.displayLabel = 'Edda Rook'
+    aliases.turns[1]!.actorId = 'edda-rook'; aliases.turns[1]!.displayLabel = 'Foreperson Edda Rook'; aliases.activationProjectionDigest = courtWeekVoiceActivationProjectionDigest(aliases)
     expect(validate(receipt(aliases), aliases)).toMatchObject({ verified: true, canonicalWords: 200 })
     expect(() => validate({ ...candidate,
       toolchain: { ...candidate.toolchain, revision: '0'.repeat(40) } }, expected)).toThrow()
   })
   it('rejects stale source/media bindings and public or runtime receipt paths', () => {
     const expected = context(); const candidate = receipt(expected)
+    const missingContract = structuredClone(expected) as Partial<VoiceAsrContext>; delete missingContract.mediaContract
+    expect(() => validate(candidate, missingContract as VoiceAsrContext)).toThrow(/validated candidate media projection/i)
+    const wrongContract = { ...expected, mediaContract: 'receipt-controlled' } as unknown as VoiceAsrContext
+    expect(() => validate(candidate, wrongContract)).toThrow(/validated candidate media projection/i)
+    const staleDuration = structuredClone(expected); staleDuration.turns[0]!.durationMs += 1
+    expect(() => validate(candidate, staleDuration)).toThrow(/validated candidate media projection/i)
     expect(() => validate({ ...candidate, bindings: { ...candidate.bindings,
       candidateDigest: digest('0') } }, expected)).toThrow(/stale case or digest/i)
     expected.turns[0]!.displayLabel = 'Helen Marsh'; expect(() => validate(candidate, expected)).toThrow(/activation projection/i); expected.turns[0]!.displayLabel = 'Helen Mercer'
     candidate.utterances[0]!.mediaSha256 = digest('1')
     expect(() => validate(candidate, expected)).toThrow(/ordered audio hashes/i)
+    const inflated = receipt(expected); inflated.utterances[0]!.durationMs += 5_000
+    expect(() => validate(inflated, expected)).toThrow(/audio hashes and durations/i)
     expect(() => assertVoiceAsrReceiptPath('public/receipt.json')).toThrow(/review-only/i)
     expect(() => assertVoiceAsrReceiptPath('src/receipt.json')).toThrow(/review-only/i)
-    expect(assertVoiceAsrReceiptPath('content-reviews/receipt.json')).toContain('content-reviews')
+    expect(assertVoiceAsrReceiptPath(inflated.evidence.rawAsr.path)).toContain('content-reviews')
     expect(() => runVoiceAsrReceiptCli()).toThrow(/blocked.*explicit-candidate/i)
   })
   it('re-hashes content-addressed evidence and rejects a hand-authored projection', () => {
     const expected = context(); const candidate = receipt(expected)
-    evidenceBytes.set(resolve(candidate.evidence.rawAsr.path), new TextEncoder().encode('{}'))
+    writeFileSync(resolve(appRoot, candidate.evidence.rawAsr.path), '{}')
     expect(() => validate(candidate, expected)).toThrow(/bound SHA-256/i)
-    rebindEvidence(candidate); candidate.utterances[0]!.asrTokens[0] = 'invented'
-    expect(() => validate(candidate, expected)).toThrow(/differs from raw ASR/i)
-    candidate.evidence.rawAsr.path = 'content-reviews/raw-asr.json'
+    rebindEvidence(candidate, expected); candidate.utterances[0]!.asrTokens[0] = 'invented'
+    rebindEvidence(candidate, expected, false)
+    expect(() => validate(candidate, expected)).toThrow(/validated toolchain run/i)
+    expected.validatedRun.rawAsrSha256 = candidate.evidence.rawAsr.sha256
+    const unaddressed = join(fixtureRoot, 'raw-asr.json')
+    writeFileSync(unaddressed, readFileSync(resolve(appRoot, candidate.evidence.rawAsr.path)))
+    candidate.evidence.rawAsr.path = repositoryPath(unaddressed)
     expect(() => validate(candidate, expected)).toThrow(/content-addressed/i)
+  })
+  it('binds both raw artifacts to one trusted run and rejects symlink escape', () => {
+    const expected = context(); const candidate = receipt(expected)
+    const raw = JSON.parse(readFileSync(resolve(appRoot, candidate.evidence.rawAsr.path), 'utf8')) as {
+      provenance: { run: { id: string } }
+    }
+    raw.provenance.run.id = 'asr-run:forged-001'; candidate.evidence.rawAsr = artifact('raw-asr-forged', raw)
+    expected.validatedRun.rawAsrSha256 = candidate.evidence.rawAsr.sha256
+    expect(() => validate(candidate, expected)).toThrow(/bound run and toolchain provenance/i)
+
+    const wrongToolchain = receipt(expected)
+    const wrongRaw = JSON.parse(readFileSync(resolve(appRoot, wrongToolchain.evidence.rawAsr.path), 'utf8'))
+    wrongRaw.provenance.toolchain.revision = '0'.repeat(40)
+    wrongToolchain.evidence.rawAsr = artifact('raw-asr-wrong-toolchain', wrongRaw)
+    expected.validatedRun.rawAsrSha256 = wrongToolchain.evidence.rawAsr.sha256
+    expect(() => validate(wrongToolchain, expected)).toThrow()
+
+    const escaped = receipt(expected); const targetName = basename(resolve(appRoot, escaped.evidence.rawAsr.path))
+    writeFileSync(join(externalRoot, targetName), readFileSync(resolve(appRoot, escaped.evidence.rawAsr.path)))
+    const linkedOutside = join(fixtureRoot, 'linked-outside')
+    symlinkSync(externalRoot, linkedOutside, process.platform === 'win32' ? 'junction' : 'dir')
+    escaped.evidence.rawAsr.path = repositoryPath(join(linkedOutside, targetName))
+    expect(() => validate(escaped, expected)).toThrow(/resolved outside.*review-only/i)
   })
   it.each([
     ['missing', (value: VoiceAsrReceipt) => value.utterances[0]!.alignment.pop()],
@@ -98,7 +152,7 @@ describe('offline Whisper ASR and forced-alignment receipt', () => {
     ['reordered', (value: VoiceAsrReceipt) => { value.utterances[0]!.alignment[1]!.canonical = 'invented' }],
     ['non-monotonic', (value: VoiceAsrReceipt) => { value.utterances[0]!.alignment[1]!.observedStartMs = 5 }],
   ])('rejects %s canonical word alignment', (_label, mutate) => {
-    const expected = context(); const candidate = receipt(expected); mutate(candidate); rebindEvidence(candidate)
+    const expected = context(); const candidate = receipt(expected); mutate(candidate); rebindEvidence(candidate, expected)
     expect(() => validate(candidate, expected)).toThrow(/alignment|canonical word/i)
   })
   it('enforces median and p95 forced-alignment limits', () => {
@@ -106,14 +160,21 @@ describe('offline Whisper ASR and forced-alignment receipt', () => {
       const expected = context(); const candidate = receipt(expected)
       candidate.utterances[0]!.alignment.slice(-count).forEach((word) => {
         word.observedStartMs = word.referenceStartMs + error; word.observedEndMs = word.referenceEndMs + error })
-      candidate.utterances[0]!.durationMs += error; rebindEvidence(candidate)
+      rebindEvidence(candidate, expected)
       expect(() => validate(candidate, expected)).toThrow(message)
     }
+  })
+  it('enforces alignment limits independently for every utterance', () => {
+    const expected = context([hundredWords, 'word word word word']); const candidate = receipt(expected)
+    candidate.utterances[1]!.alignment.forEach((word) => {
+      word.observedStartMs = word.referenceStartMs + 251; word.observedEndMs = word.referenceEndMs + 251
+    }); rebindEvidence(candidate, expected)
+    expect(() => validate(candidate, expected)).toThrow(/turn-2: .*alignment error/i)
   })
   it('allows exactly 1% ASR error only with an ASR-only listening resolution', () => {
     const expected = context(['not', ...Array(99).fill('word')].join(' ')); const candidate = receipt(expected)
     candidate.utterances[0]!.asrTokens[0] = 'heard'
-    candidate.utterances[0]!.discrepancies = [resolved(0, 0, 'not', 'heard')]; rebindEvidence(candidate)
+    candidate.utterances[0]!.discrepancies = [resolved(0, 0, 'not', 'heard')]; rebindEvidence(candidate, expected)
     expect(validate(candidate, expected)).toMatchObject({
       wordErrorRate: 0.01, criticalDiscrepancies: 1, unresolvedCriticalDiscrepancies: 0,
     })
@@ -121,20 +182,20 @@ describe('offline Whisper ASR and forced-alignment receipt', () => {
     unreferenced.utterances[0]!.discrepancies[0]!.resolution.listeningReference = ''
     expect(() => validate(unreferenced, expected)).toThrow()
     candidate.utterances[0]!.asrTokens[1] = 'wrong'
-    candidate.utterances[0]!.discrepancies.push(resolved(1, 1, 'word', 'wrong')); rebindEvidence(candidate)
+    candidate.utterances[0]!.discrepancies.push(resolved(1, 1, 'word', 'wrong')); rebindEvidence(candidate, expected)
     expect(() => validate(candidate, expected)).toThrow(/word error rate/i)
   })
   it('fails closed on unresolved names, numbers, negation and legal-standard words', () => {
     for (const critical of ['Mara', 'eleven', 'not', 'section', 'murder', 'burden', 'reasonable', 'doubt', 'intent', 'death', 'injury', 'duty', 'causation', 'unanimous', 'majority', 'agreement']) {
       const expected = context([critical, ...Array(99).fill('word')].join(' ')); const candidate = receipt(expected)
-      candidate.utterances[0]!.asrTokens[0] = 'other'; rebindEvidence(candidate)
+      candidate.utterances[0]!.asrTokens[0] = 'other'; rebindEvidence(candidate, expected)
       expect(() => validate(candidate, expected)).toThrow(/unresolved critical/i)
     }
   })
   it('derives final-cast name criticality from the bound candidate, not the legacy registry', () => {
     const expected = context(['helen', ...Array(99).fill('word')].join(' ')); const candidate = receipt(expected)
     const omitted = structuredClone(expected); omitted.turns[0]!.displayLabel = ''; expect(() => validate(candidate, omitted)).toThrow(/reviewed actor identity/i)
-    candidate.utterances[0]!.asrTokens[0] = 'other'; rebindEvidence(candidate)
+    candidate.utterances[0]!.asrTokens[0] = 'other'; rebindEvidence(candidate, expected)
     expect(() => validate(candidate, expected)).toThrow(/unresolved critical.*helen/i)
   })
 })
