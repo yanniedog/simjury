@@ -90,6 +90,9 @@ test('private listener form is complete, usable and offline from file', async ({
   // A 160x284 CSS viewport applies the reflow pressure of 320x568 at effective 200% browser zoom.
   await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur())
   await page.setViewportSize({ width: 160, height: 284 })
+  // Collapsed <details> subtrees report unconstrained intrinsic geometry in Firefox while reaching the
+  // reader in none of them, so the defect controls are measured open, in the state a listener sees.
+  await page.evaluate(() => document.querySelectorAll('details').forEach((node) => { node.open = true }))
   const reflow = await page.evaluate(() => ({ clientWidth: document.documentElement.clientWidth,
     scrollWidth: document.documentElement.scrollWidth, offenders: [...document.querySelectorAll<HTMLElement>('body *')]
       .filter((node) => node.getBoundingClientRect().right > document.documentElement.clientWidth + 1)
@@ -98,6 +101,7 @@ test('private listener form is complete, usable and offline from file', async ({
     wideScrollers: [...document.querySelectorAll<HTMLElement>('body *')].filter((node) => node.scrollWidth > node.clientWidth + 1)
       .slice(0, 8).map((node) => ({ tag: node.tagName, client: node.clientWidth, scroll: node.scrollWidth })) }))
   expect(reflow).toEqual({ clientWidth: 160, scrollWidth: 160, offenders: [], wideScrollers: [] })
+  await page.evaluate(() => document.querySelectorAll('details').forEach((node) => { node.open = false }))
 
   await page.evaluate(() => {
     const review = document.querySelector<HTMLFormElement>('#review-form')!
