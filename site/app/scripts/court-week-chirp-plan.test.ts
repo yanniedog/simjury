@@ -55,9 +55,9 @@ describe('offline Court Week Chirp 3 HD plan', () => {
     const before = JSON.stringify(COURT_WEEK_SPEECH_CANDIDATES)
     const first = buildCourtWeekChirpPlan(fixtureRegistry())
     expect(buildCourtWeekChirpPlan(fixtureRegistry())).toEqual(first)
-    expect(first.jobs).toHaveLength(297)
+    expect(first.jobs).toHaveLength(326)
     expect(first.characterTotals).toEqual({
-      billingUnit: 'unicode-code-points', canonicalCharacters: 45_869, providerCharacters: 45_869,
+      billingUnit: 'unicode-code-points', canonicalCharacters: 47_308, providerCharacters: 47_308,
     })
     expect(first.voiceTotals).toHaveLength(28)
     expect(new Set(first.jobs.map(({ actorId }) => actorId)).size).toBe(28)
@@ -67,7 +67,7 @@ describe('offline Court Week Chirp 3 HD plan', () => {
       'not-guilty:unanimous', 'not-guilty:majority', 'unable-to-agree:hung',
       'analysis:murder', 'analysis:manslaughter', 'analysis:not-guilty', 'analysis:unable-to-agree',
     ])
-    expect(first.forensicLedgerDigest).toBe('sha256:d27b30f00165a2885a9165bc83dbb623dde706f6f449a9f15de31fb40f3093b3')
+    expect(first.forensicLedgerDigest).toBe('sha256:abe54603cf281be2a7b6c7fa59f56f8cc486c07dbc25a4b19c13d55171e0e2a3')
     expect(first.costEstimate.withinBudget).toBe(true)
     expect(first.costEstimate.estimatedAudMicros).toBeLessThanOrEqual(50_000_000)
     expect(first.generationGate.allowed).toBe(false)
@@ -78,8 +78,8 @@ describe('offline Court Week Chirp 3 HD plan', () => {
       'approved-pronunciation-projections', 'approved-performance-manifest',
     ])
     expect(first.pronounceabilityReview).toMatchObject({
-      coverage: { actors: 28, turns: 297, runtimeVariants: 11 },
-      affectedActorCount: 26, unresolvedFindingCount: 214,
+      coverage: { actors: 28, turns: 326, runtimeVariants: 11 },
+      affectedActorCount: 26, unresolvedFindingCount: 190,
     })
     expect(first.policy).toMatchObject({ stockVoicesOnly: true, donorRecordingsRequired: false, recurringSpendAud: 0 })
     expect(JSON.stringify(COURT_WEEK_SPEECH_CANDIDATES)).toBe(before)
@@ -107,13 +107,13 @@ describe('offline Court Week Chirp 3 HD plan', () => {
   it('applies an approved provider projection only to its reviewed exact occurrence', () => {
     const audit = buildCourtWeekPronounceabilityAudit()
     const target = audit.findings.find(({ kind, canonical }) =>
-      kind === 'identifier' && canonical === 'SHA-256')!
+      kind === 'statute' && canonical === 's 18')!
     const disposition: PronounceabilityDisposition = {
       findingId: target.id,
       canonicalTextSha256: target.canonicalTextSha256,
-      status: 'approved', action: 'provider-projection', spoken: 'S H A two fifty-six',
+      status: 'approved', action: 'provider-projection', spoken: 'section eighteen',
       rationale: 'Preserve the exact visible identifier while speaking it unambiguously.',
-      reviewReference: 'review:exact-source', listeningReference: 'listen:sha-256',
+      reviewReference: 'review:exact-source', listeningReference: 'listen:section-18',
     }
     const governance = structuredClone(buildCourtWeekPerformanceManifest())
     governance.pronunciationProjections.find(({ canonical }) => canonical === target.canonical)!.status = 'approved'
@@ -198,7 +198,7 @@ describe('offline Court Week Chirp 3 HD plan', () => {
       const outputPath = join(temporary, 'plan.json')
       writeFileSync(registryPath, JSON.stringify(fixtureRegistry()))
       writeCourtWeekChirpPlan(registryPath, outputPath)
-      expect(JSON.parse(readFileSync(outputPath, 'utf8')).jobs).toHaveLength(297)
+      expect(JSON.parse(readFileSync(outputPath, 'utf8')).jobs).toHaveLength(326)
     } finally {
       rmSync(temporary, { recursive: true, force: true })
     }
