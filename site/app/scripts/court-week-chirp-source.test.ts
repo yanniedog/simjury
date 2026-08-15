@@ -25,11 +25,11 @@ describe('frozen Google Chirp 3 HD source evidence', () => {
     })
     expect(GOOGLE_CHIRP3_PRICING_DIGEST).toMatch(/^sha256:[0-9a-f]{64}$/u)
     expect(GOOGLE_CHIRP3_AUD_CONVERSION_DIGEST).toMatch(/^sha256:[0-9a-f]{64}$/u)
-    const providerCharacters = 45_260
+    const providerCharacters = 49_642
     const grossUsdMicros = providerCharacters * 30
     const grossAudMicros = Math.ceil(grossUsdMicros * GOOGLE_CHIRP3_SOURCE.audConversion.audMicrosPerUsd / 1_000_000)
-    expect(grossUsdMicros).toBe(1_357_800)
-    expect(grossAudMicros).toBe(1_921_053)
+    expect(grossUsdMicros).toBe(1_489_260)
+    expect(grossAudMicros).toBe(2_107_046)
     expect(providerCharacters).toBeLessThan(GOOGLE_CHIRP3_SOURCE.pricing.freeTierCharactersPerMonth)
   })
 
