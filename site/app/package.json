@@ -33,6 +33,7 @@
     "media:chirp:audition": "tsx scripts/court-week-chirp-audition.ts",
     "media:chirp:distinctness": "tsx scripts/court-week-voice-distinctness.ts",
     "media:chirp:names": "tsx scripts/court-week-name-audition.ts",
+    "media:voice:asr-receipt": "tsx scripts/court-week-voice-asr-receipt.ts",
     "media:art:requirements": "tsx scripts/scene-art-requirements.ts",
     "media:art:test": "node --test ../scripts/scene-art-readiness.test.mjs"
   },
