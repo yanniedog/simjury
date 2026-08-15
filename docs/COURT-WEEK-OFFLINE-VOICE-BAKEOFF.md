@@ -43,9 +43,9 @@ Sources: [Chirp voices](https://cloud.google.com/text-to-speech/docs/voices),
 [Chirp pricing](https://cloud.google.com/text-to-speech/pricing), and
 [RBA exchange rates](https://www.rba.gov.au/statistics/frequency/exchange-rates.html).
 
-The reviewed candidate currently plans 50,128 provider characters because
+The reviewed candidate currently plans 51,062 provider characters because
 pending pronunciation proposals may not alter provider text. At the frozen
-14 August 2026 RBA rate, one complete Chirp pass is about USD 1.50 / AUD 2.13
+14 August 2026 RBA rate, one complete Chirp pass is about USD 1.53 / AUD 2.17
 before free usage. It is potentially AUD 0 within Google's one-million-character
 monthly allowance. Billing must still be enabled and the plan conservatively
 budgets the gross amount.
