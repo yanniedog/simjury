@@ -69,7 +69,7 @@ describe('inactive Monday reviewed speech candidate', () => {
     }))).toEqual([
       {
         actorId: 'clerk', legalAction: 'charge-read',
-        text: 'Mara Venn, you are charged that, while owing an emergency-dispatch duty, you intentionally withheld rescue action and thereby murdered Ilan Saye.',
+        text: 'Mara Venn, you are charged with the murder of Ilan Saye. The Crown alleges that, while under a duty to dispatch emergency assistance, you intentionally withheld rescue action and caused his death.',
       },
       { actorId: 'clerk', legalAction: 'plea-question', text: 'How do you plead?' },
       { actorId: 'accused', legalAction: 'plea-answer', text: 'Not guilty.' },
@@ -94,9 +94,9 @@ describe('inactive Monday reviewed speech candidate', () => {
       'mon-prelim-2': ['judge:direction'],
       'mon-crown-opening-1': ['crown-counsel:submission'],
       'mon-crown-opening-2': ['crown-counsel:submission'],
-      'mon-def-reserve': ['defence-counsel:submission'],
-      'mon-orr-chief-1': ['nella-orr:answer'],
-      'mon-orr-chief-2': ['nella-orr:foundation', 'crown-counsel:tender', 'judge:admission', 'judge:limitation-direction'],
+      'mon-def-reserve': ['defence-counsel:submission', 'judge:direction'],
+      'mon-orr-chief-1': ['crown-counsel:question', 'nella-orr:answer', 'crown-counsel:question', 'nella-orr:answer', 'crown-counsel:question', 'nella-orr:answer'],
+      'mon-orr-chief-2': ['crown-counsel:question', 'nella-orr:foundation', 'crown-counsel:question', 'nella-orr:answer', 'crown-counsel:tender', 'judge:admission', 'judge:limitation-direction'],
       'mon-orr-cross-1': ['defence-counsel:question', 'nella-orr:answer', 'defence-counsel:question', 'nella-orr:answer'],
       'mon-orr-cross-2': ['defence-counsel:question', 'nella-orr:answer', 'defence-counsel:question', 'nella-orr:answer'],
       'mon-elements-1': ['judge:direction'],
@@ -112,6 +112,12 @@ describe('inactive Monday reviewed speech candidate', () => {
     expect(span).toMatchObject({ source: 'written', sourceActorId: 'accused' })
     const quote = openingTurn.text.slice(span?.start, span?.end)
     expect(openingTurn.text.indexOf(quote)).toBe(openingTurn.text.lastIndexOf(quote))
-    expect(openingTurn.text.slice(span?.start, span?.end)).toBe('“hold—readiness.”')
+    expect(openingTurn.text.slice(span?.start, span?.end)).toBe('“hold, readiness.”')
+  })
+
+  it('uses the reviewed fictional Australian jurisdiction without legacy naming', () => {
+    const text = MONDAY_SPEECH_CANDIDATE.flatMap(({ turns }) => turns.map(({ text }) => text)).join(' ')
+    expect(text).toContain('State of Calder')
+    expect(text).not.toMatch(/Orinth/i)
   })
 })

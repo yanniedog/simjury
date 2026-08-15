@@ -24,25 +24,25 @@ describe('Court Week pronounceability gate', () => {
     expect(buildCourtWeekPronounceabilityAudit()).toEqual(first)
     expect(first.counts).toMatchObject({
       'speaker-name': 24,
-      clock: 12,
+      clock: 9,
       statute: 6,
-      identifier: 18,
+      identifier: 14,
       abbreviation: 0,
-      homograph: 72,
-      'all-caps': 14,
-      number: 3,
-      'hyphenated-construction': 76,
-      'em-dash': 11,
+      homograph: 70,
+      'all-caps': 13,
+      number: 1,
+      'hyphenated-construction': 67,
+      'em-dash': 10,
     })
-    expect(first.findings).toHaveLength(236)
+    expect(first.findings).toHaveLength(214)
     expect(first.findings).toHaveLength(Object.values(first.counts).reduce((sum, count) => sum + count, 0))
     expect(new Set(first.findings.map(({ id }) => id)).size).toBe(first.findings.length)
     for (const entry of first.findings) {
       expect(entry.utf16EndExclusive).toBeGreaterThan(entry.utf16Start)
       expect(entry.tokenEndExclusive).toBeGreaterThan(entry.tokenStart)
     }
-    expect(first.coverage).toEqual({ actors: 28, turns: 288, runtimeVariants: 11 })
-    expect(first.impact.actorIds).toHaveLength(27)
+    expect(first.coverage).toEqual({ actors: 28, turns: 297, runtimeVariants: 11 })
+    expect(first.impact.actorIds).toHaveLength(26)
     expect(first.impact.runtimeVariants).toHaveLength(11)
     expect(first.auditDigest).toMatch(/^sha256:[0-9a-f]{64}$/u)
   })
@@ -56,6 +56,16 @@ describe('Court Week pronounceability gate', () => {
       ['identifier', 'AR-72'], ['identifier', 'SHA-256'], ['em-dash', '—'],
       ['all-caps', 'READY'], ['number', '5%'],
     ])
+  })
+
+  it('accepts conventionally hyphenated spoken numbers without hiding other compounds', () => {
+    expect(scanPronounceabilityText('judge', 'safe-number', 'Section forty-one applied at twenty-one sixteen.'))
+      .toEqual([])
+    expect(scanPronounceabilityText('judge', 'unsafe-compound', 'The launch-ready craft remained evidence-linked.'))
+      .toMatchObject([
+        { kind: 'hyphenated-construction', canonical: 'launch-ready' },
+        { kind: 'hyphenated-construction', canonical: 'evidence-linked' },
+      ])
   })
 
   it('requires source rewrites for ordinary hazards and rejects hidden name pronunciation', () => {
