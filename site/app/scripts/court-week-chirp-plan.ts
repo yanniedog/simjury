@@ -6,9 +6,16 @@ import { z } from 'zod'
 import {
   buildCourtWeekPerformanceManifest,
   CANONICAL_PERFORMANCE_IDENTITIES,
+  type CourtWeekPerformanceManifest,
+  validateCourtWeekPerformanceManifest,
 } from './court-week-performance-manifest'
 import { COURT_WEEK_REVIEW_ROLES } from './court-week-review-signoffs'
-import { buildCourtWeekPronounceabilityAudit } from './court-week-pronounceability'
+import {
+  assessPronounceability,
+  buildCourtWeekPronounceabilityAudit,
+  type PronounceabilityDisposition,
+  type PronounceabilityFinding,
+} from './court-week-pronounceability'
 import {
   buildCourtWeekSpeechReviewLedger,
   COURT_WEEK_SPEECH_CANDIDATES,
@@ -94,6 +101,8 @@ export function validateChirpRegistry(value: unknown): ChirpRegistry {
 
 interface ProjectionTrace {
   projectionId: string
+  findingId: string
+  canonicalTextSha256: string
   status: Projection['status']
   canonical: string
   spoken: string
@@ -103,29 +112,34 @@ interface ProjectionTrace {
   tokenEndExclusive: number
 }
 
-function projectPronunciation(text: string, projections: readonly Projection[]): {
+type ReviewedProjection = {
+  definition: Projection
+  disposition: PronounceabilityDisposition
+  finding: PronounceabilityFinding
+}
+
+function projectPronunciation(text: string, projections: readonly ReviewedProjection[]): {
   pronunciationText: string
   traces: ProjectionTrace[]
 } {
-  const tokens = [...text.matchAll(/\S+/gu)].map((match) => ({
-    start: match.index,
-    end: match.index + match[0].length,
-  }))
-  const traces = projections.flatMap((projection) => {
-    const matches: ProjectionTrace[] = []
-    let offset = 0
-    while (offset < text.length) {
-      const canonicalStart = text.indexOf(projection.canonical, offset)
-      if (canonicalStart < 0) break
-      const canonicalEnd = canonicalStart + projection.canonical.length
-      const tokenStart = tokens.findIndex(({ end }) => end > canonicalStart)
-      let tokenEndExclusive = tokens.findIndex(({ start }) => start >= canonicalEnd)
-      if (tokenEndExclusive < 0) tokenEndExclusive = tokens.length
-      if (tokenStart < 0 || tokenStart >= tokenEndExclusive) throw new Error(`Untraceable pronunciation projection ${projection.id}`)
-      matches.push({ ...projection, projectionId: projection.id, canonicalStart, canonicalEnd, tokenStart, tokenEndExclusive })
-      offset = canonicalEnd
+  const traces = projections.map(({ definition, disposition, finding }) => {
+    const canonicalStart = finding.utf16Start
+    const canonicalEnd = finding.utf16EndExclusive
+    if (sha256(text) !== finding.canonicalTextSha256
+      || text.slice(canonicalStart, canonicalEnd) !== finding.canonical) {
+      throw new Error(`${finding.id}: reviewed pronunciation occurrence is stale`)
     }
-    return matches
+    return {
+      ...definition,
+      projectionId: definition.id,
+      findingId: finding.id,
+      canonicalTextSha256: finding.canonicalTextSha256,
+      spoken: disposition.spoken!,
+      canonicalStart,
+      canonicalEnd,
+      tokenStart: finding.tokenStart,
+      tokenEndExclusive: finding.tokenEndExclusive,
+    }
   }).sort((left, right) => left.canonicalStart - right.canonicalStart)
   for (let index = 1; index < traces.length; index += 1) {
     if (traces[index]!.canonicalStart < traces[index - 1]!.canonicalEnd) throw new Error('Pronunciation projections overlap')
@@ -141,12 +155,36 @@ function projectPronunciation(text: string, projections: readonly Projection[]):
 export function buildCourtWeekChirpPlan(
   registryInput: unknown,
   days: readonly SpeechCandidateDay[] = COURT_WEEK_SPEECH_CANDIDATES,
+  review: {
+    dispositions?: readonly PronounceabilityDisposition[]
+    performanceManifest?: CourtWeekPerformanceManifest
+  } = {},
 ) {
   const registry = validateChirpRegistry(registryInput)
-  const governance = buildCourtWeekPerformanceManifest()
+  const governance = review.performanceManifest
+    ? validateCourtWeekPerformanceManifest(review.performanceManifest)
+    : buildCourtWeekPerformanceManifest()
   const ledger = buildCourtWeekSpeechReviewLedger(days)
   const pronounceability = buildCourtWeekPronounceabilityAudit(ledger.rows)
+  const dispositions = [...(review.dispositions ?? [])]
+    .sort((left, right) => left.findingId.localeCompare(right.findingId))
+  const pronunciationAssessment = assessPronounceability(pronounceability.findings, dispositions)
+  const dispositionByFinding = new Map(dispositions.map((entry) => [entry.findingId, entry]))
   const approvedProjections = governance.pronunciationProjections.filter(({ status }) => status === 'approved')
+  const reviewedProjections = pronounceability.findings.flatMap((finding): ReviewedProjection[] => {
+    const disposition = dispositionByFinding.get(finding.id)
+    if (disposition?.status !== 'approved' || disposition.action !== 'provider-projection') return []
+    const definition = approvedProjections.find((projection) =>
+      projection.canonical === finding.canonical && projection.spoken === disposition.spoken)
+    if (!definition) throw new Error(`${finding.id}: provider projection is not approved by the performance manifest`)
+    if (!finding.turnId) throw new Error(`${finding.id}: provider projection lacks an exact turn occurrence`)
+    return [{ definition, disposition, finding }]
+  })
+  const projectionsByTurn = new Map<string, ReviewedProjection[]>()
+  for (const projection of reviewedProjections) {
+    const turnId = projection.finding.turnId!
+    projectionsByTurn.set(turnId, [...(projectionsByTurn.get(turnId) ?? []), projection])
+  }
   const identityByLabel = new Map<string, string>()
   for (const identity of governance.identities) for (const label of identity.speakerLabels) {
     if (identityByLabel.has(label)) throw new Error(`Governance speaker label is shared: ${label}`)
@@ -167,7 +205,9 @@ export function buildCourtWeekChirpPlan(
     }
     identityByActor.set(row.actorId, identityId)
     actorByIdentity.set(identityId, row.actorId)
-    const { pronunciationText, traces } = projectPronunciation(row.text, approvedProjections)
+    const { pronunciationText, traces } = projectPronunciation(
+      row.text, projectionsByTurn.get(row.turnId) ?? [],
+    )
     return {
       jobId: row.turnId, day: row.day, cueId: row.cueId, sourceCueIds: row.sourceCueIds,
       captionIds: row.captionIds, variant: row.variant, actorId: row.actorId, identityId,
@@ -218,16 +258,19 @@ export function buildCourtWeekChirpPlan(
     voiceTotals,
     pronounceabilityReview: {
       auditDigest: pronounceability.auditDigest, coverage: pronounceability.coverage,
+      dispositionDigest: valueDigest(dispositions),
       counts: pronounceability.counts,
       affectedActorCount: pronounceability.impact.actorIds.length,
       affectedTurnCount: pronounceability.impact.turnIds.length,
-      unresolvedFindingCount: pronounceability.findings.length,
+      approvedFindingCount: pronounceability.findings.length - pronunciationAssessment.unresolvedFindingIds.length,
+      unresolvedFindingCount: pronunciationAssessment.unresolvedFindingIds.length,
     },
     generationGate: {
       allowed: false as const,
       blockers: [
         ...COURT_WEEK_REVIEW_ROLES.map((role) => `human-signoff:${role}`),
-        `pronounceability-review:${pronounceability.findings.length}-unresolved`,
+        ...(pronunciationAssessment.unresolvedFindingIds.length
+          ? [`pronounceability-review:${pronunciationAssessment.unresolvedFindingIds.length}-unresolved`] : []),
         'perceptual-distinctness-review', 'atomic-content-media-cutover',
         'approved-pronunciation-projections', 'approved-performance-manifest',
       ],

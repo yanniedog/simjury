@@ -3,7 +3,15 @@ import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { COURT_WEEK_SPEECH_CANDIDATES, buildCourtWeekSpeechReviewLedger } from '../src/courtweek/content/speechReviewLedger'
-import { CANONICAL_PERFORMANCE_IDENTITIES } from './court-week-performance-manifest'
+import {
+  buildCourtWeekPerformanceManifest,
+  CANONICAL_PERFORMANCE_IDENTITIES,
+  refreshPerformanceDigest,
+} from './court-week-performance-manifest'
+import {
+  buildCourtWeekPronounceabilityAudit,
+  type PronounceabilityDisposition,
+} from './court-week-pronounceability'
 import { COURT_WEEK_REVIEW_ROLES } from './court-week-review-signoffs'
 import {
   buildCourtWeekChirpPlan,
@@ -94,6 +102,64 @@ describe('offline Court Week Chirp 3 HD plan', () => {
         expect(tokens[trace.tokenEndExclusive - 1]?.index).toBeLessThan(trace.canonicalEnd)
       }
     }
+  })
+
+  it('applies an approved provider projection only to its reviewed exact occurrence', () => {
+    const audit = buildCourtWeekPronounceabilityAudit()
+    const target = audit.findings.find(({ kind, canonical }) =>
+      kind === 'identifier' && canonical === 'SHA-256')!
+    const disposition: PronounceabilityDisposition = {
+      findingId: target.id,
+      canonicalTextSha256: target.canonicalTextSha256,
+      status: 'approved', action: 'provider-projection', spoken: 'S H A two fifty-six',
+      rationale: 'Preserve the exact visible identifier while speaking it unambiguously.',
+      reviewReference: 'review:exact-source', listeningReference: 'listen:sha-256',
+    }
+    const governance = structuredClone(buildCourtWeekPerformanceManifest())
+    governance.pronunciationProjections.find(({ canonical }) => canonical === target.canonical)!.status = 'approved'
+    const plan = buildCourtWeekChirpPlan(fixtureRegistry(), COURT_WEEK_SPEECH_CANDIDATES, {
+      dispositions: [disposition], performanceManifest: refreshPerformanceDigest(governance),
+    })
+    const projectedJobs = plan.jobs.filter(({ pronunciationProjections }) => pronunciationProjections.length)
+    expect(projectedJobs).toHaveLength(1)
+    expect(projectedJobs[0]).toMatchObject({
+      jobId: target.turnId,
+      pronunciationProjections: [{
+        findingId: target.id,
+        canonicalTextSha256: target.canonicalTextSha256,
+        canonical: target.canonical,
+        spoken: disposition.spoken,
+        canonicalStart: target.utf16Start,
+        canonicalEnd: target.utf16EndExclusive,
+      }],
+    })
+    expect(plan.pronounceabilityReview).toMatchObject({
+      approvedFindingCount: 1,
+      unresolvedFindingCount: audit.findings.length - 1,
+    })
+    expect(plan.generationGate.blockers).toContain(
+      `pronounceability-review:${audit.findings.length - 1}-unresolved`,
+    )
+    expect(plan.jobs.filter(({ canonicalText }) => canonicalText.includes(target.canonical))).toHaveLength(
+      audit.findings.filter(({ canonical }) => canonical === target.canonical).length,
+    )
+  })
+
+  it('rejects stale or ungoverned pronunciation dispositions', () => {
+    const target = buildCourtWeekPronounceabilityAudit().findings.find(({ kind }) => kind === 'identifier')!
+    const disposition: PronounceabilityDisposition = {
+      findingId: target.id,
+      canonicalTextSha256: target.canonicalTextSha256,
+      status: 'approved', action: 'provider-projection', spoken: 'different words',
+      rationale: 'test-only invalid projection',
+      reviewReference: 'review:test', listeningReference: 'listen:test',
+    }
+    expect(() => buildCourtWeekChirpPlan(fixtureRegistry(), COURT_WEEK_SPEECH_CANDIDATES, {
+      dispositions: [{ ...disposition, canonicalTextSha256: `sha256:${'0'.repeat(64)}` }],
+    })).toThrow(/digest is stale/i)
+    expect(() => buildCourtWeekChirpPlan(fixtureRegistry(), COURT_WEEK_SPEECH_CANDIDATES, {
+      dispositions: [disposition],
+    })).toThrow(/not approved by the performance manifest/i)
   })
 
   it('rejects role sharing, unknown voices and incomplete closed registries', () => {
