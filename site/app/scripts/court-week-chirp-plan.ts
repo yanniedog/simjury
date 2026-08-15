@@ -8,6 +8,7 @@ import {
   CANONICAL_PERFORMANCE_IDENTITIES,
 } from './court-week-performance-manifest'
 import { COURT_WEEK_REVIEW_ROLES } from './court-week-review-signoffs'
+import { buildCourtWeekPronounceabilityAudit } from './court-week-pronounceability'
 import {
   buildCourtWeekSpeechReviewLedger,
   COURT_WEEK_SPEECH_CANDIDATES,
@@ -144,6 +145,8 @@ export function buildCourtWeekChirpPlan(
   const registry = validateChirpRegistry(registryInput)
   const governance = buildCourtWeekPerformanceManifest()
   const ledger = buildCourtWeekSpeechReviewLedger(days)
+  const pronounceability = buildCourtWeekPronounceabilityAudit(ledger.rows)
+  const approvedProjections = governance.pronunciationProjections.filter(({ status }) => status === 'approved')
   const identityByLabel = new Map<string, string>()
   for (const identity of governance.identities) for (const label of identity.speakerLabels) {
     if (identityByLabel.has(label)) throw new Error(`Governance speaker label is shared: ${label}`)
@@ -164,7 +167,7 @@ export function buildCourtWeekChirpPlan(
     }
     identityByActor.set(row.actorId, identityId)
     actorByIdentity.set(identityId, row.actorId)
-    const { pronunciationText, traces } = projectPronunciation(row.text, governance.pronunciationProjections)
+    const { pronunciationText, traces } = projectPronunciation(row.text, approvedProjections)
     return {
       jobId: row.turnId, day: row.day, cueId: row.cueId, sourceCueIds: row.sourceCueIds,
       captionIds: row.captionIds, variant: row.variant, actorId: row.actorId, identityId,
@@ -213,11 +216,20 @@ export function buildCourtWeekChirpPlan(
       maxAudMicros, withinBudget: true as const,
     },
     voiceTotals,
+    pronounceabilityReview: {
+      auditDigest: pronounceability.auditDigest, coverage: pronounceability.coverage,
+      counts: pronounceability.counts,
+      affectedActorCount: pronounceability.impact.actorIds.length,
+      affectedTurnCount: pronounceability.impact.turnIds.length,
+      unresolvedFindingCount: pronounceability.findings.length,
+    },
     generationGate: {
       allowed: false as const,
       blockers: [
         ...COURT_WEEK_REVIEW_ROLES.map((role) => `human-signoff:${role}`),
-        'atomic-content-media-cutover', 'approved-pronunciation-projections', 'approved-performance-manifest',
+        `pronounceability-review:${pronounceability.findings.length}-unresolved`,
+        'perceptual-distinctness-review', 'atomic-content-media-cutover',
+        'approved-pronunciation-projections', 'approved-performance-manifest',
       ],
     },
     jobs,

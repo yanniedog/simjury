@@ -49,7 +49,7 @@ describe('offline Court Week Chirp 3 HD plan', () => {
     expect(buildCourtWeekChirpPlan(fixtureRegistry())).toEqual(first)
     expect(first.jobs).toHaveLength(288)
     expect(first.characterTotals).toEqual({
-      billingUnit: 'unicode-code-points', canonicalCharacters: 45_158, providerCharacters: 45_260,
+      billingUnit: 'unicode-code-points', canonicalCharacters: 45_158, providerCharacters: 45_158,
     })
     expect(first.voiceTotals).toHaveLength(28)
     expect(new Set(first.jobs.map(({ actorId }) => actorId)).size).toBe(28)
@@ -65,20 +65,26 @@ describe('offline Court Week Chirp 3 HD plan', () => {
     expect(first.generationGate.allowed).toBe(false)
     expect(first.generationGate.blockers).toEqual([
       ...COURT_WEEK_REVIEW_ROLES.map((role) => `human-signoff:${role}`),
-      'atomic-content-media-cutover', 'approved-pronunciation-projections', 'approved-performance-manifest',
+      `pronounceability-review:${first.pronounceabilityReview.unresolvedFindingCount}-unresolved`,
+      'perceptual-distinctness-review', 'atomic-content-media-cutover',
+      'approved-pronunciation-projections', 'approved-performance-manifest',
     ])
+    expect(first.pronounceabilityReview).toMatchObject({
+      coverage: { actors: 28, turns: 288, runtimeVariants: 11 },
+      affectedActorCount: 27, unresolvedFindingCount: 236,
+    })
     expect(first.policy).toMatchObject({ stockVoicesOnly: true, donorRecordingsRequired: false, recurringSpendAud: 0 })
     expect(JSON.stringify(COURT_WEEK_SPEECH_CANDIDATES)).toBe(before)
   })
 
-  it('keeps canonical words immutable and traces pronunciation changes to characters and tokens', () => {
+  it('keeps canonical words immutable and never applies pending pronunciation changes', () => {
     const plan = buildCourtWeekChirpPlan(fixtureRegistry())
     const rows = new Map(buildCourtWeekSpeechReviewLedger().rows.map((row) => [row.turnId, row]))
     expect(plan.jobs.reduce((total, job) => total + [...job.canonicalText].length, 0))
       .toBe(plan.characterTotals.canonicalCharacters)
     const projected = plan.jobs.filter(({ pronunciationProjections }) => pronunciationProjections.length)
-    expect(projected).toHaveLength(6)
-    expect(projected.flatMap(({ pronunciationProjections }) => pronunciationProjections)).toHaveLength(8)
+    expect(projected).toHaveLength(0)
+    expect(plan.jobs.every(({ canonicalText, pronunciationText }) => canonicalText === pronunciationText)).toBe(true)
     for (const job of plan.jobs) {
       expect(job.canonicalText).toBe(rows.get(job.jobId)?.text)
       const tokens = [...job.canonicalText.matchAll(/\S+/gu)]

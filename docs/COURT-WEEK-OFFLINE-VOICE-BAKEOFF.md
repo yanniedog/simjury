@@ -18,6 +18,16 @@ Generate with `npm run media:performance:manifest -- --output <file>` and rechec
 with `--input <file>`. Release requires explicit authored turns, separate synthesis
 and governance digests, verified provider inventory, and approved pronunciations.
 
+Canonical turn text is also the spoken script: write names, times, ordinary
+numbers, abbreviations and homographs so an Australian reader can say them one
+natural way. The deterministic pronounceability audit blocks generation until
+every flagged form is removed or reviewed. Provider-only pronunciation changes
+are an exception limited to statutes and identifiers, bound to one exact turn
+and source digest; they may never repair a character name or ordinary dialogue.
+Character names must sound natural in a contemporary, culturally varied
+Australian courtroom. Do not use fantasy-style names, phonetic respellings or
+stereotypical Australian names merely to steer a speech engine.
+
 ## Candidates
 
 1. **Google Chirp 3 HD `en-AU`** leads: its official inventory has 30 Australian
@@ -28,7 +38,8 @@ and governance digests, verified provider inventory, and approved pronunciations
 
 Sources: [Chirp voices](https://cloud.google.com/text-to-speech/docs/voices), [Chirp pricing](https://cloud.google.com/text-to-speech/pricing), [Cloudflare pricing](https://developers.cloudflare.com/workers-ai/platform/pricing/), [Aura 2](https://developers.cloudflare.com/workers-ai/models/aura-2-en/), [Cloudflare Melo](https://developers.cloudflare.com/workers-ai/models/melotts/), [Chatterbox](https://github.com/resemble-ai/chatterbox), [Melo](https://github.com/myshell-ai/MeloTTS), and [OpenVoice](https://github.com/myshell-ai/OpenVoice).
 
-The reviewed candidate currently plans 45,260 provider characters. At the frozen
+The reviewed candidate currently plans 45,158 provider characters because
+pending pronunciation proposals may not alter provider text. At the frozen
 14 August 2026 RBA rate, one complete Chirp pass is about USD 1.36 / AUD 1.92
 before free usage, and potentially AUD 0 within Google's one-million-character
 monthly allowance. Billing must still be enabled and the plan conservatively
@@ -38,6 +49,10 @@ but only two documented Australian voices, so it cannot meet the 28-identity cas
 The frozen catalogue verifies availability, not suitability. Audition all 30,
 select 28 only after blind listening, and test the selected cast on headphones,
 laptop, and phone. Reject word, attribution, accent, identity, or emotion defects.
+Different provider IDs do not prove perceptibly different characters. Rank the
+audition pool for blinded distinctness and place the strongest contrasts between
+speakers who share scenes; if the required identities cannot be recognised
+reliably, the provider or casting fails.
 Publish only a new immutable static release with rollback.
 
 ## Chirp audition operator gate
