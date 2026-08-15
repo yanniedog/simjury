@@ -13,6 +13,9 @@ import {
 } from './court-week-chirp-audition'
 
 export const COURT_WEEK_NAME_AUDITION_SCHEMA = 'simjury.court-week-name-audition/v1' as const
+export const COURT_WEEK_JURISDICTION_AUDITION_TERM = 'State of Calder' as const
+export const COURT_WEEK_JURISDICTION_AUDITION_TEXT =
+  `The people, service, storm and harbour in this trial are fictional and exist only in the ${COURT_WEEK_JURISDICTION_AUDITION_TERM}.` as const
 
 const ROLE_LEADS: Partial<Record<ActorId, string>> = {
   judge: 'Judge', 'crown-counsel': 'Crown counsel', 'defence-counsel': 'Defence counsel',
@@ -36,10 +39,15 @@ export function buildCourtWeekNameAudition() {
   if (people.length !== 24 || clearance.pendingActorIds.length !== 24) {
     throw new Error('Name audition requires the exact 24 pending personal-name proposals')
   }
-  const text = people.map(({ actorId, proposedPersonalName }) =>
-    `${roleLead(actorId)} ${proposedPersonalName}.`).join(' ')
+  const text = [
+    ...people.map(({ actorId, proposedPersonalName }) => `${roleLead(actorId)} ${proposedPersonalName}.`),
+    COURT_WEEK_JURISDICTION_AUDITION_TEXT,
+  ].join(' ')
   for (const { actorId, proposedPersonalName } of people) {
     if (text.split(proposedPersonalName!).length !== 2) throw new Error(`${actorId}: name must occur exactly once`)
+  }
+  if (text.split(COURT_WEEK_JURISDICTION_AUDITION_TERM).length !== 2) {
+    throw new Error('Jurisdiction term must occur exactly once')
   }
   const plan = buildChirpAuditionPlan(text, {
     schema: COURT_WEEK_NAME_CLEARANCE_SCHEMA,
@@ -47,9 +55,11 @@ export function buildCourtWeekNameAudition() {
   })
   return {
     schema: COURT_WEEK_NAME_AUDITION_SCHEMA,
+    candidateDigest: clearance.candidateDigest,
     proposalDigest: clearance.proposalDigest,
     actorIds: people.map(({ actorId }) => actorId),
     names: people.map(({ proposedPersonalName }) => proposedPersonalName!),
+    nonPersonalProperNames: [COURT_WEEK_JURISDICTION_AUDITION_TERM],
     plan,
   }
 }
@@ -59,7 +69,11 @@ export async function runCourtWeekNameAuditionCli(
 ) {
   const audition = buildCourtWeekNameAudition()
   const result = await runChirpAuditionPlanCli(audition.plan, args, environment, fetcher)
-  return { schema: audition.schema, proposalDigest: audition.proposalDigest, ...result }
+  return {
+    schema: audition.schema, candidateDigest: audition.candidateDigest,
+    proposalDigest: audition.proposalDigest, actorIds: audition.actorIds, names: audition.names,
+    nonPersonalProperNames: audition.nonPersonalProperNames, ...result,
+  }
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {

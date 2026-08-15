@@ -3,10 +3,13 @@ import {
   COURT_WEEK_NAME_CLEARANCE_SCHEMA,
   COURT_WEEK_NAME_PROPOSALS,
 } from '../src/courtweek/content/nameClearance'
+import { MONDAY_SPEECH_CANDIDATE } from '../src/courtweek/content/mondaySpeechCandidate'
 import { buildChirpAuditionPlan, CHIRP_AUDITION_TEXT } from './court-week-chirp-audition'
 import {
   buildCourtWeekNameAudition,
   COURT_WEEK_NAME_AUDITION_SCHEMA,
+  COURT_WEEK_JURISDICTION_AUDITION_TERM,
+  COURT_WEEK_JURISDICTION_AUDITION_TEXT,
   runCourtWeekNameAuditionCli,
 } from './court-week-name-audition'
 
@@ -18,18 +21,27 @@ describe('pending Australian courtroom name audition', () => {
     expect(audition.actorIds).toHaveLength(24)
     expect(new Set(audition.actorIds).size).toBe(24)
     expect(audition.names).toHaveLength(24)
+    expect(audition.nonPersonalProperNames).toEqual([COURT_WEEK_JURISDICTION_AUDITION_TERM])
     expect(audition.plan.jobs).toHaveLength(30)
     expect(audition.plan.audition.text).not.toBe(CHIRP_AUDITION_TEXT)
     expect(audition.plan.binding).toEqual({
       schema: COURT_WEEK_NAME_CLEARANCE_SCHEMA,
       digest: audition.proposalDigest,
     })
-    expect(audition.plan.planDigest).toBe('sha256:e093980c52325b13fd0ec02075e8fa81087bbf4ccfcd3457eaba84d18577eea8')
+    expect(audition.candidateDigest).toBe('sha256:8f23c88cf117d2a27158d32598449758ac837c55f79a1e0718e947efdd80c778')
+    expect(audition.proposalDigest).toBe('sha256:2b26918e3feb3237faed7757640f3f53c7d44173d94d3045b8cf8fe42b43ebf2')
+    expect(audition.plan.planDigest).toBe('sha256:5f0e20aa269e2bcd68fb84fe0df48b7d8960ea3605a7d733c127e90fca1b5f38')
     for (const proposal of COURT_WEEK_NAME_PROPOSALS.filter(({ proposedPersonalName }) => proposedPersonalName)) {
       expect(audition.plan.audition.text.split(proposal.proposedPersonalName!).length).toBe(2)
     }
-    expect(audition.plan.characterTotals.providerCharacters)
-      .toBe(audition.plan.audition.characterCount * 30)
+    expect(audition.plan.audition.characterCount).toBe(643)
+    expect(audition.plan.characterTotals).toEqual({ jobCount: 30, providerCharacters: 19_290 })
+    expect(audition.plan.audition.text.split(COURT_WEEK_JURISDICTION_AUDITION_TERM)).toHaveLength(2)
+    expect(MONDAY_SPEECH_CANDIDATE.flatMap(({ turns }) => turns.map(({ text }) => text))
+      .filter((text) => text.includes(COURT_WEEK_JURISDICTION_AUDITION_TEXT))).toHaveLength(1)
+    expect(audition.plan.conservativeGrossCost).toMatchObject({
+      grossAudMicros: 818_761, exactAudAcknowledgement: '0.818761',
+    })
     expect(audition.plan.conservativeGrossCost.grossAudMicros).toBeLessThan(1_000_000)
   })
 
@@ -61,7 +73,15 @@ describe('pending Australian courtroom name audition', () => {
       throw new Error('network must remain idle')
     }
     const result = await runCourtWeekNameAuditionCli([], {}, forbiddenFetch)
-    expect(result).toMatchObject({ schema: COURT_WEEK_NAME_AUDITION_SCHEMA, mode: 'plan' })
+    expect(result).toMatchObject({
+      schema: COURT_WEEK_NAME_AUDITION_SCHEMA,
+      candidateDigest: buildCourtWeekNameAudition().candidateDigest,
+      proposalDigest: buildCourtWeekNameAudition().proposalDigest,
+      actorIds: buildCourtWeekNameAudition().actorIds,
+      names: buildCourtWeekNameAudition().names,
+      nonPersonalProperNames: [COURT_WEEK_JURISDICTION_AUDITION_TERM],
+      mode: 'plan',
+    })
     expect(calls).toBe(0)
   })
 })
