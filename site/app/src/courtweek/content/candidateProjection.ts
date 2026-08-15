@@ -24,6 +24,7 @@ type SourceMetadata = Pick<SceneCue,
 
 interface SourceGroup {
   id: string
+  order: number
   sceneId: string
   captionCueIds: string[]
   metadata: SourceMetadata
@@ -32,12 +33,13 @@ interface SourceGroup {
 const canonicalJson = (value: unknown): string => {
   if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`
   if (value !== null && typeof value === 'object') return `{${Object.entries(value)
+    .filter(([, entry]) => entry !== undefined)
     .sort(([left], [right]) => left.localeCompare(right, 'en'))
     .map(([key, entry]) => `${JSON.stringify(key)}:${canonicalJson(entry)}`).join(',')}}`
-  return JSON.stringify(value)
+  return JSON.stringify(value) ?? 'null'
 }
 
-const digest = (value: unknown): string =>
+export const courtWeekCandidateProjectionDigest = (value: unknown): string =>
   `sha256:${createHash('sha256').update(canonicalJson(value)).digest('hex')}`
 
 function sourceMetadata(cue: SceneCue): SourceMetadata {
@@ -68,7 +70,7 @@ function sourceGroups(session: CourtSession): Map<string, SourceGroup> {
       }
       existing.captionCueIds.push(cue.id)
     } else groups.set(id, {
-      id, sceneId: scene.id, captionCueIds: [cue.id], metadata: sourceMetadata(cue),
+      id, order: groups.size, sceneId: scene.id, captionCueIds: [cue.id], metadata: sourceMetadata(cue),
     })
   }
   return groups
@@ -95,8 +97,11 @@ function projectCue(cue: LedgerCandidateCue, sources: Map<string, SourceGroup>) 
   const placement = SYNTHETIC_PLACEMENTS[cue.id as keyof typeof SYNTHETIC_PLACEMENTS]
   if (!groups.length && !placement) throw new Error(`${cue.id}: synthetic cue has no reviewed placement`)
   if (groups.length && placement) throw new Error(`${cue.id}: sourced cue cannot also be synthetic`)
-  if (placement && (!sources.has(placement.afterSourceCueId) || !sources.has(placement.beforeSourceCueId))) {
-    throw new Error(`${cue.id}: synthetic placement anchors are stale`)
+  if (placement) {
+    const after = sources.get(placement.afterSourceCueId)
+    const before = sources.get(placement.beforeSourceCueId)
+    if (!after || !before) throw new Error(`${cue.id}: synthetic placement anchors are stale`)
+    if (after.order >= before.order) throw new Error(`${cue.id}: synthetic placement anchors are out of order`)
   }
   return {
     id: cue.id,
@@ -104,9 +109,17 @@ function projectCue(cue: LedgerCandidateCue, sources: Map<string, SourceGroup>) 
     sceneId: sceneIds[0] ?? null,
     captionCueIds: groups.flatMap(({ captionCueIds }) => captionCueIds),
     sourceMetadata: groups.map(({ id, metadata }) => ({ id, ...metadata })),
-    turns: cue.turns.map((turn) => ({ ...turn, quotedSpans: turn.quotedSpans?.map((span) => ({ ...span })) })),
+    turns: cue.turns.map(({ quotedSpans, ...turn }) => ({
+      ...turn, ...(quotedSpans ? { quotedSpans: quotedSpans.map((span) => ({ ...span })) } : {}),
+    })),
     sourceText: cue.sourceText,
     variant: variantKey(cue),
+    event: cue.event ?? null,
+    verdict: cue.verdict ?? null,
+    agreement: cue.agreement ?? null,
+    threshold: cue.threshold ?? null,
+    lawfulRationale: cue.lawfulRationale ?? null,
+    counterAnalysis: cue.counterAnalysis ?? null,
     procedureStage: cue.procedureStage ?? null,
     guard: cue.guard ?? null,
     syntheticPlacement: placement ?? null,
@@ -139,7 +152,7 @@ export function buildCourtWeekCandidateProjection(
   const cues = projectedDays.flatMap(({ primary, variants }) => [...primary, ...variants])
   return {
     ...payload,
-    candidateDigest: digest(payload),
+    candidateDigest: courtWeekCandidateProjectionDigest(payload),
     impact: {
       days: projectedDays.length,
       activeSourceCueIds: new Set(projectedDays.flatMap(({ sourceCueIds }) => sourceCueIds)).size,

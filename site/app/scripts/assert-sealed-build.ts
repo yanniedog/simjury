@@ -65,7 +65,7 @@ assertNoRetiredDurationContract('Production build', publicCode)
 const reviewOnlyMarkers = [
   ['simjury', 'court-week-pronounceability', 'v1'].join('.'),
   ['simjury', 'court-week-voice-distinctness', 'v1'].join('.'),
-  ['simjury', 'court-week-candidate-projection', 'v1'].join('.'),
+  'simjury.court-week-candidate-projection/v1',
 ]
 for (const marker of reviewOnlyMarkers) if (publicCode.includes(marker)) {
   throw new Error(`Review-only authoring contract leaked into the production build: ${marker}`)
