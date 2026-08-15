@@ -31,6 +31,7 @@
     "media:performance:manifest": "tsx scripts/court-week-performance-manifest.ts",
     "media:chirp:plan": "tsx scripts/court-week-chirp-plan.ts",
     "media:chirp:audition": "tsx scripts/court-week-chirp-audition.ts",
+    "media:chirp:distinctness": "tsx scripts/court-week-voice-distinctness.ts",
     "media:art:requirements": "tsx scripts/scene-art-requirements.ts",
     "media:art:test": "node --test ../scripts/scene-art-readiness.test.mjs"
   },

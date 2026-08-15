@@ -21,6 +21,7 @@ import {
   COURT_WEEK_SPEECH_CANDIDATES,
   type SpeechCandidateDay,
 } from '../src/courtweek/content/speechReviewLedger'
+import { validateVoiceDistinctnessApproval } from './court-week-voice-distinctness'
 
 export const CHIRP_REGISTRY_SCHEMA = 'simjury.google-chirp3-hd-registry/v1' as const
 export const CHIRP_PLAN_SCHEMA = 'simjury.court-week-chirp3-plan/v1' as const
@@ -158,9 +159,12 @@ export function buildCourtWeekChirpPlan(
   review: {
     dispositions?: readonly PronounceabilityDisposition[]
     performanceManifest?: CourtWeekPerformanceManifest
+    distinctnessApproval?: unknown
   } = {},
 ) {
   const registry = validateChirpRegistry(registryInput)
+  const distinctnessApproval = review.distinctnessApproval
+    ? validateVoiceDistinctnessApproval(review.distinctnessApproval, registry.assignments) : null
   const governance = review.performanceManifest
     ? validateCourtWeekPerformanceManifest(review.performanceManifest)
     : buildCourtWeekPerformanceManifest()
@@ -271,7 +275,7 @@ export function buildCourtWeekChirpPlan(
         ...COURT_WEEK_REVIEW_ROLES.map((role) => `human-signoff:${role}`),
         ...(pronunciationAssessment.unresolvedFindingIds.length
           ? [`pronounceability-review:${pronunciationAssessment.unresolvedFindingIds.length}-unresolved`] : []),
-        'perceptual-distinctness-review', 'atomic-content-media-cutover',
+        ...(!distinctnessApproval ? ['perceptual-distinctness-review'] : []), 'atomic-content-media-cutover',
         'approved-pronunciation-projections', 'approved-performance-manifest',
       ],
     },
@@ -287,11 +291,12 @@ const isWithin = (root: string, target: string): boolean => {
   return targetKey === rootKey || targetKey.startsWith(rootKey + sep)
 }
 
-export function writeCourtWeekChirpPlan(registryPath: string, outputPath: string): void {
+export function writeCourtWeekChirpPlan(registryPath: string, outputPath: string, approvalPath?: string): void {
   const output = resolve(outputPath)
   if (blockedOutputRoots.some((root) => isWithin(root, output))) throw new Error('Chirp plans must not enter a runtime or Cloudflare asset path')
   const registry = JSON.parse(readFileSync(resolve(registryPath), 'utf8'))
-  const plan = buildCourtWeekChirpPlan(registry)
+  const approval = approvalPath ? JSON.parse(readFileSync(resolve(approvalPath), 'utf8')) : undefined
+  const plan = buildCourtWeekChirpPlan(registry, undefined, { distinctnessApproval: approval })
   mkdirSync(dirname(output), { recursive: true })
   writeFileSync(output, `${JSON.stringify(plan, null, 2)}\n`)
 }
@@ -304,5 +309,6 @@ function requiredArgument(name: string): string {
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
-  writeCourtWeekChirpPlan(requiredArgument('--registry'), requiredArgument('--output'))
+  writeCourtWeekChirpPlan(requiredArgument('--registry'), requiredArgument('--output'),
+    process.argv.includes('--distinctness-approval') ? requiredArgument('--distinctness-approval') : undefined)
 }
