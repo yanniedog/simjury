@@ -28,7 +28,7 @@ describe('inactive Tuesday reviewed speech candidate', () => {
     expect(new Set(TUESDAY_SPEECH_CANDIDATE.map(({ sourceCueId }) => sourceCueId)).size).toBe(20)
 
     const turnIds = TUESDAY_SPEECH_CANDIDATE.flatMap(({ turns }) => turns.map(({ id }) => id))
-    expect(turnIds).toHaveLength(87)
+    expect(turnIds).toHaveLength(88)
     expect(new Set(turnIds).size).toBe(turnIds.length)
   })
 
@@ -71,7 +71,7 @@ describe('inactive Tuesday reviewed speech candidate', () => {
       'tue-dorn-re-1': ['crown-counsel:question', 'peli-dorn:answer', 'crown-counsel:question', 'peli-dorn:answer', 'judge:limitation-direction'],
       'tue-re-direction': ['judge:direction'],
       'tue-mir-chief-1': ['crown-counsel:question', 'tovan-mir:answer', 'crown-counsel:question', 'tovan-mir:foundation', 'crown-counsel:question', 'tovan-mir:answer', 'crown-counsel:question', 'tovan-mir:foundation', 'crown-counsel:tender', 'judge:admission'],
-      'tue-mir-chief-2': ['crown-counsel:question', 'tovan-mir:foundation', 'crown-counsel:question', 'tovan-mir:foundation', 'crown-counsel:question', 'tovan-mir:foundation', 'crown-counsel:tender', 'judge:admission'],
+      'tue-mir-chief-2': ['crown-counsel:question', 'tovan-mir:foundation', 'crown-counsel:question', 'tovan-mir:foundation', 'crown-counsel:question', 'tovan-mir:foundation', 'crown-counsel:tender', 'judge:admission', 'judge:limitation-direction'],
       'tue-mir-chief-3': ['crown-counsel:question', 'tovan-mir:answer', 'crown-counsel:question', 'tovan-mir:foundation', 'crown-counsel:question', 'tovan-mir:foundation'],
       'tue-mir-cross-1': ['defence-counsel:question', 'tovan-mir:answer', 'defence-counsel:question', 'tovan-mir:answer', 'defence-counsel:question', 'tovan-mir:answer', 'defence-counsel:question', 'tovan-mir:answer'],
       'tue-log-direction': ['judge:direction'],
@@ -150,5 +150,51 @@ describe('inactive Tuesday reviewed speech candidate', () => {
     })
     expect(transitions[0]!.index).toBeLessThan(TUESDAY_SOURCE_CUE_IDS.indexOf('tue-recording-play'))
     expect(TUESDAY_SOURCE_CUE_IDS.indexOf('tue-mir-chief-3')).toBeLessThan(transitions[1]!.index)
+  })
+
+  it('separates capture completeness, copy identity, operator attribution and evidentiary weight', () => {
+    const auditFoundation = cueById('tue-mir-chief-1').turns[3]!.text
+    expect(auditFoundation).toMatch(/sequential audit ledger.*ingestion entries.*gaps.*identical, byte for byte/is)
+    expect(auditFoundation).not.toMatch(/archive that does not permit later changes|fingerprint.*complete|read-only/is)
+
+    const boardFoundation = cueById('tue-mir-chief-1').turns[7]!.text
+    expect(boardFoundation).toMatch(/first and last sequence numbers.*event count.*continuous.*counts agreed/is)
+    expect(boardFoundation).toMatch(/fingerprint in the retained manifest/is)
+
+    const recordingFoundation = cueById('tue-mir-chief-3').turns
+    expect(recordingFoundation[1]!.text).toMatch(/automatically.*start and end times.*duration.*ingestion ledger/is)
+    expect(recordingFoundation[3]!.text).toMatch(/identical, byte for byte.*automatic ingestion entry/is)
+    expect(recordingFoundation[3]!.text).not.toMatch(/fingerprint matches.*complete/is)
+    expect(recordingFoundation[5]!.text).toMatch(/snapshot process completed.*row count.*incident identifier/is)
+
+    const finalAdmission = cueById('tue-recording-final-admission').turns
+    expect(finalAdmission[0]!.text).toMatch(/foundation condition.*provisional admission is now final/is)
+    expect(finalAdmission[1]!.text).toMatch(/weight is for you.*System evidence alone cannot identify who operated/is)
+    expect(finalAdmission.map(({ text }) => text).join(' ')).not.toMatch(/cross-examination.*did not disturb/is)
+  })
+
+  it('limits the launch strip, keeps the Crown burden and gives adjournment to the Judge', () => {
+    const strip = cueById('tue-mir-chief-2').turns
+    expect(strip[1]!.text).toMatch(/did not see the collection.*signed property receipt/is)
+    expect(strip.slice(-2).map(({ actorId, legalAction, text }) => ({ actorId, legalAction, text }))).toEqual([
+      { actorId: 'judge', legalAction: 'admission', text: 'The launch strip is admitted.' },
+      {
+        actorId: 'judge', legalAction: 'limitation-direction',
+        text: 'The strip’s words and handwriting do not establish when the note was written or why. Those are matters for you to decide, if you can, from all the evidence.',
+      },
+    ])
+
+    const burden = cueById('tue-log-direction').turns[0]!.text
+    expect(burden).toMatch(/need not prove.*Crown bears the burden throughout/is)
+    expect(burden).toMatch(/reasonable possibility consistent with innocence remains on the evidence/is)
+    expect(burden).not.toMatch(/excludes a reasonable alternative/is)
+
+    const judgeAdjournment = cueById('tue-adjourn-1').turns[0]!.text
+    expect(judgeAdjournment).toMatch(/Court will adjourn until tomorrow morning\.$/u)
+    expect(judgeAdjournment).not.toMatch(/replay|juror desk|save|notes index/iu)
+    expect(cueById('tue-adjourn-2').turns.map(({ actorId, text }) => ({ actorId, text }))).toEqual([
+      { actorId: 'court-officer', text: 'All rise.' },
+      { actorId: 'narrator', text: expect.stringContaining('juror desk') },
+    ])
   })
 })
