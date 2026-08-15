@@ -904,6 +904,7 @@ export function CourtWeekApp({
         closeLabel="Return to the court view"
         returnFocusTo={interactionReturnFocus.current}
         fallbackReturnFocusSelector=".cw-controls__advance, .cw-controls button:not([disabled])"
+        initialFocusSelector=".cw-sheet__body button, .cw-sheet__body select, .cw-sheet__body input, .cw-sheet__body textarea, .cw-sheet__body a[href], .cw-sheet__body summary, .cw-sheet__body [tabindex]"
         onClose={closeInteraction}
         footer={interactionFooter}
       >

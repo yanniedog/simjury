@@ -13,6 +13,7 @@ export interface CourtSheetProps {
   descriptionId?: string
   returnFocusTo?: HTMLElement | null
   fallbackReturnFocusSelector?: string
+  initialFocusSelector?: string
   inactive?: boolean
   className?: string
 }
@@ -30,6 +31,7 @@ export function CourtSheet({
   descriptionId,
   returnFocusTo,
   fallbackReturnFocusSelector,
+  initialFocusSelector,
   inactive = false,
   className,
 }: CourtSheetProps) {
@@ -38,6 +40,7 @@ export function CourtSheet({
   const labelledBy = headingId ?? `cw-sheet-${generatedHeadingId.replace(/:/gu, '')}`
   useModalFocusBoundary(sheet, returnFocusTo, fallbackReturnFocusSelector, {
     active: !inactive,
+    initialFocusSelector,
     onEscape: closeDisabled ? undefined : onClose,
   })
 
