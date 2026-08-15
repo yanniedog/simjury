@@ -9,7 +9,7 @@ import {
   DEVELOPER_PREVIEW_NOW,
   DEVELOPER_PREVIEW_NOW_ISO,
 } from '../src/courtweek/sealed/developerPreview'
-import { hasSemanticUnlockModuleReference } from './sealed-build-names'
+import { hasSemanticUnlockModuleReference, isTextualProductionAsset, reviewOnlyContractMarker } from './sealed-build-names'
 
 const appRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const buildRoot = resolve(appRoot, '..', 'public', 'jury')
@@ -58,20 +58,13 @@ const sourceMaps = files.filter((file) => extname(file) === '.map')
 if (sourceMaps.length) throw new Error(`Production source maps are forbidden: ${sourceMaps.join(', ')}`)
 
 const publicCode = files
-  .filter((file) => /\.(?:html|js|css)$/u.test(file))
+  .filter(isTextualProductionAsset)
   .map((file) => readFileSync(file, 'utf8'))
   .join('\n')
 assertNoRetiredDurationContract('Production build', publicCode)
-const reviewOnlyMarkers = [
-  ['simjury', 'court-week-pronounceability', 'v1'].join('.'),
-  ['simjury', 'court-week-voice-distinctness', 'v1'].join('.'),
-  ['simjury', 'court-week-voice-asr-receipt', 'v1'].join('.'),
-  ['simjury', 'court-week-raw-asr', 'v1'].join('.'),
-  ['simjury', 'court-week-raw-alignment', 'v1'].join('.'),
-  'simjury.court-week-candidate-projection/v1',
-]
-for (const marker of reviewOnlyMarkers) if (publicCode.includes(marker)) {
-  throw new Error(`Review-only authoring contract leaked into the production build: ${marker}`)
+const reviewOnlyMarker = reviewOnlyContractMarker(publicCode)
+if (reviewOnlyMarker) {
+  throw new Error(`Review-only authoring contract leaked into the production build: ${reviewOnlyMarker}`)
 }
 const developerPreviewSentinels = [
   ...DEVELOPER_PREVIEW_ASSET_MARKERS,
