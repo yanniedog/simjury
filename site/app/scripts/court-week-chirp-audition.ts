@@ -25,9 +25,12 @@ const canonicalJson = (value: unknown): string => {
 const sha256 = (value: string | Buffer): string => createHash('sha256').update(value).digest('hex')
 const digest = (value: unknown): string => `sha256:${sha256(canonicalJson(value))}`
 
-export function buildChirpAuditionPlan() {
+export function buildChirpAuditionPlan(text: string = CHIRP_AUDITION_TEXT) {
+  if (!text.trim() || text !== text.trim() || [...text].length > 2_000) {
+    throw new Error('Audition text must be non-empty, trimmed and at most 2,000 characters')
+  }
   const source = GOOGLE_CHIRP3_SOURCE
-  const characterCount = [...CHIRP_AUDITION_TEXT].length
+  const characterCount = [...text].length
   const providerCharacters = characterCount * source.inventory.voices.length
   const grossUsdMicros = Math.ceil(providerCharacters
     * source.pricing.usdMicrosPerMillionCharactersAfterFreeTier / 1_000_000)
@@ -36,7 +39,7 @@ export function buildChirpAuditionPlan() {
   if (grossAudMicros >= 1_000_000) throw new Error('Audition plan must remain below its AUD 1 target')
   const jobs = source.inventory.voices.map(({ voiceId }) => {
     const request = {
-      input: { text: CHIRP_AUDITION_TEXT },
+      input: { text },
       voice: { languageCode: 'en-AU', name: voiceId },
       audioConfig: { audioEncoding: 'MP3' },
     }
@@ -46,7 +49,7 @@ export function buildChirpAuditionPlan() {
   const payload = {
     schema: CHIRP_AUDITION_SCHEMA,
     provider: { endpoint, locale: 'en-AU', model: source.inventory.model, audioEncoding: 'MP3' as const },
-    audition: { text: CHIRP_AUDITION_TEXT, characterCount, identicalAcrossVoices: true as const },
+    audition: { text, characterCount, identicalAcrossVoices: true as const },
     characterTotals: { jobCount: jobs.length, providerCharacters },
     conservativeGrossCost: {
       freeTierCharactersApplied: 0 as const, grossUsdMicros, grossAudMicros,
@@ -86,7 +89,7 @@ export function redactSecrets(value: unknown, secrets: readonly (string | undefi
   return safe
 }
 
-type AuditionPlan = ReturnType<typeof buildChirpAuditionPlan>
+export type AuditionPlan = ReturnType<typeof buildChirpAuditionPlan>
 type AuditionJob = AuditionPlan['jobs'][number]
 
 function verifyOrRejectExisting(job: AuditionJob, audioPath: string, metadataPath: string): boolean {
@@ -173,12 +176,12 @@ const argument = (args: readonly string[], name: string): string | undefined => 
   return index < 0 ? undefined : args[index + 1]
 }
 
-export async function runChirpAuditionCli(
+export async function runChirpAuditionPlanCli(
+  plan: AuditionPlan,
   args: readonly string[],
   environment: NodeJS.ProcessEnv,
   fetcher: typeof fetch = fetch,
 ) {
-  const plan = buildChirpAuditionPlan()
   if (!args.includes('--execute')) return { mode: 'plan' as const, plan }
   const output = argument(args, '--output')
   const acknowledgement = argument(args, '--acknowledge-cost-aud')
@@ -190,6 +193,12 @@ export async function runChirpAuditionCli(
   const quotaProject = environment.GOOGLE_CLOUD_QUOTA_PROJECT?.trim()
   if (!token || !quotaProject) throw new Error('Execution requires GOOGLE_OAUTH_ACCESS_TOKEN and GOOGLE_CLOUD_QUOTA_PROJECT')
   return { mode: 'execute' as const, result: await executeChirpAudition(plan, output, token, quotaProject, fetcher) }
+}
+
+export async function runChirpAuditionCli(
+  args: readonly string[], environment: NodeJS.ProcessEnv, fetcher: typeof fetch = fetch,
+) {
+  return runChirpAuditionPlanCli(buildChirpAuditionPlan(), args, environment, fetcher)
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
