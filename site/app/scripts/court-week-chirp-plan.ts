@@ -21,6 +21,7 @@ import {
   COURT_WEEK_SPEECH_CANDIDATES,
   type SpeechCandidateDay,
 } from '../src/courtweek/content/speechReviewLedger'
+import { validateVoiceDistinctnessApproval } from './court-week-voice-distinctness'
 
 export const CHIRP_REGISTRY_SCHEMA = 'simjury.google-chirp3-hd-registry/v1' as const
 export const CHIRP_PLAN_SCHEMA = 'simjury.court-week-chirp3-plan/v1' as const
@@ -158,9 +159,12 @@ export function buildCourtWeekChirpPlan(
   review: {
     dispositions?: readonly PronounceabilityDisposition[]
     performanceManifest?: CourtWeekPerformanceManifest
+    distinctnessApproval?: unknown
   } = {},
 ) {
   const registry = validateChirpRegistry(registryInput)
+  const distinctnessApproval = review.distinctnessApproval
+    ? validateVoiceDistinctnessApproval(review.distinctnessApproval, registry.assignments) : null
   const governance = review.performanceManifest
     ? validateCourtWeekPerformanceManifest(review.performanceManifest)
     : buildCourtWeekPerformanceManifest()
@@ -271,7 +275,7 @@ export function buildCourtWeekChirpPlan(
         ...COURT_WEEK_REVIEW_ROLES.map((role) => `human-signoff:${role}`),
         ...(pronunciationAssessment.unresolvedFindingIds.length
           ? [`pronounceability-review:${pronunciationAssessment.unresolvedFindingIds.length}-unresolved`] : []),
-        'perceptual-distinctness-review', 'atomic-content-media-cutover',
+        ...(!distinctnessApproval ? ['perceptual-distinctness-review'] : []), 'atomic-content-media-cutover',
         'approved-pronunciation-projections', 'approved-performance-manifest',
       ],
     },
