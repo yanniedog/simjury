@@ -97,6 +97,8 @@ describe('inactive Tuesday reviewed speech candidate', () => {
       'tue-dorn-chief-2__4', 'tue-dorn-chief-2__6', 'tue-dorn-cross-1__8',
     ])
     expect(cueById('tue-recording-play').turns.every(({ speechMode }) => speechMode === 'recording-playback')).toBe(true)
+    expect(cueById('tue-recording-play').turns[3]?.text).toBe('Seven one. Pumps lost. One person aboard—')
+    expect(cueById('tue-mir-chief-2').turns[5]?.text).toContain('The entry reads “hold—readiness”.')
 
     const provenance = allTurns.flatMap((turn) => (turn.quotedSpans ?? []).map((span) =>
       `${turn.id}|${turn.text.slice(span.start, span.end)}|${span.source}|${span.sourceActorId ?? '-'}`))
@@ -107,7 +109,7 @@ describe('inactive Tuesday reviewed speech candidate', () => {
       'tue-dorn-chief-2__6|“No. Seventy-one waits.”|reported|accused',
       'tue-dorn-cross-1__8|“seventy-one waits.”|reported|accused',
       'tue-dorn-re-1__1|“seventy-one waits,”|reported|accused',
-      'tue-mir-chief-2__6|“hold, readiness,”|written|accused',
+      'tue-mir-chief-2__6|“hold—readiness”|written|accused',
       'tue-mir-cross-1__1|“Apply selected priority?”|written|-',
       'tue-mir-cross-1__3|“Delay may kill”|written|-',
     ])

@@ -32,9 +32,9 @@ describe('Court Week pronounceability gate', () => {
       'all-caps': 11,
       number: 1,
       'hyphenated-construction': 56,
-      'em-dash': 7,
+      'em-dash': 9,
     })
-    expect(first.findings).toHaveLength(190)
+    expect(first.findings).toHaveLength(192)
     expect(first.findings).toHaveLength(Object.values(first.counts).reduce((sum, count) => sum + count, 0))
     expect(new Set(first.findings.map(({ id }) => id)).size).toBe(first.findings.length)
     for (const entry of first.findings) {

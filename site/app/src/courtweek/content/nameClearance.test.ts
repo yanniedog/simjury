@@ -19,8 +19,8 @@ describe('inactive Court Week name-clearance ledger', () => {
     const first = assessCourtWeekNameClearance()
     expect(assessCourtWeekNameClearance()).toEqual(first)
     expect(first.coverage).toEqual({ actors: 28, turns: 326, runtimeVariants: 11, days: 7 })
-    expect(first.candidateDigest).toBe('sha256:75d956ea844276ad38125a9196667d5763d87f6b350ceb53825825be8dc9aa75')
-    expect(first.proposalDigest).toBe('sha256:1235db79e7b8ab4e830df629b7b122743c80a260cdafa8c6ac49d2be4332282c')
+    expect(first.candidateDigest).toBe('sha256:4df320078fd439b4f2bba8e60e8c8ebb6abaa840af43ca8466b6b4bf7abea46b')
+    expect(first.proposalDigest).toBe('sha256:bb5a0cdad9e3d9db6775de068089a0967f486b795d11709da19eec8c176c401c')
     expect(first.reviewRows).toHaveLength(28)
     expect(first.reviewRows.reduce((sum, row) => sum + row.candidateTurnCount, 0)).toBe(326)
     expect(first.reviewRows.find(({ actorId }) => actorId === 'edda-rook')).toMatchObject({
