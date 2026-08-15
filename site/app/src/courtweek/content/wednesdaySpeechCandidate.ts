@@ -149,7 +149,7 @@ export const WEDNESDAY_SPEECH_CANDIDATE: readonly WednesdaySpeechCandidateCue[] 
     turn('wed-vale-chief-1__1', 'crown-counsel', 'Crown counsel Asha Renn', 'live-proceeding', 'question', 'What is your role?'),
     turn('wed-vale-chief-1__2', 'oren-vale', 'Oren Vale', 'live-proceeding', 'answer', 'I direct compliance reviews.'),
     turn('wed-vale-chief-1__3', 'crown-counsel', 'Crown counsel Asha Renn', 'live-proceeding', 'question', 'Do you recognise this unfinished memorandum?'),
-    turn('wed-vale-chief-1__4', 'oren-vale', 'Oren Vale', 'live-proceeding', 'foundation', 'Yes. Ilan Saye stored it in our safety office system. I recognise the usual format, and unchanged metadata identifies Saye as the author.'),
+    turn('wed-vale-chief-1__4', 'oren-vale', 'Oren Vale', 'live-proceeding', 'foundation', 'Yes. It was retained under Ilan Saye’s authenticated account in our safety office system. I recognise the usual format, and its metadata has not changed since retention. The system does not show who operated that account.'),
     turn('wed-vale-chief-1__5', 'crown-counsel', 'Crown counsel Asha Renn', 'live-proceeding', 'question', 'What did it propose, and was it sent to Mara Venn?'),
     turn('wed-vale-chief-1__6', 'oren-vale', 'Oren Vale', 'live-proceeding', 'answer', 'It proposed suspending her certification because of two earlier response delays. It was not sent to her.'),
     turn('wed-vale-chief-1__7', 'crown-counsel', 'Crown counsel Asha Renn', 'live-proceeding', 'question', 'Before the storm, did Mara Venn say anything to you about Ilan Saye’s review?'),
@@ -157,7 +157,7 @@ export const WEDNESDAY_SPEECH_CANDIDATE: readonly WednesdaySpeechCandidateCue[] 
     turn('wed-vale-chief-1__9', 'crown-counsel', 'Crown counsel Asha Renn', 'advocacy', 'tender', 'I tender the unfinished memorandum.'),
     turn('wed-vale-chief-1__10', 'defence-counsel', 'Defence counsel Corin Dax', 'advocacy', 'submission', 'No further objection, subject to the ruling.'),
     turn('wed-vale-chief-1__11', 'judge', 'Judge Sel Aven', 'judicial-direction', 'admission', 'I admit the unfinished memorandum.'),
-    turn('wed-vale-chief-1__12', 'judge', 'Judge Sel Aven', 'judicial-direction', 'limitation-direction', 'Use it only for possible knowledge and motive if you find that connection. It is not a final finding and is not proof of character.'),
+    turn('wed-vale-chief-1__12', 'judge', 'Judge Sel Aven', 'judicial-direction', 'limitation-direction', 'Use it only for possible knowledge and motive if you find that connection. The account and unchanged metadata do not establish that Saye personally wrote it; authorship and weight are for you to decide from all the evidence. It is not a final finding and is not proof of character.'),
   ], {
     attributions: [{ marker: 'Mara Venn say', actorId: 'accused', kind: 'reported' }],
     evidenceAdmission: { evidenceId: 'ex-review', status: 'final', operativeTurnId: 'wed-vale-chief-1__11', limitationTurnId: 'wed-vale-chief-1__12' },
@@ -184,9 +184,9 @@ export const WEDNESDAY_SPEECH_CANDIDATE: readonly WednesdaySpeechCandidateCue[] 
     turn('wed-postanswer-ruling__2', 'judge', 'Judge Sel Aven', 'judicial-direction', 'limitation-direction', 'Put those words out of your minds. They are untested hearsay, not evidence of any earlier act, habit or character. Do not use or discuss them for any purpose. Counsel, move to another subject.'),
   ], { strikeRuling: { targetTurnId: 'wed-blurt__3', objectionTurnId: 'wed-blurt__4', operativeTurnId: 'wed-postanswer-ruling__1', restrictionTurnId: 'wed-postanswer-ruling__2', replay: 'forbidden' } }),
   cue('wed-record-admitted', 'exhibit-admitted', [
-    turn('wed-record-admitted__1', 'crown-counsel', 'Crown counsel Asha Renn', 'advocacy', 'tender', 'I tender the complete concurrent incident export. Its archive link, digital fingerprint and verified clock rest on Mir’s evidence tested yesterday; Dorn identified the assignments.'),
+    turn('wed-record-admitted__1', 'crown-counsel', 'Crown counsel Asha Renn', 'advocacy', 'tender', 'I tender the concurrent incident export. I submit that it covers the whole hour because Mir said the board records each entry automatically and compared the first and last sequence numbers and event count against the sequential audit ledger, finding a continuous sequence and matching counts. He generated this copy from the retained archive file and matched its digital fingerprint to the retained manifest. Dorn identified the assignments.'),
     turn('wed-record-admitted__2', 'defence-counsel', 'Defence counsel Corin Dax', 'advocacy', 'submission', 'No separate integrity objection.'),
-    turn('wed-record-admitted__3', 'judge', 'Judge Sel Aven', 'judicial-direction', 'admission', 'The complete concurrent-incident export is admitted.'),
+    turn('wed-record-admitted__3', 'judge', 'Judge Sel Aven', 'judicial-direction', 'admission', 'The concurrent incident export is admitted.'),
     turn('wed-record-admitted__4', 'judge', 'Judge Sel Aven', 'judicial-direction', 'limitation-direction', 'It lists four matters and existing assignments, but records status rather than everything Venn may have believed about urgency.'),
   ], { evidenceAdmission: { evidenceId: 'ex-competing', status: 'final', operativeTurnId: 'wed-record-admitted__3', limitationTurnId: 'wed-record-admitted__4' } }),
   cue('wed-crown-close-1', 'crown-close', [

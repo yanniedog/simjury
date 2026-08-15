@@ -58,7 +58,7 @@ describe('offline Court Week Chirp 3 HD plan', () => {
     expect(buildCourtWeekChirpPlan(fixtureRegistry())).toEqual(first)
     expect(first.jobs).toHaveLength(355)
     expect(first.characterTotals).toEqual({
-      billingUnit: 'unicode-code-points', canonicalCharacters: 49_642, providerCharacters: 49_642,
+      billingUnit: 'unicode-code-points', canonicalCharacters: 50_128, providerCharacters: 50_128,
     })
     expect(first.voiceTotals).toHaveLength(28)
     expect(new Set(first.jobs.map(({ actorId }) => actorId)).size).toBe(28)
@@ -69,7 +69,7 @@ describe('offline Court Week Chirp 3 HD plan', () => {
       'not-guilty:unanimous', 'not-guilty:majority', 'unable-to-agree:hung',
       'analysis:murder', 'analysis:manslaughter', 'analysis:not-guilty', 'analysis:unable-to-agree',
     ])
-    expect(first.forensicLedgerDigest).toBe('sha256:48d5e7652a07581029a65186357472782bf68daf1271797a3bdc496b01e64770')
+    expect(first.forensicLedgerDigest).toBe('sha256:45e5bfa0ebae3e2161ef56fc2e2c740b73455e05c9e35e795bdb6c0a28cf3ac6')
     expect(first.costEstimate.withinBudget).toBe(true)
     expect(first.costEstimate.estimatedAudMicros).toBeLessThanOrEqual(50_000_000)
     expect(first.generationGate.allowed).toBe(false)
@@ -92,10 +92,10 @@ describe('offline Court Week Chirp 3 HD plan', () => {
       grossUsdMicros * GOOGLE_CHIRP3_SOURCE.audConversion.audMicrosPerUsd / 1_000_000,
     )
     const bakeoff = readFileSync(new URL('../../../docs/COURT-WEEK-OFFLINE-VOICE-BAKEOFF.md', import.meta.url), 'utf8')
-    expect(grossUsdMicros).toBe(1_489_260)
-    expect(grossAudMicros).toBe(2_107_046)
+    expect(grossUsdMicros).toBe(1_503_840)
+    expect(grossAudMicros).toBe(2_127_674)
     expect(bakeoff).toContain(`plans ${first.characterTotals.providerCharacters.toLocaleString('en-AU')} provider characters`)
-    expect(bakeoff).toContain('about USD 1.49 / AUD 2.11')
+    expect(bakeoff).toContain('about USD 1.50 / AUD 2.13')
   })
 
   it('keeps canonical words immutable and never applies pending pronunciation changes', () => {

@@ -28,10 +28,10 @@ describe('Court Week pronounceability gate', () => {
       statute: 6,
       identifier: 5,
       abbreviation: 0,
-      homograph: 66,
+      homograph: 67,
       'all-caps': 8,
       number: 1,
-      'hyphenated-construction': 50,
+      'hyphenated-construction': 49,
       'em-dash': 9,
     })
     expect(first.findings).toHaveLength(172)

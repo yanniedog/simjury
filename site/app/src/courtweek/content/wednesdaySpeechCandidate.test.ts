@@ -121,6 +121,26 @@ describe('inactive Wednesday reviewed speech candidate', () => {
     ].every((turn) => turn?.actorId === 'judge' && turn.legalAction === 'limitation-direction')).toBe(true)
   })
 
+  it('separates account attribution, record completeness and copy identity', () => {
+    const memorandumFoundation = cueById('wed-vale-chief-1').turns[3]!.text
+    expect(memorandumFoundation).toMatch(/retained under Ilan Saye’s authenticated account.*metadata has not changed since retention.*system does not show who operated that account/is)
+    expect(memorandumFoundation).not.toMatch(/metadata identifies Saye as the author/is)
+
+    const memorandumLimitation = cueById('wed-vale-chief-1').turns[11]!.text
+    expect(memorandumLimitation).toMatch(/account and unchanged metadata do not establish that Saye personally wrote it.*authorship and weight are for you/is)
+
+    const exportTender = cueById('wed-record-admitted').turns[0]!.text
+    expect(exportTender).toMatch(/covers the whole hour because.*records each entry automatically.*first and last sequence numbers.*event count.*continuous sequence.*matching counts/is)
+    expect(exportTender).toMatch(/generated this copy from the retained archive file.*digital fingerprint.*retained manifest/is)
+    expect(exportTender).not.toMatch(/complete concurrent incident export|fingerprint.*covers the whole hour/is)
+    expect(cueById('wed-record-admitted').turns[2]!.text).toBe('The concurrent incident export is admitted.')
+
+    const mirFoundations = TUESDAY_SPEECH_CANDIDATE.find(({ id }) => id === 'tue-mir-chief-1')?.turns
+    expect(mirFoundations?.[3]?.text).toMatch(/distinct ingestion entry.*sequence and ingestion entries for gaps/is)
+    expect(mirFoundations?.[7]?.text).toMatch(/first and last sequence numbers.*event count.*continuous.*counts agreed/is)
+    expect(mirFoundations?.[7]?.text).toMatch(/digital fingerprint.*retained manifest/is)
+  })
+
   it('strikes only after the volunteered answer and forbids every later reuse path', () => {
     const strike = cueById('wed-postanswer-ruling').strikeRuling
     expect(strike).toEqual({
