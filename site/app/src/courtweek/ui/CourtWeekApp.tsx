@@ -39,6 +39,7 @@ import { CourtWeekEntry, type CourtWeekEntryProps } from './CourtWeekEntry'
 import { ImmersiveCourtShell } from './ImmersiveCourtShell'
 import { JurorDesk, type PreparedProgressImport } from './JurorDesk'
 import { courtAdvanceAction, interactionPrimaryAction } from './proceduralActions'
+import { useCourtWeekNavigation } from './useCourtWeekNavigation'
 import '../courtweek.css'
 
 export interface CourtWeekAppProps {
@@ -209,17 +210,9 @@ export function CourtWeekApp({
   const [deskOpen, setDeskOpen] = useState(false)
   const [evidenceId, setEvidenceId] = useState<string | null>(null)
   const evidenceTrigger = useRef<HTMLButtonElement | null>(null)
-  const interactionReturnFocus = useRef<HTMLElement | null>(null)
-  const advanceBlocked = useRef(false)
   const resumeAfterDeskClose = useRef(false)
   const suppressAutoPlayAfterDeskClose = useRef(false)
-  const [interactionOpen, setInteractionOpen] = useState(false)
   const [developerPreviewOpen, setDeveloperPreviewOpen] = useState(false)
-  const [interactionChoice, setInteractionChoice] = useState<string | null>(null)
-  const [interactionSealed, setInteractionSealed] = useState(false)
-  const [reasoningQuestion, setReasoningQuestion] = useState('')
-  const [reasoningEvidence, setReasoningEvidence] = useState('')
-  const [reasoningBasis, setReasoningBasis] = useState('')
   const [replaySessionId, setReplaySessionId] = useState<string | null>(null)
   const gesturePlayedCue = useRef<string | null>(null)
   const accessMode = progress.accessibilityMode ?? 'audio-first'
@@ -290,76 +283,36 @@ export function CourtWeekApp({
       text: joinAuthoredCueText(position.scene.cues, playbackCue),
     })
   }, [accessMode, playbackCue, position.scene.cues])
-  const commitPosition = useCallback((sessionId: string, sceneId: string, cueId: string, traversedCueId?: string) => {
-    updateProgress((current) => ({
-      ...current,
-      ...(traversedCueId === 'sun-majority-direction' ? { majorityDirectionReceived: true } : {}),
-      ...(traversedCueId === 'sun-verdict-return' && current.sealedVerdict && current.sealedAgreement
-        ? {
-            openCourtVerdictReturned: true,
-            returnedVerdict: current.sealedVerdict,
-            returnedAgreement: current.sealedAgreement,
-          }
-        : {}),
-      currentSessionId: sessionId,
-      currentSceneId: sceneId,
-      currentCueId: cueId,
-    }))
-  }, [updateProgress])
-
-  const advance = useCallback((trigger?: HTMLElement) => {
-    // A mandatory interaction is a hard legal-state boundary. Stale media
-    // completion or programmatic control events must not traverse beneath it.
-    if (advanceBlocked.current || interactionOpen || deskOpen) return
-    const nextCue = accessMode === 'reading'
-      ? nextAuthoredCue(
-        position.scene.cues,
-        position.cueIndex,
-        isReplay ? isReplaySuppressedCue : () => false,
-      )
-      : nextReplaySafeCue(position.scene.cues, position.cueIndex, isReplay)
-    if (nextCue) {
-      commitPosition(activeSession.id, position.scene.id, nextCue.id, isReplay ? undefined : position.cue.id)
-      return
-    }
-    if (position.scene.interaction?.kind !== 'observe' && position.scene.interaction && !interactionOpen) {
-      advanceBlocked.current = true
-      interactionReturnFocus.current = trigger ?? (
-        document.activeElement instanceof HTMLElement ? document.activeElement : null
-      )
-      setInteractionOpen(true)
-      return
-    }
-    const nextScene = activeSession.scenes[position.sceneIndex + 1]
-    if (nextScene) {
-      setInteractionOpen(false)
-      setInteractionChoice(null)
-      setInteractionSealed(false)
-      commitPosition(activeSession.id, nextScene.id, nextScene.cues[0].id, isReplay ? undefined : position.cue.id)
-      return
-    }
-    if (isReplay) {
-      setReplaySessionId(null)
-      setStarted(false)
-      setInteractionOpen(false)
-      setInteractionChoice(null)
-      setInteractionSealed(false)
-      return
-    }
-    const completed = Array.from(new Set([...progress.completedSessionIds, activeSession.id]))
-    const nextSession = courtWeek.manifest.sessions[activeSession.ordinal]
-    updateProgress((current) => ({
-      ...current,
-      completedSessionIds: completed,
-      currentSessionId: nextSession?.id,
-      currentSceneId: nextSession?.scenes[0]?.id,
-      currentCueId: nextSession?.scenes[0]?.cues[0]?.id,
-    }))
-    setStarted(false)
-    setInteractionOpen(false)
-    setInteractionChoice(null)
-    setInteractionSealed(false)
-  }, [accessMode, activeSession, commitPosition, courtWeek.manifest.sessions, deskOpen, interactionOpen, isReplay, position, progress.completedSessionIds, updateProgress])
+  const {
+    advance,
+    advanceBlocked,
+    commitPosition,
+    interactionChoice,
+    interactionOpen,
+    interactionReturnFocus,
+    interactionSealed,
+    reasoningBasis,
+    reasoningEvidence,
+    reasoningQuestion,
+    resetInteraction,
+    setInteractionChoice,
+    setInteractionOpen,
+    setInteractionSealed,
+    setReasoningBasis,
+    setReasoningEvidence,
+    setReasoningQuestion,
+  } = useCourtWeekNavigation({
+    accessMode,
+    activeSession,
+    courtWeekSessions: courtWeek.manifest.sessions,
+    deskOpen,
+    isReplay,
+    position,
+    progress,
+    setReplaySessionId,
+    setStarted,
+    updateProgress,
+  })
   const handleCueEnded = useCallback(() => {
     advance()
   }, [advance])
@@ -390,7 +343,7 @@ export function CourtWeekApp({
       resumeAfterDeskClose.current = false
       void resumeCuePlayback()
     }
-  }, [deskOpen, evidenceId, interactionOpen, position.cue.id, resumeCuePlayback])
+  }, [advanceBlocked, deskOpen, evidenceId, interactionOpen, position.cue.id, resumeCuePlayback])
   const playCue = playback.play
   useEffect(() => {
     if (!hydrated) return
@@ -421,7 +374,7 @@ export function CourtWeekApp({
     gesturePlayedCue.current = null
     if (alreadyPlayedFromGesture) return
     void playCue()
-  }, [accessMode, deskOpen, evidenceId, interactionOpen, playCue, playbackCue.id, started])
+  }, [accessMode, advanceBlocked, deskOpen, evidenceId, interactionOpen, playCue, playbackCue.id, started])
 
   const playFromGesture = useCallback(() => {
     gesturePlayedCue.current = playbackCue.id
@@ -462,7 +415,7 @@ export function CourtWeekApp({
       || playback.status === 'speech-fallback'
     playback.pause()
     setDeskOpen(true)
-  }, [deskOpen, interactionOpen, playback])
+  }, [advanceBlocked, deskOpen, interactionOpen, playback])
   const evidenceLedger = useMemo(() => deriveEvidenceLedger(
     courtWeek.trial,
     courtWeek.manifest.sessions,
@@ -676,12 +629,7 @@ export function CourtWeekApp({
         ? nextSundaySceneId(position.scene.id, progress.secondBallotWasUnanimous ?? false)
         : null
       if (sundayNext) nextScene = activeSession.scenes.find((scene) => scene.id === sundayNext)
-      setInteractionOpen(false)
-      setInteractionChoice(null)
-      setInteractionSealed(false)
-      setReasoningQuestion('')
-      setReasoningEvidence('')
-      setReasoningBasis('')
+      resetInteraction()
       if (nextScene) {
         commitPosition(activeSession.id, nextScene.id, nextScene.cues[0].id)
       } else {
@@ -762,12 +710,7 @@ export function CourtWeekApp({
       currentSceneId: nextScene?.id ?? nextSession?.scenes[0]?.id,
       currentCueId: nextScene?.cues[0]?.id ?? nextSession?.scenes[0]?.cues[0]?.id,
     }))
-    setInteractionOpen(false)
-    setInteractionChoice(null)
-    setInteractionSealed(false)
-    setReasoningQuestion('')
-    setReasoningEvidence('')
-    setReasoningBasis('')
+    resetInteraction()
     if (!nextScene) setStarted(false)
   }
 
