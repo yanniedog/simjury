@@ -72,7 +72,7 @@ describe('inactive Monday reviewed speech candidate', () => {
       .toBeGreaterThan(branch.findIndex(({ id }) => id === 'mon-prelim-2'))
   })
 
-  it('administers each selected promise through the Clerk and records the private response action', () => {
+  it('has the Court Attendant administer each selected promise and records the private response action', () => {
     expect(MONDAY_OATH_CANDIDATES.map(({ runtimeVariant, jurorAction, turns }) => ({
       runtimeVariant, jurorAction,
       actors: turns.map(({ actorId, legalAction }) => `${actorId}:${legalAction}`),
@@ -80,12 +80,12 @@ describe('inactive Monday reviewed speech candidate', () => {
     }))).toEqual([
       {
         runtimeVariant: 'juror-promise:oath', jurorAction: 'I swear',
-        actors: ['clerk:oath-administered'],
+        actors: ['court-officer:oath-administered'],
         text: expect.stringContaining('swear by Almighty God'),
       },
       {
         runtimeVariant: 'juror-promise:affirmation', jurorAction: 'I affirm',
-        actors: ['clerk:oath-administered'],
+        actors: ['court-officer:oath-administered'],
         text: expect.stringContaining('You and each of you affirm'),
       },
     ])
@@ -120,8 +120,8 @@ describe('inactive Monday reviewed speech candidate', () => {
     expect(ownership).toEqual({
       'mon-arrival-1': ['narrator:narration', 'court-officer:none'],
       'mon-arrival-2': ['judge:direction'],
-      'mon-oath-oath': ['clerk:oath-administered'],
-      'mon-oath-affirmation': ['clerk:oath-administered'],
+      'mon-oath-oath': ['court-officer:oath-administered'],
+      'mon-oath-affirmation': ['court-officer:oath-administered'],
       'mon-plea': ['clerk:charge-read', 'clerk:plea-question', 'accused:plea-answer', 'judge:direction'],
       'mon-prelim-1': ['judge:direction'],
       'mon-prelim-2': ['judge:direction'],

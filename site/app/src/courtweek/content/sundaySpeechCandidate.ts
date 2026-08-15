@@ -103,7 +103,7 @@ function returned(
 ): SundayReturnCandidate {
   const turns = [
     turn(id + '__narrator', 'narrator', 'Narrator', 'narration', 'narration', 'The jury returns to the courtroom. Mara Venn stands.'),
-    turn(id + '__clerk', 'clerk', 'Clerk', 'live-proceeding', 'verdict-question', 'Foreperson, has the jury reached a verdict?'),
+    turn(id + '__clerk', 'clerk', 'Judge’s Associate', 'live-proceeding', 'verdict-question', 'Foreperson, has the jury reached a verdict?'),
     turn(id + '__foreperson', 'edda-rook', 'Foreperson Edda Rook', 'live-proceeding', 'verdict-return', forepersonText),
     turn(id + '__judge', 'judge', 'Judge Sel Aven', 'judicial-direction', 'ruling', judgeText),
   ]

@@ -153,6 +153,6 @@ export const THURSDAY_SPEECH_CANDIDATE: readonly ThursdaySpeechCandidateCue[] = 
     turn('thu-adjourn-1__1', 'judge', 'Judge Sel Aven', 'judicial-direction', 'direction', 'Continue to withhold verdict. You may organise admitted evidence under duty, causation and intent. You may also note source limits. Do not count witnesses or exhibits as votes. One reliable item can outweigh many weak ones, and a number of individually uncertain circumstances do not become certain merely by accumulation.'),
   ]),
   cue('thu-adjourn-2', 'adjournment', [
-    turn('thu-adjourn-2__1', 'court-officer', 'Court officer', 'live-proceeding', 'none', 'The court will sit tomorrow for addresses and the final summing-up. Your private juror desk contains admitted material only. Court is adjourned.'),
+    turn('thu-adjourn-2__1', 'court-officer', 'Court Attendant', 'live-proceeding', 'none', 'The court will sit tomorrow for addresses and the final summing-up. Your private juror desk contains admitted material only. Court is adjourned.'),
   ]),
 ]

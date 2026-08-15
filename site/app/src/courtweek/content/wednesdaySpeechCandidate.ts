@@ -196,7 +196,7 @@ export const WEDNESDAY_SPEECH_CANDIDATE: readonly WednesdaySpeechCandidateCue[] 
     turn('wed-adjourn-1__1', 'judge', 'Judge Sel Aven', 'judicial-direction', 'direction', 'Do not treat the end of the Crown case as a time for a verdict. The defence may call evidence or may require the Crown to stand on what it has proved. Neither choice changes the burden. The struck words are legally absent. If they recur in your mind, put them aside without discussing their content. Court is adjourned until tomorrow morning.'),
   ]),
   cue('wed-adjourn-2', 'adjournment', [
-    turn('wed-adjourn-2__1', 'court-officer', 'Court officer', 'live-proceeding', 'none', 'All rise.'),
+    turn('wed-adjourn-2__1', 'court-officer', 'Court Attendant', 'live-proceeding', 'none', 'All rise.'),
     turn('wed-adjourn-2__2', 'narrator', 'Narrator', 'narration', 'narration', 'Tomorrow the defence will open and call two witnesses. Keep your notes provisional and private.'),
   ]),
 ]

@@ -68,7 +68,7 @@ describe('offline Court Week Chirp 3 HD plan', () => {
       'not-guilty:unanimous', 'not-guilty:majority', 'unable-to-agree:hung',
       'analysis:murder', 'analysis:manslaughter', 'analysis:not-guilty', 'analysis:unable-to-agree',
     ])
-    expect(first.forensicLedgerDigest).toBe('sha256:d7d7d78ee9d1669d5ed4744c5afcefe01cb3b133aa3fc27f869432573df7d3b7')
+    expect(first.forensicLedgerDigest).toBe('sha256:471fbb78881dee3e92dae8b2a6203712423b42596746f6b99d4f9886955eb171')
     expect(first.costEstimate.withinBudget).toBe(true)
     expect(first.costEstimate.estimatedAudMicros).toBeLessThanOrEqual(50_000_000)
     expect(first.generationGate.allowed).toBe(false)

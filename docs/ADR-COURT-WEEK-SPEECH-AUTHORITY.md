@@ -12,17 +12,18 @@ Day 1 order is binding:
 
 1. empanel the jury;
 2. complete the player's oath or affirmation;
-3. have the Clerk read the charge and ask for the plea;
+3. have the Judge’s Associate read the charge and ask for the plea;
 4. have Mara Venn give the plea herself; and
 5. deliver preliminary directions before evidence or an opening.
 The actor/action boundary is also binding:
 
-- the Clerk reads the charge and asks for the plea; the accused answers it;
+- the Court Attendant administers the selected oath or affirmation;
+- the Judge’s Associate reads the charge and asks for the plea; the accused answers it;
 - counsel question, object, submit and tender;
 - witnesses answer and lay evidentiary foundations;
 - the Judge rules, directs, limits use and admits evidence;
 - the foreperson communicates jury notes and returns the verdict;
-- the court officer administers logistics, not new law; and
+- the Court Attendant administers courtroom logistics, not new law; and
 - narrator, document and system text have no independent legal effect.
 Evidence presentation must preserve separate `foundation`, `tender`,
 `admission`, `limitation-direction` and `exhibit-playback` actions. Agreement or
@@ -34,6 +35,17 @@ narrator summary or reviewed system template. Reported words stay in the
 reporting witness's voice; primary recordings identify each audible participant.
 Operative pleas, rulings, admissions, directions and verdicts may not be
 narrator summaries.
+
+The stable actor ids remain `clerk` and `court-officer` so review history can be
+migrated safely. Their reviewed display labels are `Judge’s Associate` and
+`Court Attendant`; `Clerk` and `Court officer` remain migration aliases in the
+actor parser and future performance manifest only. Remove those legacy labels
+at the atomic explicit-source and media cutover. This allocation is informed by
+the Supreme Court of Tasmania’s
+[first-day jury guide](https://www.supremecourt.tas.gov.au/jurors/first-day-trial/),
+which distinguishes the Judge’s Associate from the Attendant who swears the
+jury, and its [accused guide](https://www.supremecourt.tas.gov.au/the-court/attending-court/accused/),
+which assigns the verdict question to the Judge’s Associate.
 Majority eligibility requires this order: failed unanimity, more than eight
 disclosed in-world hours, a non-coercive perseverance direction, further lawful
 discussion, and a fresh unanimity ballot. Only after that fresh ballot fails may

@@ -170,7 +170,9 @@ describe('inactive Sunday reviewed speech candidate', () => {
     for (const candidate of SUNDAY_RETURN_CANDIDATES) {
       const activeTurns = openCourtReturnTurns(candidate.verdict, candidate.agreement)
       expect(candidate.turns.map(({ displayLabel, text }) => ({ speaker: displayLabel, text })), candidate.id)
-        .toEqual(activeTurns.map(({ speaker, text }) => ({ speaker, text })))
+        .toEqual(activeTurns.map(({ speaker, text }) => ({
+          speaker: speaker === 'Clerk' ? 'Judge’s Associate' : speaker, text,
+        })))
     }
   })
 
