@@ -1,9 +1,6 @@
 name: Cloudflare AI bots audit
 
-# Manual / on-demand audit of simjury.com Bot Fight Mode and AI bot settings.
-# Not a merge gate — exits non-zero when the token lacks Bot Management Read
-# or when live settings diverge from the desired LLM-access policy.
-
+# Temporary owner-authorized read-only OrderSkew deployment diagnosis.
 on:
   workflow_dispatch:
 
@@ -14,12 +11,34 @@ jobs:
   audit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "24"
-      - name: Audit Cloudflare AI bot policy
-        working-directory: site
+      - name: Read OrderSkew Pages deployment diagnostics
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: npm run cloudflare:ai-bots:audit
+        run: |
+          python3 - <<'PY'
+          import json, os, re, urllib.request, urllib.error
+          token = os.environ['CLOUDFLARE_API_TOKEN']
+          base = 'https://api.cloudflare.com/client/v4/accounts/f3250f7113cfd8c7f747a09f942ca6d0/pages/projects/orderskew'
+          def emit(value):
+              text = json.dumps(value).replace(token, '[REDACTED]')
+              text = re.sub(r'Bearer\s+[^\s"\\]+', 'Bearer [REDACTED]', text)
+              print(text)
+          for deployment in ['0b118780-b696-4c44-aaa9-7e37e2427f92', '8a1fcd28-621b-4653-9aea-fbb6787c1253']:
+              for suffix in ['', '/history/logs']:
+                  request = urllib.request.Request(base + '/deployments/' + deployment + suffix,
+                      headers={'Authorization': 'Bearer ' + token})
+                  try:
+                      with urllib.request.urlopen(request, timeout=30) as response:
+                          data = json.load(response)
+                      result = data.get('result', {})
+                      if suffix:
+                          lines = result.get('data', []) if isinstance(result, dict) else result
+                          selected = [line for line in lines if re.search(r'error|fail|fatal|limit|exceed|redirect|build|command|output', str(line), re.I)]
+                          emit({'deployment': deployment, 'kind': 'logs', 'success': data.get('success'), 'lines': selected})
+                      else:
+                          emit({'deployment': deployment, 'kind': 'stages', 'success': data.get('success'),
+                              'stages': result.get('stages'), 'latest_stage': result.get('latest_stage')})
+                  except urllib.error.HTTPError as error:
+                      data = json.load(error)
+                      emit({'deployment': deployment, 'kind': suffix or 'metadata', 'http': error.code, 'errors': data.get('errors')})
+          PY
